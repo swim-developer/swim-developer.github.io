@@ -1,174 +1,878 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SWIM Developer | Open Source Collaboration for ATM</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <style>
-        .gradient-redhat {
-            background: linear-gradient(135deg, #ee0000 0%, #3b0000 100%);
-        }
-        .card-hover:hover {
-            transform: translateY(-5px);
-            transition: all 0.3s ease;
-        }
-    </style>
+    <title>SWIM Developer | Open Source Community for Aviation Information Exchange</title>
+    <meta name="description" content="Open Source community building reusable, tested, and validated components for SWIM (System Wide Information Management) adoption in aviation.">
+    <meta name="keywords" content="SWIM, Aviation, ATM, SESAR, EUROCONTROL, Digital NOTAM, DNOTAM, Open Source, Kubernetes, OpenShift">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@400;500;600;700;900&family=Red+Hat+Text:wght@400;500;600&family=Red+Hat+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
 </head>
-<body class="bg-gray-50 text-gray-900 font-sans">
-
-    <header class="gradient-redhat text-white py-16 px-6">
-        <div class="max-w-6xl mx-auto">
-            <div class="flex items-center gap-4 mb-4">
-                <i class="fas fa-network-wired text-4xl"></i>
-                <h1 class="text-4xl md:text-5xl font-bold">Swim-Developer</h1>
+<body>
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="#" class="logo">
+                <i class="fas fa-plane-departure"></i>
+                <span>swim-developer</span>
+            </a>
+            <div class="nav-links">
+                <a href="#about">About</a>
+                <a href="#services">Services</a>
+                <a href="#projects">Projects</a>
+                <a href="#technologies">Tech Stack</a>
+                <a href="#architecture">Architecture</a>
+                <a href="https://github.com/swim-developer" target="_blank" class="btn-nav">
+                    <i class="fab fa-github"></i> GitHub
+                </a>
             </div>
-            <p class="text-xl md:text-2xl max-w-3xl opacity-90">
-                Acelerando a adoção do SWIM através de componentes open-source, colaboração entre ANSPs e padronização técnica.
+            <button class="mobile-menu-btn" aria-label="Toggle menu">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </nav>
+
+    <header class="hero">
+        <div class="hero-bg"></div>
+        <div class="container hero-content">
+            <div class="hero-badge">
+                <i class="fas fa-code-branch"></i>
+                Open Source Initiative
+            </div>
+            <h1>Building the Future of <span class="highlight">Aviation Information Exchange</span></h1>
+            <p class="hero-subtitle">
+                A community-driven initiative creating reusable, tested, and validated components 
+                to accelerate SWIM adoption across Air Navigation Service Providers worldwide.
             </p>
-            <div class="mt-8 flex gap-4">
-                <a href="#repositories" class="bg-white text-red-600 px-6 py-3 rounded-md font-bold hover:bg-gray-100 transition">Ver Repositórios</a>
-                <a href="https://eur-registry.swim.aero/services" target="_blank" class="border border-white px-6 py-3 rounded-md font-bold hover:bg-white hover:text-red-600 transition">SWIM Service Registry</a>
+            <div class="hero-actions">
+                <a href="#projects" class="btn btn-primary">
+                    <i class="fas fa-rocket"></i> Explore Projects
+                </a>
+                <a href="https://eur-registry.swim.aero/services" target="_blank" class="btn btn-secondary">
+                    <i class="fas fa-book"></i> SWIM Registry
+                </a>
+            </div>
+            <div class="hero-stats">
+                <div class="stat">
+                    <span class="stat-number">6</span>
+                    <span class="stat-label">Open Source Projects</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-number">2026</span>
+                    <span class="stat-label">ICAO Deadline</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-number">CP1</span>
+                    <span class="stat-label">EU Compliant</span>
+                </div>
             </div>
         </div>
     </header>
 
-    <section class="py-16 px-6 max-w-6xl mx-auto">
-        <div class="grid md:grid-cols-2 gap-12 items-center">
-            <div>
-                <h2 class="text-3xl font-bold mb-6 text-gray-800 border-b-4 border-red-600 inline-block">Nossa Missão</h2>
-                <p class="text-lg leading-relaxed mb-4">
-                    O <strong>SWIM (System Wide Information Management)</strong> é a espinha dorsal da modernização do gerenciamento de tráfego aéreo (ATM). Nossa iniciativa visa desmistificar a complexidade técnica do SWIM, provendo componentes reutilizáveis que seguem os padrões do <strong>SESAR/EUROCONTROL</strong>.
+    <section id="about" class="section section-about">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Our Mission</span>
+                <h2>Democratizing Aviation Technology</h2>
+            </div>
+            <div class="about-grid">
+                <div class="about-content">
+                    <p class="lead">
+                        SWIM (System Wide Information Management) is the backbone of Air Traffic Management modernization. 
+                        But its technical complexity creates barriers for organizations with limited IT resources.
+                    </p>
+                    <p>
+                        We believe that <strong>open standards deserve open implementations</strong>. The SWIM-Developer 
+                        initiative proposes a collaborative model where ANSPs, developers, and stakeholders co-create 
+                        tools that are tested, validated, and homologated by the community.
+                    </p>
+                    <p>
+                        Our goal is to <strong>abstract technical complexity</strong> and provide ready-to-deploy components 
+                        that accelerate the adoption of SWIM services, reducing time-to-market and ensuring global interoperability.
+                    </p>
+                    <div class="philosophy-cards">
+                        <div class="philosophy-card">
+                            <i class="fas fa-users"></i>
+                            <h4>Community First</h4>
+                            <p>Built by practitioners, for practitioners. Real-world solutions for real-world problems.</p>
+                        </div>
+                        <div class="philosophy-card">
+                            <i class="fas fa-lock-open"></i>
+                            <h4>No Vendor Lock-in</h4>
+                            <p>Cloud-native, portable, and built on open standards. Your infrastructure, your choice.</p>
+                        </div>
+                        <div class="philosophy-card">
+                            <i class="fas fa-bullseye"></i>
+                            <h4>Our Goal</h4>
+                            <p><strong>Tested, validated, and compliant</strong> with EUROCONTROL SPEC-170 and EU Regulation 2021/116. This is what we're building toward.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="about-visual">
+                    <div class="compliance-badge">
+                        <div class="badge-header">
+                            <i class="fas fa-bullseye"></i>
+                            Target Compliance
+                        </div>
+                        <p class="badge-subtitle">Our components are being developed to meet:</p>
+                        <ul class="badge-list">
+                            <li><i class="fas fa-hourglass-half"></i> EUROCONTROL SPEC-170 (Yellow Profile)</li>
+                            <li><i class="fas fa-hourglass-half"></i> EUROCAE ED-254 (Service Bindings)</li>
+                            <li><i class="fas fa-hourglass-half"></i> EU Regulation 2021/116 (CP1)</li>
+                            <li><i class="fas fa-check"></i> AIXM 5.1.1 (Data Model)</li>
+                            <li><i class="fas fa-check"></i> AMQP 1.0 over TLS 1.2</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="why-swim" class="section section-swim">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Why SWIM Matters</span>
+                <h2>The Global Aviation Transformation</h2>
+            </div>
+            <div class="swim-intro">
+                <p class="lead">
+                    SWIM represents a paradigm shift from point-to-point connections to a service-oriented ecosystem 
+                    where aviation information flows seamlessly between all stakeholders.
                 </p>
-                <p class="text-lg leading-relaxed">
-                    Propomos um modelo colaborativo onde ANSPs, desenvolvedores e stakeholders possam co-criar ferramentas testadas e homologadas pela comunidade, reduzindo o <em>time-to-market</em> e garantindo a interoperabilidade global.
+            </div>
+            <div class="swim-grid">
+                <div class="swim-card">
+                    <div class="swim-card-icon">
+                        <i class="fas fa-globe-americas"></i>
+                    </div>
+                    <h3>ICAO Mandate</h3>
+                    <p>
+                        The International Civil Aviation Organization mandates SWIM adoption by <strong>2026</strong>. 
+                        All Air Navigation Service Providers must implement standardized data exchange.
+                    </p>
+                </div>
+                <div class="swim-card">
+                    <div class="swim-card-icon">
+                        <i class="fas fa-exchange-alt"></i>
+                    </div>
+                    <h3>Information Domains</h3>
+                    <p>
+                        SWIM covers multiple domains: <strong>Aeronautical</strong> (DNOTAM, AIFS, AMAP), 
+                        <strong>Meteorological</strong> (IWXXM), <strong>Flight</strong> (FIXM), and <strong>Surveillance</strong>.
+                    </p>
+                </div>
+                <div class="swim-card">
+                    <div class="swim-card-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3>Security First</h3>
+                    <p>
+                        SWIM mandates strong security with <strong>EACP PKI</strong> certificates, 
+                        mutual TLS (mTLS), and comprehensive audit logging for all transactions.
+                    </p>
+                </div>
+                <div class="swim-card">
+                    <div class="swim-card-icon">
+                        <i class="fas fa-puzzle-piece"></i>
+                    </div>
+                    <h3>Interoperability</h3>
+                    <p>
+                        Standardized protocols (AMQP, REST) and data models (AIXM, FIXM, IWXXM) ensure 
+                        seamless communication between disparate systems globally.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="complexity" class="section section-complexity">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Technical Challenges</span>
+                <h2>The Complexity We Abstract</h2>
+            </div>
+            <p class="section-intro">
+                SWIM implementation requires expertise across multiple technology domains. 
+                Our components handle this complexity so you can focus on your mission.
+            </p>
+            <div class="complexity-grid">
+                <div class="complexity-card">
+                    <div class="complexity-icon">
+                        <i class="fas fa-project-diagram"></i>
+                    </div>
+                    <h3>Service-Oriented Architecture (SOA)</h3>
+                    <p>
+                        SWIM is fundamentally SOA-based. Services are published, discovered, and consumed 
+                        through standardized interfaces. Our components implement proper service boundaries, 
+                        contract-first design, and loose coupling.
+                    </p>
+                </div>
+                <div class="complexity-card">
+                    <div class="complexity-icon">
+                        <i class="fas fa-key"></i>
+                    </div>
+                    <h3>Public Key Infrastructure (PKI)</h3>
+                    <p>
+                        EACP (European Aviation Common PKI) mandates X.509 certificates for authentication. 
+                        We handle certificate lifecycle, trust chain validation, and mutual TLS configuration 
+                        with automated rotation.
+                    </p>
+                </div>
+                <div class="complexity-card">
+                    <div class="complexity-icon">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <h3>AMQP 1.0 Messaging</h3>
+                    <p>
+                        The Yellow Profile mandates AMQP 1.0 for publish/subscribe patterns. We provide 
+                        pre-configured brokers, topic management, subscription lifecycle, and delivery guarantees 
+                        with proper security bindings.
+                    </p>
+                </div>
+                <div class="complexity-card">
+                    <div class="complexity-icon">
+                        <i class="fas fa-plug"></i>
+                    </div>
+                    <h3>REST / WS-Light APIs</h3>
+                    <p>
+                        Request/Reply patterns use REST with OpenAPI specifications. Our components implement 
+                        compliant endpoints with proper content negotiation, error handling, and HATEOAS patterns 
+                        as defined by ED-254.
+                    </p>
+                </div>
+                <div class="complexity-card">
+                    <div class="complexity-icon">
+                        <i class="fas fa-code"></i>
+                    </div>
+                    <h3>XML/XSD & JSON</h3>
+                    <p>
+                        Aviation data uses complex XML schemas (AIXM 5.1.1, Event, GML). We provide JAXB bindings, 
+                        XSD validation, and transformation pipelines. JSON is supported for lightweight integrations.
+                    </p>
+                </div>
+                <div class="complexity-card">
+                    <div class="complexity-icon">
+                        <i class="fas fa-cubes"></i>
+                    </div>
+                    <h3>Microservices & Containers</h3>
+                    <p>
+                        Cloud-native design with containerized microservices. Each component is independently 
+                        deployable, scalable, and observable. Native images for minimal footprint and fast startup.
+                    </p>
+                </div>
+                <div class="complexity-card">
+                    <div class="complexity-icon">
+                        <i class="fas fa-dharmachakra"></i>
+                    </div>
+                    <h3>Kubernetes Operators</h3>
+                    <p>
+                        Day-2 operations automated through Kubernetes Operators. Deploy complex SWIM stacks 
+                        with a single Custom Resource. Reconciliation ensures desired state is maintained.
+                    </p>
+                </div>
+                <div class="complexity-card">
+                    <div class="complexity-icon">
+                        <i class="fas fa-heartbeat"></i>
+                    </div>
+                    <h3>Fault Tolerance</h3>
+                    <p>
+                        Aviation demands reliability. Our components implement circuit breakers, retry policies, 
+                        dead letter queues, idempotent consumers, and graceful degradation for mission-critical 
+                        operations.
+                    </p>
+                </div>
+                <div class="complexity-card">
+                    <div class="complexity-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3>Observability</h3>
+                    <p>
+                        Full observability stack: Prometheus metrics, distributed tracing with OpenTelemetry, 
+                        and centralized logging. Pre-built Grafana dashboards for operational visibility.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="services" class="section section-services">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">SWIM Services</span>
+                <h2>Services Under Development</h2>
+            </div>
+            <p class="section-intro">
+                We are building open-source implementations for SWIM services as defined by 
+                <a href="https://eur-registry.swim.aero/services" target="_blank">EUROCONTROL SWIM Registry</a>.
+                Each service follows the ED-254 interface bindings and SWIM-TI Yellow Profile specifications.
+            </p>
+            <div class="services-grid">
+                <div class="service-card service-primary">
+                    <div class="service-status">
+                        <span class="status-badge status-active">In Validation</span>
+                    </div>
+                    <div class="service-icon">
+                        <i class="fas fa-file-alt"></i>
+                    </div>
+                    <h3>Digital NOTAM (DNOTAM)</h3>
+                    <p>
+                        Digital replacement for traditional text-based NOTAMs. Machine-readable, validated, 
+                        and structured aeronautical information about operational changes affecting flight operations.
+                    </p>
+                    <ul class="service-details">
+                        <li><strong>Standard:</strong> EUROCAE ED-254</li>
+                        <li><strong>Data Model:</strong> AIXM 5.1.1 + Event Schema</li>
+                        <li><strong>Patterns:</strong> Pub/Sub (AMQP) + Request/Reply (REST)</li>
+                        <li><strong>Registry:</strong> <a href="https://eur-registry.swim.aero/services/eurocontrol-digital-notam-subscription-and-request-service-100" target="_blank">View on SWIM Registry</a></li>
+                    </ul>
+                    <div class="service-progress">
+                        <div class="progress-bar" style="width: 75%"></div>
+                        <span>Most tested and validated</span>
+                    </div>
+                </div>
+                <div class="service-card service-secondary">
+                    <div class="service-status">
+                        <span class="status-badge status-preview">Tech Preview</span>
+                    </div>
+                    <div class="service-icon">
+                        <i class="fas fa-plane-arrival"></i>
+                    </div>
+                    <h3>Arrival Sequence (AMAN)</h3>
+                    <p>
+                        Extended Arrival Manager service for sequencing arriving flights. Uses the same ED-254 
+                        interface bindings as DNOTAM but with FIXM-based payload schemas.
+                    </p>
+                    <ul class="service-details">
+                        <li><strong>Standard:</strong> EUROCAE ED-254</li>
+                        <li><strong>Data Model:</strong> FIXM + Arrival Sequence Schema</li>
+                        <li><strong>Patterns:</strong> Pub/Sub (AMQP) + Request/Reply (REST)</li>
+                        <li><strong>Status:</strong> Early development phase</li>
+                    </ul>
+                    <div class="service-progress">
+                        <div class="progress-bar" style="width: 15%"></div>
+                        <span><i class="fas fa-tools mr-1"></i> Under development</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="operators" class="section section-operators">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Easy Deployment</span>
+                <h2>Kubernetes Operators</h2>
+            </div>
+            <p class="section-intro">
+                Deploy complete SWIM infrastructure with a single Custom Resource. Our Operators automate 
+                day-2 operations, certificate management, and lifecycle management—reducing deployment complexity 
+                from days to minutes.
+            </p>
+            <div class="operators-grid">
+                <div class="operator-card operator-primary">
+                    <div class="operator-header">
+                        <i class="fab fa-redhat"></i>
+                        <div>
+                            <h3>OpenShift Operator</h3>
+                            <span class="operator-subtitle">Enterprise-Grade Deployment</span>
+                        </div>
+                    </div>
+                    <p class="operator-description">
+                        Enterprise-grade Operator for Red Hat OpenShift. Leverages OpenShift-specific 
+                        capabilities for production deployments with full Operator Lifecycle Manager (OLM) support.
+                    </p>
+                    <ul class="operator-features">
+                        <li><i class="fas fa-check"></i> OLM catalog integration for enterprise distribution</li>
+                        <li><i class="fas fa-check"></i> OpenShift Routes for external access</li>
+                        <li><i class="fas fa-check"></i> Integration with Cert-Manager for automated PKI</li>
+                        <li><i class="fas fa-check"></i> Container images optimized for OpenShift</li>
+                        <li><i class="fas fa-check"></i> Seamless upgrades through OLM channels</li>
+                    </ul>
+                    <div class="operator-tech">
+                        <span>Go</span>
+                        <span>Operator SDK</span>
+                        <span>Kubebuilder</span>
+                        <span>OLM</span>
+                    </div>
+                    <a href="https://github.com/swim-developer/swim-openshift-operator" target="_blank" class="operator-link">
+                        <i class="fab fa-github"></i> View Repository
+                    </a>
+                </div>
+                <div class="operator-card">
+                    <div class="operator-header">
+                        <i class="fas fa-dharmachakra"></i>
+                        <div>
+                            <h3>Kubernetes Operator</h3>
+                            <span class="operator-subtitle">Standard Kubernetes</span>
+                        </div>
+                    </div>
+                    <p class="operator-description">
+                        Kubernetes Operator for automated SWIM stack deployment on any conformant Kubernetes cluster.
+                        Deploy complete DNOTAM infrastructure with a single Custom Resource.
+                    </p>
+                    <ul class="operator-features">
+                        <li><i class="fas fa-check"></i> CRD for DNOTAM services</li>
+                        <li><i class="fas fa-check"></i> Automated secret management</li>
+                        <li><i class="fas fa-check"></i> Rolling updates and reconciliation</li>
+                        <li><i class="fas fa-check"></i> Health monitoring and status reporting</li>
+                    </ul>
+                    <div class="operator-tech">
+                        <span>Go</span>
+                        <span>Operator SDK</span>
+                        <span>Kubebuilder</span>
+                    </div>
+                    <a href="https://github.com/swim-developer/swim-kubernetes-operator" target="_blank" class="operator-link">
+                        <i class="fab fa-github"></i> View Repository
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="projects" class="section section-projects">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Our Projects</span>
+                <h2>Open Source Components</h2>
+            </div>
+            <p class="section-intro">
+                Application components for Digital NOTAM (DNOTAM) services. 
+                All projects are BSD 3-Clause licensed and open for contribution.
+            </p>
+
+            <div class="projects-subsection">
+                <h3 class="subsection-title"><i class="fas fa-cube"></i> Core</h3>
+                <p class="subsection-description">Production modules for SWIM service integration</p>
+                <div class="projects-grid projects-grid-2">
+                    <article class="project-card project-card-highlight">
+                        <div class="project-header">
+                            <i class="fas fa-upload"></i>
+                            <h3>swim-digital-notam-provider</h3>
+                        </div>
+                        <p class="project-description">
+                            Become a DNOTAM provider yourself. Receives events from internal Kafka topics,
+                            manages external subscriptions, and distributes via AMQP to consumers.
+                            Use when your organization is the authoritative source of aeronautical data.
+                        </p>
+                        <ul class="project-features">
+                            <li><i class="fas fa-check"></i> Full Subscription Manager API</li>
+                            <li><i class="fas fa-check"></i> WFS GetFeature endpoint (OGC)</li>
+                            <li><i class="fas fa-check"></i> Dynamic queue provisioning per subscriber</li>
+                            <li><i class="fas fa-check"></i> JWT/OIDC authentication via Keycloak</li>
+                        </ul>
+                        <div class="project-tech">
+                            <span>Quarkus</span>
+                            <span>PostgreSQL</span>
+                            <span>Artemis</span>
+                            <span>Keycloak</span>
+                        </div>
+                        <a href="https://github.com/swim-developer/swim-digital-notam-provider" target="_blank" class="project-link">
+                            <i class="fab fa-github"></i> View Repository
+                        </a>
+                    </article>
+
+                    <article class="project-card project-card-highlight">
+                        <div class="project-header">
+                            <i class="fas fa-download"></i>
+                            <h3>swim-digital-notam-consumer</h3>
+                        </div>
+                        <p class="project-description">
+                            Production module for organizations that need to receive DNOTAM events.
+                            Connects to any AISP/EAD, manages subscriptions automatically, validates messages, 
+                            and distributes to internal systems via Kafka.
+                        </p>
+                        <ul class="project-features">
+                            <li><i class="fas fa-check"></i> Auto-subscription from config</li>
+                            <li><i class="fas fa-check"></i> Inbox/Outbox patterns (zero message loss)</li>
+                            <li><i class="fas fa-check"></i> XSD validation for any AIXM message</li>
+                            <li><i class="fas fa-check"></i> GraphQL + REST APIs for queries</li>
+                        </ul>
+                        <div class="project-tech">
+                            <span>Quarkus</span>
+                            <span>MongoDB</span>
+                            <span>Kafka</span>
+                            <span>GraphQL</span>
+                        </div>
+                        <a href="https://github.com/swim-developer/swim-digital-notam-consumer" target="_blank" class="project-link">
+                            <i class="fab fa-github"></i> View Repository
+                        </a>
+                    </article>
+                </div>
+            </div>
+
+            <div class="projects-subsection">
+                <h3 class="subsection-title"><i class="fas fa-flask"></i> Validation & Testing</h3>
+                <p class="subsection-description">Tools for development, testing, and validation workflows</p>
+                <div class="projects-grid projects-grid-2">
+                    <article class="project-card">
+                        <div class="project-header">
+                            <i class="fas fa-server"></i>
+                            <h3>swim-digital-notam-mockserver</h3>
+                        </div>
+                        <p class="project-description">
+                            Simulates an AISP (Aeronautical Information Service Provider) for testing and validating 
+                            your Consumer implementation. Ultra-lightweight container that requires minimal resources. 
+                            Optional component used during development and validation phases.
+                        </p>
+                        <ul class="project-features">
+                            <li><i class="fas fa-check"></i> Full Subscription Manager API (ED-254)</li>
+                            <li><i class="fas fa-check"></i> Integrated Artemis AMQP broker</li>
+                            <li><i class="fas fa-check"></i> 82 sample AIXM events included</li>
+                            <li><i class="fas fa-check"></i> Interactive scenario simulator</li>
+                        </ul>
+                        <div class="project-tech">
+                            <span>Quarkus</span>
+                            <span>Artemis</span>
+                            <span>AIXM 5.1.1</span>
+                            <span>mTLS</span>
+                        </div>
+                        <a href="https://github.com/swim-developer/swim-digital-notam-mockserver" target="_blank" class="project-link">
+                            <i class="fab fa-github"></i> View Repository
+                        </a>
+                    </article>
+
+                    <article class="project-card">
+                        <div class="project-header">
+                            <i class="fas fa-vial"></i>
+                            <h3>swim-digital-notam-mockclient</h3>
+                        </div>
+                        <p class="project-description">
+                            Test client for validating SWIM integrations. Provides a user interface 
+                            for subscription management, real-time event visualization, and contract 
+                            testing against provider implementations.
+                        </p>
+                        <ul class="project-features">
+                            <li><i class="fas fa-check"></i> Subscription CRUD operations</li>
+                            <li><i class="fas fa-check"></i> Real-time event streaming</li>
+                            <li><i class="fas fa-check"></i> mTLS proxy support</li>
+                            <li><i class="fas fa-check"></i> Load testing capabilities</li>
+                        </ul>
+                        <div class="project-tech">
+                            <span>Quarkus</span>
+                            <span>HTMX</span>
+                            <span>SSE</span>
+                            <span>REST Client</span>
+                        </div>
+                        <a href="https://github.com/swim-developer/swim-digital-notam-mockclient" target="_blank" class="project-link">
+                            <i class="fab fa-github"></i> View Repository
+                        </a>
+                    </article>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="technologies" class="section section-technologies">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Tech Stack</span>
+                <h2>Technologies Used</h2>
+            </div>
+            <p class="section-intro">
+                All components were developed and tested using enterprise-grade downstream versions.
+                The upstream (community) versions are fully compatible and can be used without vendor dependency.
+            </p>
+            <div class="tech-table-container">
+                <table class="tech-table">
+                    <thead>
+                        <tr>
+                            <th>Category</th>
+                            <th>Upstream (Community)</th>
+                            <th>Downstream (Enterprise)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Application Framework</strong></td>
+                            <td><a href="https://quarkus.io/" target="_blank">Quarkus</a></td>
+                            <td><a href="https://developers.redhat.com/products/quarkus" target="_blank">Red Hat Build of Quarkus</a></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Message Broker (AMQP)</strong></td>
+                            <td><a href="https://activemq.apache.org/components/artemis/" target="_blank">Apache ActiveMQ Artemis</a></td>
+                            <td><a href="https://developers.redhat.com/products/amq" target="_blank">Red Hat AMQ Broker</a></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Event Streaming</strong></td>
+                            <td><a href="https://kafka.apache.org/" target="_blank">Apache Kafka</a></td>
+                            <td><a href="https://developers.redhat.com/products/amq-streams" target="_blank">Red Hat AMQ Streams</a></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Identity & Access</strong></td>
+                            <td><a href="https://www.keycloak.org/" target="_blank">Keycloak</a></td>
+                            <td><a href="https://developers.redhat.com/products/keycloak" target="_blank">Red Hat Build of Keycloak</a></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Document Database</strong></td>
+                            <td><a href="https://www.mongodb.com/" target="_blank">MongoDB</a></td>
+                            <td>MongoDB <a href="https://catalog.redhat.com/en/software/base-images" target="_blank">(UBI Container)</a></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Relational Database</strong></td>
+                            <td><a href="https://www.postgresql.org/" target="_blank">PostgreSQL</a></td>
+                            <td>PostgreSQL <a href="https://catalog.redhat.com/en/software/base-images" target="_blank">(UBI Container)</a></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Certificate Management</strong></td>
+                            <td><a href="https://cert-manager.io/" target="_blank">cert-manager</a></td>
+                            <td><a href="https://docs.openshift.com/container-platform/latest/security/cert_manager_operator/index.html" target="_blank">cert-manager Operator for Red Hat OpenShift</a></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Operator Development</strong></td>
+                            <td><a href="https://sdk.operatorframework.io/" target="_blank">Operator SDK</a></td>
+                            <td><a href="https://sdk.operatorframework.io/" target="_blank">Operator SDK</a></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Container Registry</strong></td>
+                            <td><a href="https://quay.io/" target="_blank">Quay.io</a></td>
+                            <td><a href="https://access.redhat.com/products/red-hat-quay" target="_blank">Red Hat Quay</a></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Container Platform</strong></td>
+                            <td><a href="https://kubernetes.io/" target="_blank">Kubernetes</a></td>
+                            <td><a href="https://developers.redhat.com/products/openshift" target="_blank">Red Hat OpenShift</a></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Observability</strong><br><small>(Metrics, Tracing, Logging)</small></td>
+                            <td>
+                                <a href="https://opentelemetry.io/" target="_blank">OpenTelemetry</a>,
+                                <a href="https://prometheus.io/" target="_blank">Prometheus</a>,
+                                <a href="https://grafana.com/oss/loki/" target="_blank">Loki</a>,
+                                <a href="https://grafana.com/oss/tempo/" target="_blank">Tempo</a>,
+                                <a href="https://grafana.com/" target="_blank">Grafana</a>
+                            </td>
+                            <td>
+                                <a href="https://docs.openshift.com/container-platform/latest/observability/logging/cluster-logging.html" target="_blank">OpenShift Logging Operator</a>,
+                                <a href="https://docs.redhat.com/en/documentation/openshift_container_platform/4.19#Observability" target="_blank">OpenShift Observability Operator</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="tech-notes">
+                <p class="tech-note">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>
+                        <strong>Why OpenShift?</strong> The platform was chosen for validation because of its 
+                        security certifications and proven track record in critical environments across multiple 
+                        industry verticals. OpenShift has been extensively tested and proven in mission-critical 
+                        environments, including financial markets and other regulated industries.
+                    </span>
+                </p>
+                <p class="tech-note">
+                    <i class="fas fa-unlock-alt"></i>
+                    <span>
+                        <strong>No Vendor Lock-in:</strong> This is a community project. While components were 
+                        validated using Red Hat supported downstream versions, you are completely free to use 
+                        upstream community versions without any harm. No vendor dependency is required.
+                    </span>
                 </p>
             </div>
-            <div class="bg-white p-8 rounded-xl shadow-lg border border-gray-100">
-                <h3 class="text-xl font-bold mb-4 text-red-600"><i class="fas fa-microchip mr-2"></i>Abstraindo a Complexidade</h3>
-                <ul class="space-y-3">
-                    <li class="flex items-start gap-2">
-                        <i class="fas fa-check-circle text-green-500 mt-1"></i>
-                        <span><strong>Padronização:</strong> Uso rigoroso de XML, JSON e esquemas fixos.</span>
-                    </li>
-                    <li class="flex items-start gap-2">
-                        <i class="fas fa-check-circle text-green-500 mt-1"></i>
-                        <span><strong>Segurança:</strong> Implementação de PKI e autenticação mútua.</span>
-                    </li>
-                    <li class="flex items-start gap-2">
-                        <i class="fas fa-check-circle text-green-500 mt-1"></i>
-                        <span><strong>Escalabilidade:</strong> Arquitetura baseada em Containers e Microserviços.</span>
-                    </li>
-                    <li class="flex items-start gap-2">
-                        <i class="fas fa-check-circle text-green-500 mt-1"></i>
-                        <span><strong>Resiliência:</strong> Foco em Fault Tolerance e mensageria assíncrona (AMQP).</span>
-                    </li>
-                </ul>
+        </div>
+    </section>
+
+    <section id="architecture" class="section section-architecture">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">How It Works</span>
+                <h2>Reference Architecture</h2>
+            </div>
+            <div class="architecture-diagram">
+                <pre class="ascii-diagram">
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│              SWIM DNOTAM Reference Architecture - Independent Modules            │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│                                                                                  │
+│  ROLE 1: Your Organization as a CONSUMER                                         │
+│  ════════════════════════════════════════                                        │
+│                                                                                  │
+│  ┌─────────────────────────────────────────────────────────────────────────┐    │
+│  │                              CONSUMER                                    │    │
+│  │                    (Independent production module)                       │    │
+│  ├─────────────────────────────────────────────────────────────────────────┤    │
+│  │                                                                          │    │
+│  │  INPUT (from any AISP/EAD)          OUTPUT (to internal systems)        │    │
+│  │  ═════════════════════════          ════════════════════════════        │    │
+│  │  • REST client for subscriptions    • Kafka topics by business intent   │    │
+│  │  • AMQP consumer for events         • GraphQL API for queries           │    │
+│  │                                      • REST API for management          │    │
+│  │                                                                          │    │
+│  │  PROCESSING                          PERSISTENCE                         │    │
+│  │  ══════════                          ═══════════                         │    │
+│  │  • Inbox pattern (AMQP → MongoDB)   • MongoDB (subscriptions, events)   │    │
+│  │  • XSD validation                    • Outbox pattern (MongoDB → Kafka) │    │
+│  │  • Fault tolerance (retry, DLQ)                                         │    │
+│  │                                                                          │    │
+│  └─────────────────────────────────────────────────────────────────────────┘    │
+│                     │                                                            │
+│                     │ Connects to any AISP/EAD                                   │
+│                     ▼                                                            │
+│  ┌─────────────────────────────────────────────────────────────────────────┐    │
+│  │                    EXTERNAL AISP / EAD                                   │    │
+│  │                                                                          │    │
+│  │  Production: EUROCONTROL EAD, National AIS, or other certified AISP     │    │
+│  │                                                                          │    │
+│  │  Development/Testing: Use MockServer (see below)                         │    │
+│  └─────────────────────────────────────────────────────────────────────────┘    │
+│                                                                                  │
+│                                                                                  │
+│  MOCKSERVER (Optional - for development and validation only)                     │
+│  ═══════════════════════════════════════════════════════════                     │
+│                                                                                  │
+│  ┌─────────────────────────────────────────────────────────────────────────┐    │
+│  │                             MOCKSERVER                                   │    │
+│  │                     (Simulates an AISP/EAD)                              │    │
+│  ├─────────────────────────────────────────────────────────────────────────┤    │
+│  │  • Subscription Manager API (REST)    • 82 sample AIXM events           │    │
+│  │  • Integrated Artemis AMQP broker     • Scenario simulator              │    │
+│  │  • Event generator (configurable)     • Lightweight container           │    │
+│  └─────────────────────────────────────────────────────────────────────────┘    │
+│                                                                                  │
+│                                                                                  │
+│  ROLE 2: Your Organization as a PROVIDER                                         │
+│  ════════════════════════════════════════                                        │
+│                                                                                  │
+│  ┌─────────────────────────────────────────────────────────────────────────┐    │
+│  │                              PROVIDER                                    │    │
+│  │                    (Independent production module)                       │    │
+│  ├─────────────────────────────────────────────────────────────────────────┤    │
+│  │                                                                          │    │
+│  │  EXTERNAL API (SWIM Compliant)       INTERNAL INPUT                      │    │
+│  │  ═════════════════════════════       ══════════════                      │    │
+│  │  • Subscription Manager API          • Kafka consumer (internal topics)  │    │
+│  │  • WFS GetFeature (OGC)              • REST API (direct publish)         │    │
+│  │  • HTTPS + mTLS + OIDC/JWT                                               │    │
+│  │                                                                          │    │
+│  │  QUEUE MANAGEMENT                    SECURITY                            │    │
+│  │  ════════════════                    ════════                            │    │
+│  │  • Auto queue creation via           • mTLS (client certificates)        │    │
+│  │    AMQ Broker Operator (Secrets -bp) • OIDC/JWT via Keycloak             │    │
+│  │  • Security roles per subscriber     • Role-based queue access           │    │
+│  │  • Durable/non-durable support                                           │    │
+│  │                                                                          │    │
+│  │  PERSISTENCE                         DISTRIBUTION                        │    │
+│  │  ═══════════                         ════════════                        │    │
+│  │  • PostgreSQL (subscriptions)        • AMQP 1.0 via AMQ Broker           │    │
+│  │  • Subscription state machine        • Per-subscriber queues             │    │
+│  │                                                                          │    │
+│  └─────────────────────────────────────────────────────────────────────────┘    │
+│                     │                                                            │
+│                     │ Distributes events to                                      │
+│                     ▼                                                            │
+│  ┌─────────────────────────────────────────────────────────────────────────┐    │
+│  │                         EXTERNAL CONSUMERS                               │    │
+│  │                                                                          │    │
+│  │  ANSPs, Airport Operators, Airlines, or any authorized subscriber       │    │
+│  └─────────────────────────────────────────────────────────────────────────┘    │
+│                                                                                  │
+│  ⚠️  No communication between Consumer and Provider - they are independent      │
+│      A company can use Consumer only, Provider only, or both                    │
+│                                                                                  │
+│                                                                                  │
+│  INFRASTRUCTURE (Shared across all modules)                                      │
+│  ═══════════════════════════════════════════                                     │
+│                                                                                  │
+│  ┌─────────────────────────────┐    ┌────────────────────────────────────────┐  │
+│  │  Cert-Manager               │    │         Observability Stack            │  │
+│  │  (all components)           │    ├────────────────────────────────────────┤  │
+│  ├─────────────────────────────┤    │ Prometheus │ Tempo │ Loki → Grafana   │  │
+│  │ • Auto-generation           │    └────────────────────────────────────────┘  │
+│  │ • Auto-renewal              │                                                │
+│  │ • mTLS everywhere           │                                                │
+│  └─────────────────────────────┘                                                │
+└─────────────────────────────────────────────────────────────────────────────────┘
+                </pre>
+            </div>
+            <div class="architecture-features">
+                <div class="arch-feature">
+                    <i class="fas fa-shield-alt"></i>
+                    <h4>mTLS Everywhere</h4>
+                    <p>All service-to-service communication secured with mutual TLS using EACP-compliant certificates.</p>
+                </div>
+                <div class="arch-feature">
+                    <i class="fas fa-stream"></i>
+                    <h4>Event-Driven</h4>
+                    <p>Asynchronous processing with AMQP for upstream and Kafka for downstream distribution.</p>
+                </div>
+                <div class="arch-feature">
+                    <i class="fas fa-eye"></i>
+                    <h4>Full Observability</h4>
+                    <p>Metrics, traces, and logs correlated for complete operational visibility.</p>
+                </div>
             </div>
         </div>
     </section>
 
-    
-
-    <section class="bg-gray-100 py-16 px-6">
-        <div class="max-w-6xl mx-auto text-center">
-            <h2 class="text-3xl font-bold mb-12">Complexidade Técnica Abordada</h2>
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
-                <div class="p-6 bg-white rounded-lg shadow-sm">
-                    <i class="fas fa-project-diagram text-3xl text-red-600 mb-3"></i>
-                    <h4 class="font-bold">SOA</h4>
-                    <p class="text-sm text-gray-600">Service Oriented Architecture como base.</p>
-                </div>
-                <div class="p-6 bg-white rounded-lg shadow-sm">
-                    <i class="fas fa-key text-3xl text-red-600 mb-3"></i>
-                    <h4 class="font-bold">PKI</h4>
-                    <p class="text-sm text-gray-600">Infraestrutura de Chaves Públicas para segurança.</p>
-                </div>
-                <div class="p-6 bg-white rounded-lg shadow-sm">
-                    <i class="fas fa-exchange-alt text-3xl text-red-600 mb-3"></i>
-                    <h4 class="font-bold">AMQP</h4>
-                    <p class="text-sm text-gray-600">Mensageria robusta para troca de dados.</p>
-                </div>
-                <div class="p-6 bg-white rounded-lg shadow-sm">
-                    <i class="fas fa-cubes text-3xl text-red-600 mb-3"></i>
-                    <h4 class="font-bold">Kubernetes</h4>
-                    <p class="text-sm text-gray-600">Orquestração moderna para serviços críticos.</p>
+    <section class="section section-contribute">
+        <div class="container">
+            <div class="contribute-content">
+                <h2>Join the Community</h2>
+                <p>
+                    Whether you're an ANSP engineer, an aviation software vendor, or a cloud-native enthusiast, 
+                    there's a place for you in this initiative. Together, we can build a future where SWIM 
+                    adoption is straightforward, tested, and truly open.
+                </p>
+                <div class="contribute-actions">
+                    <a href="https://github.com/swim-developer" target="_blank" class="btn btn-primary btn-large">
+                        <i class="fab fa-github"></i> Browse Repositories
+                    </a>
+                    <a href="https://eur-registry.swim.aero/services" target="_blank" class="btn btn-secondary btn-large">
+                        <i class="fas fa-external-link-alt"></i> SWIM Registry
+                    </a>
                 </div>
             </div>
         </div>
     </section>
 
-    <section id="repositories" class="py-16 px-6 max-w-6xl mx-auto">
-        <h2 class="text-3xl font-bold mb-10 text-center">Ecossistema de Projetos</h2>
-        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            
-            <div class="bg-white p-6 rounded-xl border border-gray-200 shadow-sm card-hover">
-                <h3 class="font-bold text-lg mb-2 flex items-center gap-2">
-                    <i class="fab fa-github"></i> Digital NOTAM Mockserver
-                </h3>
-                <p class="text-gray-600 text-sm mb-4">Servidor de simulação para desenvolvimento e testes de Digital NOTAM sem dependência de sistemas de produção.</p>
-                <a href="https://github.com/swim-developer/swim-digital-notam-mockserver" class="text-red-600 font-semibold hover:underline">Ver Código &rarr;</a>
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <div class="footer-logo">
+                        <i class="fas fa-plane-departure"></i>
+                        <span>swim-developer</span>
+                    </div>
+                    <p>Building the future of aviation information exchange with open source.</p>
+                </div>
+                <div class="footer-links">
+                    <h4>Resources</h4>
+                    <ul>
+                        <li><a href="https://eur-registry.swim.aero/services" target="_blank">SWIM Service Registry</a></li>
+                        <li><a href="https://www.eurocontrol.int/concept/system-wide-information-management" target="_blank">EUROCONTROL SWIM</a></li>
+                        <li><a href="https://www.icao.int/APAC/swim" target="_blank">ICAO SWIM</a></li>
+                        <li><a href="https://www.sesardeploymentmanager.eu/" target="_blank">SESAR Deployment Manager</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4>Standards</h4>
+                    <ul>
+                        <li><a href="https://www.eurocae.net/products/ed-254/" target="_blank">EUROCAE ED-254</a></li>
+                        <li><a href="https://www.aixm.aero/" target="_blank">AIXM 5.1</a></li>
+                        <li><a href="https://www.fixm.aero/" target="_blank">FIXM</a></li>
+                        <li><a href="https://github.com/wmo-im/iwxxm" target="_blank">IWXXM</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4>Community</h4>
+                    <ul>
+                        <li><a href="https://github.com/swim-developer" target="_blank"><i class="fab fa-github"></i> GitHub</a></li>
+                    </ul>
+                </div>
             </div>
-
-            <div class="bg-white p-6 rounded-xl border border-gray-200 shadow-sm card-hover">
-                <h3 class="font-bold text-lg mb-2 flex items-center gap-2">
-                    <i class="fas fa-dharmachakra"></i> Kubernetes Operator
-                </h3>
-                <p class="text-gray-600 text-sm mb-4">Automação do ciclo de vida de componentes SWIM em clusters Kubernetes padrão.</p>
-                <a href="https://github.com/swim-developer/swim-kubernetes-operator" class="text-red-600 font-semibold hover:underline">Ver Código &rarr;</a>
+            <div class="footer-bottom">
+                <p>
+                    Independent initiative based on <strong>SESAR/EUROCONTROL SWIM</strong> standards. 
+                    Inspired by <strong>Open Source</strong> philosophy and values.
+                </p>
+                <p class="copyright">BSD 3-Clause License • 2025 swim-developer contributors</p>
             </div>
-
-            <div class="bg-white p-6 rounded-xl border border-gray-200 shadow-sm card-hover">
-                <h3 class="font-bold text-lg mb-2 flex items-center gap-2">
-                    <i class="fas fa-cloud-upload-alt"></i> OpenShift Operator
-                </h3>
-                <p class="text-gray-600 text-sm mb-4">Extensão do operador para ambientes corporativos Red Hat OpenShift, focando em segurança e compliance.</p>
-                <a href="https://github.com/swim-developer/swim-openshift-operator" class="text-red-600 font-semibold hover:underline">Ver Código &rarr;</a>
-            </div>
-
-            <div class="bg-white p-6 rounded-xl border border-gray-200 shadow-sm card-hover">
-                <h3 class="font-bold text-lg mb-2 flex items-center gap-2">
-                    <i class="fas fa-download"></i> Digital NOTAM Consumer
-                </h3>
-                <p class="text-gray-600 text-sm mb-4">Componente cliente otimizado para consumir, processar e validar mensagens de Digital NOTAM.</p>
-                <a href="https://github.com/swim-developer/swim-digital-notam-consumer" class="text-red-600 font-semibold hover:underline">Ver Código &rarr;</a>
-            </div>
-
-            <div class="bg-white p-6 rounded-xl border border-gray-200 shadow-sm card-hover">
-                <h3 class="font-bold text-lg mb-2 flex items-center gap-2">
-                    <i class="fas fa-upload"></i> Digital NOTAM Provider
-                </h3>
-                <p class="text-gray-600 text-sm mb-4">Implementação de referência para provedores de dados que desejam expor serviços SWIM-compliant.</p>
-                <a href="https://github.com/swim-developer/swim-digital-notam-provider" class="text-red-600 font-semibold hover:underline">Ver Código &rarr;</a>
-            </div>
-
-            <div class="bg-white p-6 rounded-xl border border-gray-200 shadow-sm card-hover">
-                <h3 class="font-bold text-lg mb-2 flex items-center gap-2">
-                    <i class="fas fa-vial"></i> Digital NOTAM Mockclient
-                </h3>
-                <p class="text-gray-600 text-sm mb-4">Ferramenta para testes de carga e validação de contratos de interface (Consumer side).</p>
-                <a href="https://github.com/swim-developer/swim-digital-notam-mockclient" class="text-red-600 font-semibold hover:underline">Ver Código &rarr;</a>
-            </div>
-
-        </div>
-    </section>
-
-    <footer class="bg-gray-900 text-white py-12 px-6">
-        <div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
-            <div>
-                <h2 class="text-2xl font-bold">Swim-Developer</h2>
-                <p class="text-gray-400 mt-2">Construindo o futuro do ATM com Open Source.</p>
-            </div>
-            <div class="flex gap-6 text-2xl">
-                <a href="https://github.com/swim-developer" class="hover:text-red-500"><i class="fab fa-github"></i></a>
-                <a href="https://eur-registry.swim.aero/services" class="hover:text-red-500"><i class="fas fa-book"></i></a>
-            </div>
-        </div>
-        <div class="max-w-6xl mx-auto mt-8 pt-8 border-t border-gray-800 text-center text-gray-500 text-sm">
-            <p>Iniciativa independente baseada nos padrões SESAR/EUROCONTROL SWIM. Inspirado pela filosofia Open Source.</p>
         </div>
     </footer>
 
+    <script src="script.js"></script>
 </body>
 </html>
