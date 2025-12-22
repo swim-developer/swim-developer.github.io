@@ -89,7 +89,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }, observerOptions);
 
-    document.querySelectorAll('.project-card, .complexity-card, .swim-card, .philosophy-card').forEach(el => {
+    document.querySelectorAll('.project-card, .complexity-card, .swim-card, .philosophy-card, .collab-card').forEach(el => {
         el.style.opacity = '0';
         el.style.transform = 'translateY(30px)';
         el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';

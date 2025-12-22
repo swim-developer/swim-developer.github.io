@@ -22,6 +22,7 @@
             </a>
             <div class="nav-links">
                 <a href="#about">About</a>
+                <a href="#collaboration">Collaboration</a>
                 <a href="#services">Services</a>
                 <a href="#projects">Projects</a>
                 <a href="#technologies">Tech Stack</a>
@@ -127,6 +128,265 @@
                             <li><i class="fas fa-check"></i> AMQP 1.0 over TLS 1.2</li>
                         </ul>
                     </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="collaboration" class="section section-collaboration">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Power of Community</span>
+                <h2>Collaborative Development</h2>
+            </div>
+            <div class="collab-intro">
+                <p class="lead">
+                    SWIM adoption accelerates when ATM entities collaborate. Our modular architecture enables 
+                    different organizations to develop independent components that integrate seamlessly into 
+                    a unified solution.
+                </p>
+            </div>
+
+            <div class="collab-diagram-full">
+                <h3><i class="fas fa-sitemap"></i> Modular Architecture</h3>
+                <div class="architecture-svg-container">
+                    <svg viewBox="0 5 1095 355" xmlns="http://www.w3.org/2000/svg" class="architecture-svg">
+                        <defs>
+                            <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                                <polygon points="0 0, 10 3.5, 0 7" fill="#333"/>
+                            </marker>
+                        </defs>
+                        
+                        <!-- MockClient (left side) -->
+                        <g class="mockclient-group">
+                            <rect x="5" y="10" width="120" height="180" rx="8" fill="#ffebee" stroke="#c62828" stroke-width="2" stroke-dasharray="6,3"/>
+                            <rect x="5" y="10" width="120" height="36" rx="8" fill="#c62828"/>
+                            <rect x="5" y="38" width="120" height="8" fill="#c62828"/>
+                            <text x="65" y="35" text-anchor="middle" fill="#fff" font-weight="600" font-size="13">MockClient</text>
+                            <text x="65" y="75" text-anchor="middle" fill="#b71c1c" font-size="12">Test Client</text>
+                            <text x="65" y="105" text-anchor="middle" fill="#b71c1c" font-size="11">Manage Subscriptions</text>
+                            <text x="65" y="135" text-anchor="middle" fill="#b71c1c" font-size="12">Event Streaming</text>
+                        </g>
+
+                        <!-- DNOTAM Provider -->
+                        <g class="provider-group">
+                            <rect x="180" y="10" width="190" height="180" rx="8" fill="#d4edda" stroke="#28a745" stroke-width="2"/>
+                            <rect x="180" y="10" width="190" height="36" rx="8" fill="#28a745"/>
+                            <rect x="180" y="38" width="190" height="8" fill="#28a745"/>
+                            <text x="275" y="35" text-anchor="middle" fill="#fff" font-weight="600" font-size="14">DNOTAM Provider</text>
+                            <text x="275" y="68" text-anchor="middle" fill="#155724" font-size="13" font-weight="600">SWIM API</text>
+                            <text x="275" y="92" text-anchor="middle" fill="#155724" font-size="12">Subscription Manager</text>
+                            <text x="275" y="116" text-anchor="middle" fill="#155724" font-size="12">WFS GetFeature</text>
+                            <text x="275" y="140" text-anchor="middle" fill="#155724" font-size="12">Event Publisher</text>
+                            <text x="275" y="164" text-anchor="middle" fill="#155724" font-size="12">Outbox</text>
+                        </g>
+
+                        <!-- Business Component (dashed) -->
+                        <g class="business-group">
+                            <rect x="440" y="30" width="180" height="55" rx="6" fill="#f3e5f5" stroke="#7b1fa2" stroke-width="2" stroke-dasharray="8,4"/>
+                            <text x="530" y="65" text-anchor="middle" fill="#4a148c" font-weight="600" font-size="14">Business Component</text>
+                        </g>
+
+                        <!-- Event Bus -->
+                        <g class="eventbus-group">
+                            <rect x="405" y="120" width="250" height="55" rx="6" fill="#fff3cd" stroke="#d4a106" stroke-width="2"/>
+                            <text x="530" y="155" text-anchor="middle" fill="#856404" font-weight="700" font-size="15">Event Bus</text>
+                        </g>
+
+                        <!-- DNOTAM Consumer -->
+                        <g class="consumer-group">
+                            <rect x="690" y="10" width="190" height="180" rx="8" fill="#cce5ff" stroke="#004085" stroke-width="2"/>
+                            <rect x="690" y="10" width="190" height="36" rx="8" fill="#004085"/>
+                            <rect x="690" y="38" width="190" height="8" fill="#004085"/>
+                            <text x="785" y="35" text-anchor="middle" fill="#fff" font-weight="600" font-size="14">DNOTAM Consumer</text>
+                            <text x="785" y="72" text-anchor="middle" fill="#004085" font-size="12">Manage Subscriptions</text>
+                            <text x="785" y="100" text-anchor="middle" fill="#004085" font-size="13">Event Processor</text>
+                            <text x="785" y="128" text-anchor="middle" fill="#004085" font-size="13">XSD Validation</text>
+                            <text x="785" y="156" text-anchor="middle" fill="#004085" font-size="13">Inbox/Outbox</text>
+                        </g>
+
+                        <!-- MockServer (right side) -->
+                        <g class="mockserver-group">
+                            <rect x="935" y="10" width="120" height="130" rx="8" fill="#fff8e1" stroke="#f57c00" stroke-width="2" stroke-dasharray="6,3"/>
+                            <rect x="935" y="10" width="120" height="36" rx="8" fill="#f57c00"/>
+                            <rect x="935" y="38" width="120" height="8" fill="#f57c00"/>
+                            <text x="995" y="35" text-anchor="middle" fill="#fff" font-weight="600" font-size="13">MockServer</text>
+                            <text x="995" y="70" text-anchor="middle" fill="#e65100" font-size="11">Simulates AISP</text>
+                            <text x="995" y="95" text-anchor="middle" fill="#e65100" font-size="11">Subscription API</text>
+                            <text x="995" y="120" text-anchor="middle" fill="#e65100" font-size="11">Event Generator</text>
+                        </g>
+
+                        <!-- Provider Infrastructure -->
+                        <g class="infra-provider-group">
+                            <rect x="180" y="250" width="190" height="100" rx="8" fill="#f5f5f5" stroke="#9e9e9e" stroke-width="2"/>
+                            <rect x="180" y="250" width="190" height="36" rx="8" fill="#9e9e9e"/>
+                            <rect x="180" y="278" width="190" height="8" fill="#9e9e9e"/>
+                            <text x="275" y="275" text-anchor="middle" fill="#fff" font-weight="600" font-size="12">Provider Infrastructure</text>
+                            <text x="275" y="310" text-anchor="middle" fill="#424242" font-size="13">AMQP Broker (Artemis)</text>
+                            <text x="275" y="335" text-anchor="middle" fill="#424242" font-size="13">PostgreSQL</text>
+                        </g>
+
+                        <!-- Consumer Infrastructure -->
+                        <g class="infra-consumer-group">
+                            <rect x="690" y="250" width="190" height="85" rx="8" fill="#f5f5f5" stroke="#9e9e9e" stroke-width="2"/>
+                            <rect x="690" y="250" width="190" height="36" rx="8" fill="#9e9e9e"/>
+                            <rect x="690" y="278" width="190" height="8" fill="#9e9e9e"/>
+                            <text x="785" y="275" text-anchor="middle" fill="#fff" font-weight="600" font-size="12">Consumer Infrastructure</text>
+                            <text x="785" y="315" text-anchor="middle" fill="#424242" font-size="13">Document Store (MongoDB)</text>
+                        </g>
+
+                        <!-- MockServer Infrastructure -->
+                        <g class="infra-mockserver-group">
+                            <rect x="935" y="250" width="120" height="85" rx="8" fill="#f5f5f5" stroke="#9e9e9e" stroke-width="2"/>
+                            <rect x="935" y="250" width="120" height="36" rx="8" fill="#9e9e9e"/>
+                            <rect x="935" y="278" width="120" height="8" fill="#9e9e9e"/>
+                            <text x="995" y="275" text-anchor="middle" fill="#fff" font-weight="600" font-size="11">MockServer Infra</text>
+                            <text x="995" y="310" text-anchor="middle" fill="#424242" font-size="12">AMQP Broker</text>
+                            <text x="995" y="328" text-anchor="middle" fill="#424242" font-size="11">(Artemis)</text>
+                        </g>
+
+                        <!-- Arrows -->
+                        <!-- MockClient to Provider -->
+                        <line x1="130" y1="90" x2="175" y2="90" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+                        
+                        <!-- MockClient to Provider Infrastructure (AMQP Broker) -->
+                        <path d="M 65 195 L 65 300 L 175 300" fill="none" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+
+                        <!-- Provider to Event Bus -->
+                        <line x1="405" y1="147" x2="370" y2="147" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+                        
+                        <!-- Consumer to Event Bus -->
+                        <line x1="690" y1="147" x2="660" y2="147" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+                        
+                        <!-- Business to Event Bus -->
+                        <line x1="530" y1="90" x2="530" y2="115" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+                        
+                        <!-- Business to Provider -->
+                        <line x1="440" y1="57" x2="375" y2="57" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+                        
+                        <!-- Business to Consumer -->
+                        <line x1="620" y1="57" x2="685" y2="57" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+                        
+                        <!-- Provider to Provider Infrastructure -->
+                        <line x1="275" y1="195" x2="275" y2="245" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+                        
+                        <!-- Consumer to Consumer Infrastructure -->
+                        <line x1="785" y1="195" x2="785" y2="245" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+
+                        <!-- Consumer to MockServer -->
+                        <line x1="880" y1="90" x2="930" y2="90" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+
+                        <!-- Consumer to MockServer Infrastructure (AMQP Broker) - direct path -->
+                        <path d="M 880 170 L 900 170 L 900 300 L 930 300" fill="none" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+
+                        <!-- MockServer to MockServer Infrastructure -->
+                        <line x1="995" y1="145" x2="995" y2="245" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+                    </svg>
+                </div>
+            </div>
+
+            <div class="collab-text-section">
+                <h3><i class="fas fa-puzzle-piece"></i> Modular by Design</h3>
+                <p>
+                    Each component is an independent, containerized module. One organization can focus on the 
+                    <strong>Provider</strong> implementation—exposing SWIM-compliant interfaces and managing 
+                    subscriptions—while another develops the <strong>Consumer</strong> module for receiving 
+                    and processing events.
+                </p>
+                <p>
+                    Both teams contribute to the same ecosystem: source code is shared on 
+                    <a href="https://github.com/swim-developer" target="_blank">GitHub</a>, and container 
+                    images are published to a common registry. The result? A complete SWIM solution built 
+                    through distributed collaboration.
+                </p>
+
+                <h3><i class="fas fa-code-branch"></i> Open Source Collaboration</h3>
+                <p>
+                    All source code is available under the <strong>BSD 3-Clause License</strong>. Organizations 
+                    are free to use, modify, and redistribute the code. Each member chooses their preferred 
+                    technology stack—as long as the container interfaces remain compatible, the modules 
+                    integrate seamlessly.
+                </p>
+            </div>
+
+            <div class="collab-registry">
+                <div class="registry-header">
+                    <i class="fas fa-shield-alt"></i>
+                    <h3>Secure Container Registry</h3>
+                </div>
+                <p class="registry-intro">
+                    All container images are published to <a href="https://quay.io/" target="_blank">Quay.io</a>, 
+                    an enterprise-grade registry with built-in security features:
+                </p>
+                <div class="registry-features">
+                    <div class="registry-feature">
+                        <i class="fas fa-search"></i>
+                        <div>
+                            <strong>Vulnerability Scanning</strong>
+                            <p>Automatic security analysis using Clair, detecting CVEs in base images and dependencies</p>
+                        </div>
+                    </div>
+                    <div class="registry-feature">
+                        <i class="fas fa-signature"></i>
+                        <div>
+                            <strong>Image Signing</strong>
+                            <p>Cryptographic signatures ensure image integrity and provenance verification</p>
+                        </div>
+                    </div>
+                    <div class="registry-feature">
+                        <i class="fas fa-heartbeat"></i>
+                        <div>
+                            <strong>Health Indicators</strong>
+                            <p>Visual security status for each image—green, yellow, or red based on vulnerability severity</p>
+                        </div>
+                    </div>
+                    <div class="registry-feature">
+                        <i class="fas fa-history"></i>
+                        <div>
+                            <strong>Immutable Tags</strong>
+                            <p>Version control with immutable digests prevents accidental overwrites</p>
+                        </div>
+                    </div>
+                    <div class="registry-feature">
+                        <i class="fas fa-robot"></i>
+                        <div>
+                            <strong>Automated Builds</strong>
+                            <p>CI/CD integration triggers rebuilds when base images are updated</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="collab-cards">
+                <div class="collab-card">
+                    <div class="collab-card-icon">
+                        <i class="fab fa-github"></i>
+                    </div>
+                    <h4>Source Code</h4>
+                    <p>All modules are open source. Fork, contribute, or use as reference for your implementation.</p>
+                    <a href="https://github.com/swim-developer" target="_blank" class="collab-link">
+                        github.com/swim-developer <i class="fas fa-external-link-alt"></i>
+                    </a>
+                </div>
+                <div class="collab-card">
+                    <div class="collab-card-icon">
+                        <i class="fas fa-box"></i>
+                    </div>
+                    <h4>Container Images</h4>
+                    <p>Pre-built, scanned, and signed images ready to deploy on any Kubernetes cluster.</p>
+                    <a href="https://quay.io/organization/swim-developer" target="_blank" class="collab-link">
+                        quay.io/swim-developer <i class="fas fa-external-link-alt"></i>
+                    </a>
+                </div>
+                <div class="collab-card">
+                    <div class="collab-card-icon">
+                        <i class="fas fa-hands-helping"></i>
+                    </div>
+                    <h4>Join the Effort</h4>
+                    <p>ANSPs, vendors, and developers can contribute modules, tests, or documentation.</p>
+                    <a href="#projects" class="collab-link">
+                        See how to contribute <i class="fas fa-arrow-right"></i>
+                    </a>
                 </div>
             </div>
         </div>
