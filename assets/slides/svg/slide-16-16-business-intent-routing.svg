@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 420" font-family="Red Hat Text, sans-serif">
+  <rect width="1100" height="420" fill="#0d1117"/>
+
+  <text x="550" y="35" text-anchor="middle" fill="#f0f6fc" font-size="20" font-weight="bold">Business Intent Routing — Not Physical, Operational</text>
+
+  <!-- Input -->
+  <rect x="30" y="70" width="200" height="300" rx="8" fill="#1c2333" stroke="#58a6ff" stroke-width="2"/>
+  <text x="130" y="100" text-anchor="middle" fill="#58a6ff" font-size="14" font-weight="bold">AMQP Inbox</text>
+  <text x="130" y="125" text-anchor="middle" fill="#8b949e" font-size="12">All DNOTAM events</text>
+  <text x="130" y="150" text-anchor="middle" fill="#8b949e" font-size="12">mixed together</text>
+  <text x="130" y="200" text-anchor="middle" fill="#f0f6fc" font-size="30">📨</text>
+  <text x="130" y="240" text-anchor="middle" fill="#8b949e" font-size="11">RWY.CLS + SFC.CON</text>
+  <text x="130" y="258" text-anchor="middle" fill="#8b949e" font-size="11">+ SAA.ACT + OBS.NEW</text>
+  <text x="130" y="276" text-anchor="middle" fill="#8b949e" font-size="11">+ NAV.UNS + AD.CLS</text>
+  <text x="130" y="294" text-anchor="middle" fill="#8b949e" font-size="11">+ RWY.LIM + ...</text>
+
+  <!-- Arrow -->
+  <line x1="240" y1="220" x2="330" y2="220" stroke="#58a6ff" stroke-width="2" marker-end="url(#arrowB)"/>
+  <text x="285" y="210" text-anchor="middle" fill="#58a6ff" font-size="11">classify</text>
+
+  <!-- Topics -->
+  <rect x="340" y="60" width="350" height="50" rx="6" fill="#2a0000" stroke="#f85149" stroke-width="2"/>
+  <text x="515" y="82" text-anchor="middle" fill="#f85149" font-size="13" font-weight="bold">closure</text>
+  <text x="515" y="100" text-anchor="middle" fill="#8b949e" font-size="10">RWY.CLS · AD.CLS</text>
+
+  <rect x="340" y="120" width="350" height="50" rx="6" fill="#2a1500" stroke="#d29922" stroke-width="2"/>
+  <text x="515" y="142" text-anchor="middle" fill="#d29922" font-size="13" font-weight="bold">restriction</text>
+  <text x="515" y="160" text-anchor="middle" fill="#8b949e" font-size="10">RWY.LIM · AD.LIM</text>
+
+  <rect x="340" y="180" width="350" height="50" rx="6" fill="#001a2a" stroke="#58a6ff" stroke-width="2"/>
+  <text x="515" y="202" text-anchor="middle" fill="#58a6ff" font-size="13" font-weight="bold">surface-condition</text>
+  <text x="515" y="220" text-anchor="middle" fill="#8b949e" font-size="10">SFC.CON</text>
+
+  <rect x="340" y="240" width="350" height="50" rx="6" fill="#0a1a2e" stroke="#a371f7" stroke-width="2"/>
+  <text x="515" y="262" text-anchor="middle" fill="#a371f7" font-size="13" font-weight="bold">airspace</text>
+  <text x="515" y="280" text-anchor="middle" fill="#8b949e" font-size="10">SAA.ACT</text>
+
+  <rect x="340" y="300" width="350" height="50" rx="6" fill="#1a1500" stroke="#e3b341" stroke-width="2"/>
+  <text x="515" y="322" text-anchor="middle" fill="#e3b341" font-size="13" font-weight="bold">hazards-navaids</text>
+  <text x="515" y="340" text-anchor="middle" fill="#8b949e" font-size="10">OBS.NEW · NAV.UNS</text>
+
+  <rect x="340" y="360" width="350" height="50" rx="6" fill="#21262d" stroke="#484f58" stroke-width="2"/>
+  <text x="515" y="382" text-anchor="middle" fill="#484f58" font-size="13" font-weight="bold">others</text>
+  <text x="515" y="400" text-anchor="middle" fill="#8b949e" font-size="10">UNKNOWN → alert on schema drift</text>
+
+  <!-- Consumers -->
+  <line x1="700" y1="85" x2="780" y2="85" stroke="#f85149" stroke-width="1.5" marker-end="url(#arrowR)"/>
+  <text x="935" y="82" text-anchor="middle" fill="#8b949e" font-size="11">Flight Ops → cancel flights</text>
+
+  <line x1="700" y1="145" x2="780" y2="145" stroke="#d29922" stroke-width="1.5" marker-end="url(#arrowO)"/>
+  <text x="935" y="142" text-anchor="middle" fill="#8b949e" font-size="11">W&amp;B → recalculate MTOW</text>
+
+  <line x1="700" y1="205" x2="780" y2="205" stroke="#58a6ff" stroke-width="1.5" marker-end="url(#arrowB)"/>
+  <text x="935" y="202" text-anchor="middle" fill="#8b949e" font-size="11">Perf Computer → braking</text>
+
+  <line x1="700" y1="265" x2="780" y2="265" stroke="#a371f7" stroke-width="1.5" marker-end="url(#arrowP)"/>
+  <text x="935" y="262" text-anchor="middle" fill="#8b949e" font-size="11">Flight Planning → reroute</text>
+
+  <line x1="700" y1="325" x2="780" y2="325" stroke="#e3b341" stroke-width="1.5" marker-end="url(#arrowY)"/>
+  <text x="935" y="322" text-anchor="middle" fill="#8b949e" font-size="11">Precision Approach → visual</text>
+
+  <defs>
+    <marker id="arrowB" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#58a6ff"/></marker>
+    <marker id="arrowR" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#f85149"/></marker>
+    <marker id="arrowO" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#d29922"/></marker>
+    <marker id="arrowP" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#a371f7"/></marker>
+    <marker id="arrowY" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#e3b341"/></marker>
+  </defs>
+</svg>
+

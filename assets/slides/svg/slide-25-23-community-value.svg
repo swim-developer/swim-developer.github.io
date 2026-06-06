@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" font-family="Red Hat Display, sans-serif">
+  <rect width="1280" height="720" fill="#0d1117"/>
+
+  <text x="640" y="48" text-anchor="middle" fill="#f0f6fc" font-size="28" font-weight="bold">How swim-developer Benefits the Community</text>
+
+  <!-- Quadrant 1: ANSPs -->
+  <rect x="40" y="80" width="580" height="250" rx="12" fill="#1c2333" stroke="#58a6ff" stroke-width="2"/>
+  <rect x="60" y="100" width="44" height="44" rx="10" fill="#0d419d"/>
+  <text x="82" y="130" text-anchor="middle" fill="#f0f6fc" font-size="22">🏢</text>
+  <text x="120" y="118" fill="#58a6ff" font-size="20" font-weight="bold">For ANSPs</text>
+  <text x="120" y="140" fill="#8b949e" font-size="13">Air Navigation Service Providers</text>
+  <circle cx="75" cy="180" r="4" fill="#58a6ff"/><text x="90" y="185" fill="#f0f6fc" font-size="14">Deploy directly (optional Red Hat support)</text>
+  <circle cx="75" cy="210" r="4" fill="#58a6ff"/><text x="90" y="215" fill="#f0f6fc" font-size="14">Technical baseline for evaluating solutions</text>
+  <circle cx="75" cy="240" r="4" fill="#58a6ff"/><text x="90" y="245" fill="#f0f6fc" font-size="14">Contribute domain-specific extensions</text>
+  <circle cx="75" cy="270" r="4" fill="#58a6ff"/><text x="90" y="275" fill="#f0f6fc" font-size="14">Share containers across ANSPs</text>
+  <circle cx="75" cy="300" r="4" fill="#58a6ff"/><text x="90" y="305" fill="#f0f6fc" font-size="14">60% less code per new SWIM service</text>
+
+  <!-- Quadrant 2: Vendors -->
+  <rect x="660" y="80" width="580" height="250" rx="12" fill="#1c2333" stroke="#d29922" stroke-width="2"/>
+  <rect x="680" y="100" width="44" height="44" rx="10" fill="#2a1500"/>
+  <text x="702" y="130" text-anchor="middle" fill="#d29922" font-size="22">🔧</text>
+  <text x="740" y="118" fill="#d29922" font-size="20" font-weight="bold">For Vendors</text>
+  <text x="740" y="140" fill="#8b949e" font-size="13">Indra, Frequentis, Thales, and others</text>
+  <circle cx="695" cy="180" r="4" fill="#d29922"/><text x="710" y="185" fill="#f0f6fc" font-size="14">Adopt framework patterns in commercial products</text>
+  <circle cx="695" cy="210" r="4" fill="#d29922"/><text x="710" y="215" fill="#f0f6fc" font-size="14">Contribute conformance test scenarios</text>
+  <circle cx="695" cy="240" r="4" fill="#d29922"/><text x="710" y="245" fill="#f0f6fc" font-size="14">Reference for SWIM-TI compliance</text>
+  <circle cx="695" cy="270" r="4" fill="#d29922"/><text x="710" y="275" fill="#f0f6fc" font-size="14">Not competition — shared infrastructure</text>
+
+  <!-- Quadrant 3: EUROCONTROL -->
+  <rect x="40" y="355" width="580" height="250" rx="12" fill="#1c2333" stroke="#3fb950" stroke-width="2"/>
+  <rect x="60" y="375" width="44" height="44" rx="10" fill="#0a2e0a"/>
+  <text x="82" y="405" text-anchor="middle" fill="#3fb950" font-size="22">🌍</text>
+  <text x="120" y="393" fill="#3fb950" font-size="20" font-weight="bold">For EUROCONTROL</text>
+  <text x="120" y="415" fill="#8b949e" font-size="13">Standards body and coordination</text>
+  <circle cx="75" cy="455" r="4" fill="#3fb950"/><text x="90" y="460" fill="#f0f6fc" font-size="14">Reference community implementation</text>
+  <circle cx="75" cy="485" r="4" fill="#3fb950"/><text x="90" y="490" fill="#f0f6fc" font-size="14">Validators for specification compliance</text>
+  <circle cx="75" cy="515" r="4" fill="#3fb950"/><text x="90" y="520" fill="#f0f6fc" font-size="14">Patterns for SWIM-TI guidance documentation</text>
+  <circle cx="75" cy="545" r="4" fill="#3fb950"/><text x="90" y="550" fill="#f0f6fc" font-size="14">Accelerates CP1 compliance across Europe</text>
+
+  <!-- Quadrant 4: Community -->
+  <rect x="660" y="355" width="580" height="250" rx="12" fill="#1c2333" stroke="#a371f7" stroke-width="2"/>
+  <rect x="680" y="375" width="44" height="44" rx="10" fill="#1a0a2e"/>
+  <text x="702" y="405" text-anchor="middle" fill="#a371f7" font-size="22">🤝</text>
+  <text x="740" y="393" fill="#a371f7" font-size="20" font-weight="bold">For the Community</text>
+  <text x="740" y="415" fill="#8b949e" font-size="13">Open source ecosystem</text>
+  <circle cx="695" cy="455" r="4" fill="#a371f7"/><text x="710" y="460" fill="#f0f6fc" font-size="14">Apache 2.0 — fork, adapt, contribute</text>
+  <circle cx="695" cy="485" r="4" fill="#a371f7"/><text x="710" y="490" fill="#f0f6fc" font-size="14">Production patterns for SWIM services</text>
+  <circle cx="695" cy="515" r="4" fill="#a371f7"/><text x="710" y="520" fill="#f0f6fc" font-size="14">Automated conformance testing approach</text>
+  <circle cx="695" cy="545" r="4" fill="#a371f7"/><text x="710" y="550" fill="#f0f6fc" font-size="14">One entity develops, all benefit</text>
+
+  <!-- Bottom line -->
+  <text x="640" y="650" text-anchor="middle" fill="#484f58" font-size="14">Community-driven · vendor-neutral · Red Hat support optional</text>
+</svg>
+

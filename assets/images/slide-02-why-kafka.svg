@@ -1,0 +1,93 @@
+<svg viewBox="0 0 1200 700" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bgGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1a1a2e"/>
+      <stop offset="100%" style="stop-color:#16213e"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- Background transparent for PNG export -->
+  
+  <!-- Title -->
+  <text x="600" y="70" text-anchor="middle" fill="#fff" font-family="Red Hat Display, sans-serif" font-size="42" font-weight="700">Why Apache Kafka?</text>
+  <text x="600" y="110" text-anchor="middle" fill="#8892b0" font-family="Red Hat Text, sans-serif" font-size="24">The backbone connecting all internal modules</text>
+  
+  <!-- Kafka logo area -->
+  <rect x="480" y="140" width="240" height="80" rx="12" fill="#d4a106"/>
+  <text x="600" y="190" text-anchor="middle" fill="#000" font-family="Red Hat Display, sans-serif" font-size="28" font-weight="700">Apache Kafka</text>
+  
+  <!-- 6 Benefits in 2 rows of 3 -->
+  
+  <!-- Row 1 -->
+  <!-- Benefit 1: Real-time -->
+  <g transform="translate(100, 260)">
+    <rect x="0" y="0" width="300" height="140" rx="12" fill="#0f1624" stroke="#64ffda" stroke-width="2"/>
+    <circle cx="40" cy="40" r="25" fill="#64ffda" opacity="0.2"/>
+    <text x="40" y="47" text-anchor="middle" fill="#64ffda" font-family="Red Hat Display, sans-serif" font-size="24" font-weight="700">⚡</text>
+    <text x="80" y="40" fill="#fff" font-family="Red Hat Display, sans-serif" font-size="18" font-weight="600">Real-time Streaming</text>
+    <text x="20" y="75" fill="#8892b0" font-family="Red Hat Text, sans-serif" font-size="14">Events available instantly</text>
+    <text x="20" y="95" fill="#8892b0" font-family="Red Hat Text, sans-serif" font-size="14">as they arrive</text>
+    <text x="20" y="125" fill="#64ffda" font-family="Red Hat Mono, monospace" font-size="14">Millisecond latency</text>
+  </g>
+  
+  <!-- Benefit 2: Replay -->
+  <g transform="translate(450, 260)">
+    <rect x="0" y="0" width="300" height="140" rx="12" fill="#0f1624" stroke="#64ffda" stroke-width="2"/>
+    <circle cx="40" cy="40" r="25" fill="#64ffda" opacity="0.2"/>
+    <text x="40" y="47" text-anchor="middle" fill="#64ffda" font-family="Red Hat Display, sans-serif" font-size="24" font-weight="700">↻</text>
+    <text x="80" y="40" fill="#fff" font-family="Red Hat Display, sans-serif" font-size="18" font-weight="600">Event Replay</text>
+    <text x="20" y="75" fill="#8892b0" font-family="Red Hat Text, sans-serif" font-size="14">Reprocess past events</text>
+    <text x="20" y="95" fill="#8892b0" font-family="Red Hat Text, sans-serif" font-size="14">for validation or recovery</text>
+    <text x="20" y="125" fill="#64ffda" font-family="Red Hat Mono, monospace" font-size="14">Time travel debugging</text>
+  </g>
+  
+  <!-- Benefit 3: Ordering -->
+  <g transform="translate(800, 260)">
+    <rect x="0" y="0" width="300" height="140" rx="12" fill="#0f1624" stroke="#64ffda" stroke-width="2"/>
+    <circle cx="40" cy="40" r="25" fill="#64ffda" opacity="0.2"/>
+    <text x="40" y="47" text-anchor="middle" fill="#64ffda" font-family="Red Hat Display, sans-serif" font-size="24" font-weight="700">①②③</text>
+    <text x="100" y="40" fill="#fff" font-family="Red Hat Display, sans-serif" font-size="18" font-weight="600">Guaranteed Order</text>
+    <text x="20" y="75" fill="#8892b0" font-family="Red Hat Text, sans-serif" font-size="14">Messages arrive in</text>
+    <text x="20" y="95" fill="#8892b0" font-family="Red Hat Text, sans-serif" font-size="14">the exact sequence sent</text>
+    <text x="20" y="125" fill="#64ffda" font-family="Red Hat Mono, monospace" font-size="14">Partition-level ordering</text>
+  </g>
+  
+  <!-- Row 2 -->
+  <!-- Benefit 4: Scale -->
+  <g transform="translate(100, 430)">
+    <rect x="0" y="0" width="300" height="140" rx="12" fill="#0f1624" stroke="#64ffda" stroke-width="2"/>
+    <circle cx="40" cy="40" r="25" fill="#64ffda" opacity="0.2"/>
+    <text x="40" y="47" text-anchor="middle" fill="#64ffda" font-family="Red Hat Display, sans-serif" font-size="24" font-weight="700">📈</text>
+    <text x="80" y="40" fill="#fff" font-family="Red Hat Display, sans-serif" font-size="18" font-weight="600">Scale &amp; Performance</text>
+    <text x="20" y="75" fill="#8892b0" font-family="Red Hat Text, sans-serif" font-size="14">Handle millions of events</text>
+    <text x="20" y="95" fill="#8892b0" font-family="Red Hat Text, sans-serif" font-size="14">with consistent throughput</text>
+    <text x="20" y="125" fill="#64ffda" font-family="Red Hat Mono, monospace" font-size="14">Horizontal scaling</text>
+  </g>
+  
+  <!-- Benefit 5: Decoupling -->
+  <g transform="translate(450, 430)">
+    <rect x="0" y="0" width="300" height="140" rx="12" fill="#0f1624" stroke="#64ffda" stroke-width="2"/>
+    <circle cx="40" cy="40" r="25" fill="#64ffda" opacity="0.2"/>
+    <text x="40" y="47" text-anchor="middle" fill="#64ffda" font-family="Red Hat Display, sans-serif" font-size="24" font-weight="700">🔗</text>
+    <text x="80" y="40" fill="#fff" font-family="Red Hat Display, sans-serif" font-size="18" font-weight="600">Loose Coupling</text>
+    <text x="20" y="75" fill="#8892b0" font-family="Red Hat Text, sans-serif" font-size="14">Producers and consumers</text>
+    <text x="20" y="95" fill="#8892b0" font-family="Red Hat Text, sans-serif" font-size="14">evolve independently</text>
+    <text x="20" y="125" fill="#64ffda" font-family="Red Hat Mono, monospace" font-size="14">Add new consumers anytime</text>
+  </g>
+  
+  <!-- Benefit 6: Future-proof -->
+  <g transform="translate(800, 430)">
+    <rect x="0" y="0" width="300" height="140" rx="12" fill="#0f1624" stroke="#64ffda" stroke-width="2"/>
+    <circle cx="40" cy="40" r="25" fill="#64ffda" opacity="0.2"/>
+    <text x="40" y="47" text-anchor="middle" fill="#64ffda" font-family="Red Hat Display, sans-serif" font-size="24" font-weight="700">🚀</text>
+    <text x="80" y="40" fill="#fff" font-family="Red Hat Display, sans-serif" font-size="18" font-weight="600">Future-proof</text>
+    <text x="20" y="75" fill="#8892b0" font-family="Red Hat Text, sans-serif" font-size="14">New solutions can process</text>
+    <text x="20" y="95" fill="#8892b0" font-family="Red Hat Text, sans-serif" font-size="14">historical events from day one</text>
+    <text x="20" y="125" fill="#64ffda" font-family="Red Hat Mono, monospace" font-size="14">Build on existing data</text>
+  </g>
+  
+  <!-- Footer -->
+  <text x="600" y="635" text-anchor="middle" fill="#d4a106" font-family="Red Hat Display, sans-serif" font-size="22" font-weight="600">Event Bus: The integration layer for your internal ecosystem</text>
+  <text x="600" y="665" text-anchor="middle" fill="#8892b0" font-family="Red Hat Text, sans-serif" font-size="18">Any internal module can consume events directly from Kafka</text>
+</svg>
+

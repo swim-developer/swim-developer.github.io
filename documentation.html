@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentation | SWIM Developer</title>
+    <meta name="description" content="Technical documentation for the SWIM Reference Architecture: hexagonal architecture, framework SPIs, compliance, and development guides.">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@400;500;600;700;900&family=Red+Hat+Text:wght@400;500;600&family=Red+Hat+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav class="navbar"></nav>
+
+    <header class="page-header">
+        <div class="container">
+            <div class="page-header-content">
+                <h1><i class="fas fa-book-open"></i> Documentation</h1>
+                <p class="page-subtitle">Technical reference for the SWIM Reference Architecture, framework SPIs, compliance standards, and development workflows</p>
+            </div>
+        </div>
+    </header>
+
+    <div class="wiki-layout">
+        <aside class="wiki-sidebar">
+            <nav class="wiki-nav">
+                <div class="wiki-nav-group">
+                    <h4 class="wiki-nav-title"><i class="fas fa-cubes"></i> Architecture</h4>
+                    <ul>
+                        <li><a href="#hexagonal">Hexagonal Architecture</a></li>
+                        <li><a href="#spis">Framework SPIs</a></li>
+                        <li><a href="#patterns">Design Patterns</a></li>
+                        <li><a href="#resilience">Resilience Patterns</a></li>
+                    </ul>
+                </div>
+                <div class="wiki-nav-group">
+                    <h4 class="wiki-nav-title"><i class="fas fa-server"></i> Components</h4>
+                    <ul>
+                        <li><a href="#consumer">DNOTAM Consumer</a></li>
+                        <li><a href="#provider">DNOTAM Provider</a></li>
+                        <li><a href="#ed254">ED-254 Services</a></li>
+                        <li><a href="#ffice">FF-ICE Services</a></li>
+                        <li><a href="#validators">Validators</a></li>
+                    </ul>
+                </div>
+                <div class="wiki-nav-group">
+                    <h4 class="wiki-nav-title"><i class="fas fa-tools"></i> Infrastructure</h4>
+                    <ul>
+                        <li><a href="#infrastructure">Local Infrastructure</a></li>
+                    </ul>
+                </div>
+                <div class="wiki-nav-group">
+                    <h4 class="wiki-nav-title"><i class="fas fa-certificate"></i> Compliance</h4>
+                    <ul>
+                        <li><a href="#yellow-profile">Yellow Profile</a></li>
+                    </ul>
+                </div>
+                <div class="wiki-nav-group">
+                    <h4 class="wiki-nav-title"><i class="fas fa-code"></i> Operations</h4>
+                    <ul>
+                        <li><a href="#observability">Observability</a></li>
+                        <li><a href="#testing">Test Infrastructure</a></li>
+                    </ul>
+                </div>
+            </nav>
+        </aside>
+
+        <main class="wiki-content">
+
+            <div id="hexagonal" class="wiki-section">
+                <h2>Hexagonal Architecture</h2>
+                <p>
+                    Every service module follows hexagonal architecture (Ports and Adapters, also known as
+                    Adapter architecture in some literature) with strict dependency rules. Dependencies always
+                    point inward: infrastructure depends on application, application depends on domain, domain
+                    depends on nothing.
+                </p>
+                <div class="wiki-code"><code>Infrastructure  -->  Application  -->  Domain</code></div>
+                <ul class="wiki-list">
+                    <li><strong>Domain</strong> - Pure business logic, entities, and value objects. Zero external dependencies.</li>
+                    <li><strong>Application</strong> - Use case orchestration and port definitions. Depends only on Domain.</li>
+                    <li><strong>Infrastructure</strong> - Adapters for external systems: REST, AMQP, databases, Kafka, scheduling. Depends on Application and Domain.</li>
+                </ul>
+                <p>All six production services implement this structure.</p>
+            </div>
+
+            <div id="spis" class="wiki-section">
+                <h2>Framework SPIs</h2>
+                <p>
+                    The SWIM Framework defines 16 Service Provider Interfaces. Each new SWIM service implements
+                    only what differs (approximately 700-900 lines), instead of duplicating 5,700+ lines of infrastructure code.
+                    The consumer pipeline is built around three orthogonal extension points (EP1, EP2, EP3),
+                    described in detail on the <a href="framework.html">Framework page</a>.
+                </p>
+                <h3>Core SPIs (swim-framework-core)</h3>
+                <ul class="wiki-list">
+                    <li><strong>SwimEventExtractor&lt;T&gt;</strong> - Extract metadata from raw payload (Adapter)</li>
+                    <li><strong>SwimPayloadValidator</strong> - Validate payload structure: XSD + business rules (Strategy)</li>
+                    <li><strong>SwimMessageInterceptor</strong> - Optional post-validation processing chain: Drools, BPM (Chain of Responsibility)</li>
+                    <li><strong>SwimIngressHandler</strong> - Receive events from pluggable source into provider pipeline (Strategy)</li>
+                    <li><strong>SwimSubscription</strong> - Common subscription entity interface (Model)</li>
+                    <li><strong>SubscriptionHeartbeatPublisher</strong> - Provider per-subscription heartbeat publishing (Strategy)</li>
+                    <li><strong>ActiveSubscriptionSupplier</strong> - Provider active subscription enumeration (Strategy)</li>
+                    <li><strong>SubscriptionExpiryStrategy</strong> - Provider subscription expiry logic (Strategy)</li>
+                    <li><strong>SubscriptionRenewalStrategy</strong> - Consumer auto-renewal + 404/410 recovery (Strategy)</li>
+                    <li><strong>ProviderConfiguration</strong> - Per-provider connection config: SM URL, AMQP host/port, mTLS paths (Model)</li>
+                    <li><strong>AbstractKafkaOutboxRouter</strong> - Common Kafka outbox routing with counters, DLQ, metrics (Template Method)</li>
+                    <li><strong>AbstractStreamingInboxConsumer</strong> - Technology-agnostic inbox processing orchestration (Template Method)</li>
+                    <li><strong>AbstractKafkaInboxReader</strong> - Kafka-specific batch reading, extend and add @Incoming in application module (Template Method)</li>
+                </ul>
+                <h3>Framework Modules (6 Maven modules)</h3>
+                <ul class="wiki-list">
+                    <li><strong>swim-framework-core</strong> - Shared SPIs, enums, DTOs, health checks, security, validation</li>
+                    <li><strong>swim-framework-consumer</strong> - Subscription lifecycle, inbox/outbox, heartbeat tracking, circuit breaker, exponential backoff</li>
+                    <li><strong>swim-framework-provider</strong> - AMQP publishing, per-subscription heartbeat sender, subscription expiry</li>
+                    <li><strong>swim-framework-persistence-mongodb</strong> - MongoDB-specific adapters and index management</li>
+                    <li><strong>swim-framework-leader-kubernetes</strong> - Leader election via Kubernetes lease API</li>
+                    <li><strong>swim-framework-leader-infinispan</strong> - Leader election via Infinispan distributed cache</li>
+                </ul>
+            </div>
+
+            <div id="patterns" class="wiki-section">
+                <h2>Design Patterns</h2>
+                <ul class="wiki-list">
+                    <li><strong>Hexagonal (Ports and Adapters)</strong> - All service modules: domain/application/infrastructure layering</li>
+                    <li><strong>Template Method</strong> - <code>AbstractEventDeliveryService.deliver()</code>: load subscriptions, filter, publish</li>
+                    <li><strong>Strategy</strong> - SwimPayloadValidator, SwimOutboxRouter, SwimIngressHandler, LeaderElectionStrategy</li>
+                    <li><strong>Observer</strong> - Vert.x EventBus for inbox/process/outbox pipeline; CDI events for heartbeat timeouts</li>
+                    <li><strong>Adapter</strong> - Subscription Manager client adapts generic lifecycle to service-specific REST APIs</li>
+                    <li><strong>Builder</strong> - Subscription entity construction via Lombok @Builder</li>
+                    <li><strong>Repository</strong> - Generic repositories with Panache (MongoDB and JPA)</li>
+                    <li><strong>Outbox</strong> - Transactional outbox for reliable messaging (persist before dispatch)</li>
+                    <li><strong>Inbox</strong> - Durable reception pattern (persist before ACK)</li>
+                    <li><strong>Circuit Breaker</strong> - ProviderCircuitBreaker: 5 failures, OPEN 30s, HALF-OPEN probe, CLOSED on success</li>
+                </ul>
+            </div>
+
+            <div id="resilience" class="wiki-section">
+                <h2>Resilience Patterns</h2>
+                <p>All components adhere to resilience requirements enforced by the framework:</p>
+                <ul class="wiki-list">
+                    <li><strong>Persistence Before ACK</strong> - Messages persisted to database before broker acknowledgement (zero-loss)</li>
+                    <li><strong>Circuit Breaker</strong> - Per-provider: 5 failures, OPEN 30s cooldown, HALF-OPEN probe (ADR-017)</li>
+                    <li><strong>Exponential Backoff</strong> - SM retry: baseDelay x 2^(attempt-1), max 30s. Inbox recovery with configurable ceiling (ADR-018)</li>
+                    <li><strong>Programmatic Resilience</strong> - SmClientRegistry.executeWithRetry() per provider. 4xx errors NOT retried (ADR-016)</li>
+                    <li><strong>Idempotency</strong> - SHA-256 content hashing via AbstractIdempotencyCache (Caffeine L1 + database L2)</li>
+                    <li><strong>Inbox Flood Protection</strong> - When a consumer resumes after downtime, accumulated AMQP messages are absorbed by the Kafka inbox topic (durable buffer). Controlled consumption prevents overload: max.poll.records limits records per poll, swim.inbox.batch.size limits events per processing batch, and commit-strategy=throttled ensures offsets only advance with completed processing</li>
+                    <li><strong>Bulkhead</strong> - Limits concurrent processing to prevent thread and connection pool exhaustion. Provider ingress: @Bulkhead(100) caps concurrent XML parsing and database persistence. Outbox delivery (consumer and provider): @Bulkhead(250) caps concurrent fan-out routing. Requests beyond the limit are queued or rejected, isolating each processing stage</li>
+                    <li><strong>DLQ</strong> - Failed messages via AbstractDeadLetterService + Kafka DLQ topic</li>
+                    <li><strong>Per-Subscription Heartbeat</strong> - Timeout detection, self-healing via 404/410 recovery (ADR-009)</li>
+                    <li><strong>Subscription Auto-Renewal</strong> - Before expiry, exponential backoff retry on failure</li>
+                    <li><strong>Leader Election</strong> - Only one instance coordinates recovery tasks (Kubernetes lease or Infinispan)</li>
+                    <li><strong>Multi-Provider</strong> - Single consumer connects to N providers simultaneously (ADR-015)</li>
+                </ul>
+            </div>
+
+            <div id="consumer" class="wiki-section">
+                <h2>DNOTAM Consumer</h2>
+                <p>
+                    Quarkus-based service that consumes Digital NOTAM events from AISP brokers.
+                    Implements the Inbox/Outbox Pattern for reliable, asynchronous message processing with
+                    guaranteed durability and at-least-once delivery. Hexagonal architecture with domain, application, and infrastructure layers.
+                </p>
+                <h3>Key Capabilities</h3>
+                <ul class="wiki-list">
+                    <li>Reliable reception: ACK only after persistence (zero-loss)</li>
+                    <li>XML validation: AIXM 5.1.1 against XSD schemas (SwimXsdValidator)</li>
+                    <li>Idempotency: SHA-256 content hashing (Caffeine L1 + database L2)</li>
+                    <li>Kafka routing: 6 topics by business intent (closures, restrictions, surface, airspace, hazards, others)</li>
+                    <li>Multi-provider: connects to N providers simultaneously (ADR-015)</li>
+                    <li>Per-subscription heartbeat monitoring with self-healing (404/410 recovery)</li>
+                    <li>Auto-renewal before subscription expiry</li>
+                    <li>Circuit breaker per provider (ADR-017)</li>
+                </ul>
+                <h3>Internal API (<code>/api/v1</code>)</h3>
+                <p>
+                    The consumer acts as a proxy for internal services, abstracting away multi-provider
+                    complexity. Internal systems interact only with the consumer's local API, without
+                    needing to know how to subscribe, authenticate, or manage connections to external providers.
+                </p>
+                <ul class="wiki-list">
+                    <li><strong>Subscription proxy</strong> - Create, pause, resume, and delete subscriptions on any configured provider transparently</li>
+                    <li><strong>Event query</strong> - Paginated event retrieval by subscription, date range, or message ID</li>
+                    <li><strong>WFS proxy</strong> - <code>GET /api/v1/features</code> proxies to provider WFS GetFeature endpoints (accepts <code>providerId</code>, <code>filter</code>, <code>typeName</code>)</li>
+                    <li><strong>Topics</strong> - <code>GET /api/v1/topics</code> lists available topics from configured providers</li>
+                    <li><strong>DLQ and stats</strong> - Operational visibility into dead letter queue and aggregate statistics</li>
+                </ul>
+            </div>
+
+            <div id="provider" class="wiki-section">
+                <h2>DNOTAM Provider</h2>
+                <p>
+                    Quarkus-based AISP service exposing SWIM-compliant APIs for
+                    subscription management, topic discovery, and WFS feature requests. Consumes events from Kafka
+                    and publishes to AMQP queues. Hexagonal architecture.
+                </p>
+                <h3>SWIM API (Yellow Profile)</h3>
+                <ul class="wiki-list">
+                    <li><code>POST/GET/PUT/DELETE /swim/v1/subscriptions</code> - Full subscription lifecycle</li>
+                    <li><code>GET /swim/v1/topics</code> - List available event scenarios</li>
+                    <li><code>GET /swim/v1/features</code> - WFS GetFeature with OGC filter (AIXM data)</li>
+                </ul>
+                <h3>Internal API (<code>/internal/v1</code>, port 9080, Vert.x)</h3>
+                <p>
+                    A dedicated Vert.x HTTP server on port 9080 allows internal systems to distribute
+                    DNOTAM messages without dealing with SWIM protocol complexity, AMQP configuration,
+                    or subscription management.
+                </p>
+                <ul class="wiki-list">
+                    <li><strong>Event trigger</strong> - <code>POST /internal/v1/trigger</code> accepts AIXM XML and distributes to all matching active subscriptions</li>
+                    <li><strong>Pre-flight validation</strong> - <code>POST /internal/v1/validate</code> validates AIXM XML against XSD without persisting or publishing</li>
+                    <li><strong>Subscription summary</strong> - <code>GET /internal/v1/subscriptions/summary</code> active/paused counts grouped by scenario, airport, airspace</li>
+                    <li><strong>Status</strong> - <code>GET /internal/v1/status</code> operational health: leader election, XSD readiness, event counters</li>
+                    <li><strong>OpenAPI</strong> - <code>GET /internal/v1/openapi.yaml</code> API specification</li>
+                </ul>
+                <h3>Key Capabilities</h3>
+                <ul class="wiki-list">
+                    <li>Per-subscription heartbeat: JSON to {queue}.heartbeat for ACTIVE and PAUSED subscriptions</li>
+                    <li>Subscription expiry: automatic termination and purge (subscriptionEnd field)</li>
+                    <li>Message TTL: 60-second TTL on AMQP messages via JMX (ADR-011)</li>
+                    <li>Artemis queue provisioning via JMX on subscription creation</li>
+                    <li>AMQP JWT authentication via Keycloak BearerTokenLoginModule</li>
+                    <li>JWT role validation per AMQP queue (JwtRoleValidator)</li>
+                </ul>
+            </div>
+
+            <div id="ed254" class="wiki-section">
+                <h2>ED-254 Services (Arrival Sequence)</h2>
+                <p>
+                    The same framework architecture applied to the EUROCAE ED-254 standard for Extended AMAN
+                    (Arrival Manager). FIXM 4.3 data model instead of AIXM. Higher frequency (hundreds/second),
+                    tighter latency SLA (&lt;500ms vs &lt;5s), smaller payloads (5-50KB).
+                </p>
+                <h3>ED-254 Consumer</h3>
+                <ul class="wiki-list">
+                    <li>Same inbox/outbox framework patterns as DNOTAM Consumer</li>
+                    <li>All 4 ED-254 message types implemented: ArrivalDataType, AMANProviderExceptionType, HeartbeatTechnicalMessage, SubscriptionTechnicalMessage</li>
+                    <li>Kafka topics: ed254-arrival-sequence-topic, ed254-provider-exception-topic</li>
+                </ul>
+                <h3>ED-254 Provider</h3>
+                <ul class="wiki-list">
+                    <li>REST: POST/DELETE /arrivalSequenceInformation/v1/subscriptions, POST /problems</li>
+                    <li>CommunicateProblems: bidirectional error reporting, persisted to ed254_problem_reports table, Prometheus metrics</li>
+                    <li>UnsubscriptionResponse conformance per ED-254 REQ 0150/0155</li>
+                    <li>15-second message TTL (LFV Sweden pattern)</li>
+                </ul>
+            </div>
+
+            <div id="ffice" class="wiki-section">
+                <h2>FF-ICE Services (Flight Planning)</h2>
+                <p>
+                    The same framework architecture applied to the ICAO FF-ICE (Flight and Flow Information for a
+                    Collaborative Environment) standard. FIXM 4.3 + FF-ICE 1.1 data model. Built using the
+                    <code>swim-consumer-archetype</code> and <code>swim-provider-archetype</code>, demonstrating
+                    that new SWIM services can be created from archetypes with minimal custom code.
+                </p>
+                <h3>FF-ICE Consumer</h3>
+                <ul class="wiki-list">
+                    <li>Same inbox/outbox framework patterns as DNOTAM and ED-254 consumers</li>
+                    <li>FIXM 4.3 + FF-ICE 1.1 XSD validation via JAXB unmarshaller pool</li>
+                    <li>8 Kafka topics by message type: flight-plan, flight-update, operations, trial, submission, data, events, DLQ</li>
+                    <li>Multi-provider support with subscription renewal (5m check, 1h threshold, 3 retries)</li>
+                    <li>Per-subscription heartbeat monitoring (15s check, 30s tolerance)</li>
+                    <li>Idempotency: Caffeine L1 cache (100K entries, 24h TTL) + MongoDB L2</li>
+                    <li>WFS GetFeature proxy at <code>/swim/v1/features</code></li>
+                </ul>
+                <h3>FF-ICE Provider</h3>
+                <ul class="wiki-list">
+                    <li>REST: POST/GET /swim/v1/subscriptions, GET /swim/v1/topics, GET /swim/v1/features</li>
+                    <li>FIXM 4.3 + FF-ICE 1.1 data model with JAXB validation on ingress</li>
+                    <li>Kafka ingestion from <code>ffice-events-all-topic</code>, AMQP delivery to subscriber queues</li>
+                    <li>Per-subscription heartbeat (15s interval) and subscription expiry (24h default, 168h max)</li>
+                    <li>Internal HTTP server (port 9080) for status and event trigger</li>
+                    <li>OIDC + mTLS authentication</li>
+                </ul>
+                <h3>FF-ICE Validators</h3>
+                <ul class="wiki-list">
+                    <li>Consumer Validator: simulates AISP with Subscription Manager API, event generator, heartbeat publisher</li>
+                    <li>Provider Validator: 9 conformance test scenarios (API, data model, WFS), mTLS proxy, AMQP capture</li>
+                </ul>
+            </div>
+
+            <div id="validators" class="wiki-section">
+                <h2>Validators</h2>
+                <p>
+                    Validators exist to eliminate the dependency on external providers during development
+                    and testing. They simulate the counterpart of each SWIM service, allowing teams to
+                    develop, debug, and test in isolation. They also enable the creation of chaotic
+                    and edge-case scenarios that would be impossible to reproduce against a real provider,
+                    preparing the applications for production conditions.
+                </p>
+                <h3>Consumer Validator</h3>
+                <p>
+                    Simulates an external provider (AISP/EAD). Exposes a complete Subscription Manager API,
+                    generates test events automatically, and includes a built-in AMQP broker with per-subscription
+                    heartbeat. Web UI for managing subscriptions and injecting events on demand.
+                </p>
+                <h3>Provider Validator</h3>
+                <p>
+                    Simulates an external consumer (ANSP). Subscribes to the provider under test,
+                    receives events, and validates conformance against SWIM standards. Web UI with
+                    real-time event visualization, Keycloak OAuth2 integration, and mTLS proxy for
+                    browser-friendly certificate handling.
+                </p>
+            </div>
+
+            <div id="infrastructure" class="wiki-section">
+                <h2>Local Infrastructure</h2>
+                <p>
+                    Each service includes a <code>compose.yml</code> that starts the full local development
+                    infrastructure: message brokers, databases, identity provider, and test validators.
+                    Alternatively, <a href="https://quarkus.io/guides/dev-services" target="_blank">Quarkus Dev Services</a>
+                    can provision databases and brokers automatically during <code>quarkus:dev</code>.
+                </p>
+                <p>
+                    Two of these components use Red Hat container images hosted on <code>registry.redhat.io</code>,
+                    which require authentication before pulling.
+                </p>
+                <h3>Red Hat Container Images</h3>
+                <table class="wiki-table" style="width: 100%; margin-top: 16px;">
+                    <thead>
+                        <tr>
+                            <th>Image</th>
+                            <th>Component</th>
+                            <th>Purpose</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>registry.redhat.io/rhbk/keycloak-rhel9</code></td>
+                            <td>Red Hat Build of Keycloak</td>
+                            <td>OAuth 2.0 / OIDC identity provider, AMQP JWT authentication</td>
+                        </tr>
+                        <tr>
+                            <td><code>registry.redhat.io/amq7/amq-broker-rhel9</code></td>
+                            <td>Red Hat AMQ Broker 7.x</td>
+                            <td>AMQP 1.0 message broker with mTLS and Keycloak JWT auth</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <h3>Red Hat Developer Account</h3>
+                <p>
+                    A <a href="https://developers.redhat.com" target="_blank">Red Hat Developer</a> account
+                    is free and grants access to all Red Hat products for development and demonstration purposes.
+                    No paid subscription is required to pull these images for local development. Production
+                    deployments require an enterprise subscription.
+                </p>
+                <p>
+                    After creating your account, authenticate with the registry once per machine:
+                </p>
+                <div class="wiki-code"><code>podman login registry.redhat.io</code></div>
+                <p>
+                    Enter your Red Hat Developer credentials when prompted. All subsequent
+                    <code>podman compose up</code> commands will pull images automatically.
+                </p>
+            </div>
+
+            <div id="yellow-profile" class="wiki-section">
+                <h2>Yellow Profile (SPEC-170)</h2>
+                <p>EUROCONTROL SPEC-170 defines the technical infrastructure requirements for all SWIM services:</p>
+                <ul class="wiki-list">
+                    <li>TLS 1.3 (SWIM-TIYP-0008: TLS 1.2 deprecated) - enforced via cert-manager</li>
+                    <li>AMQP 1.0 over TLS for publish/subscribe messaging</li>
+                    <li>mTLS authentication with X.509 client certificates (EACP PKI)</li>
+                    <li>AMQP JWT authentication via Keycloak BearerTokenLoginModule on Artemis</li>
+                    <li>Audit logging: failed authentication and access events (JSON structured + Artemis ACK audit plugin)</li>
+                    <li>Overload protection: rate limiting and queue depth limits (Artemis configuration)</li>
+                    <li>Health checks: liveness and readiness probes auto-inherited from framework</li>
+                </ul>
+            </div>
+
+            <div id="observability" class="wiki-section">
+                <h2>Observability</h2>
+                <p>
+                    All services are instrumented automatically via OpenTelemetry, providing metrics, traces, and logs
+                    without manual code changes. The framework injects telemetry at the infrastructure layer.
+                </p>
+                <h3>Metrics (Prometheus)</h3>
+                <ul class="wiki-list">
+                    <li>Automatic JVM, HTTP, AMQP, and Kafka metrics via Quarkus Micrometer + OpenTelemetry</li>
+                    <li>Custom business metrics: subscription counts, message throughput, heartbeat status, DLQ depth</li>
+                    <li>Prometheus scrape endpoints on each service (<code>/q/metrics</code>)</li>
+                </ul>
+                <h3>Distributed Tracing (Tempo)</h3>
+                <ul class="wiki-list">
+                    <li>End-to-end trace propagation across AMQP, Kafka, and REST boundaries</li>
+                    <li>Trace context injection via OpenTelemetry SDK (W3C Trace Context)</li>
+                    <li>Tempo as trace backend, queryable from Grafana</li>
+                </ul>
+                <h3>Dashboards (Grafana)</h3>
+                <ul class="wiki-list">
+                    <li>Pre-configured Grafana dashboards for each SWIM service</li>
+                    <li>Prometheus as data source for metrics visualization</li>
+                    <li>Tempo as data source for distributed trace exploration</li>
+                    <li>Subscription lifecycle, message flow, circuit breaker state, and heartbeat health</li>
+                </ul>
+            </div>
+
+            <div id="testing" class="wiki-section">
+                <h2>Test Infrastructure</h2>
+                <ul class="wiki-list">
+                    <li>JUnit 5 + Mockito for unit business logic</li>
+                    <li>REST Assured + AssertJ for HTTP integration tests</li>
+                    <li>Testcontainers for MongoDB, PostgreSQL, Artemis</li>
+                    <li>Quarkus Dev Services for Redpanda (Kafka) and WireMock</li>
+                    <li>Playwright for end-to-end browser testing and validation</li>
+                    <li>Postman collections for API testing and exploration</li>
+                    <li>JMeter for AMQP load testing</li>
+                </ul>
+            </div>
+
+        </main>
+    </div>
+
+    <button class="wiki-sidebar-toggle" aria-label="Toggle documentation navigation">
+        <i class="fas fa-list"></i>
+    </button>
+
+    <footer class="footer"></footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

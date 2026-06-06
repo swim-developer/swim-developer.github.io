@@ -1,0 +1,133 @@
+<svg viewBox="0 0 1200 700" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bgGrad4" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1a1a2e"/>
+      <stop offset="100%" style="stop-color:#16213e"/>
+    </linearGradient>
+    <marker id="arrow4" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#64ffda"/>
+    </marker>
+    <marker id="arrow4r" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#e74c3c"/>
+    </marker>
+    <marker id="arrow4k" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#d4a106"/>
+    </marker>
+    <marker id="arrow4p" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#7b1fa2"/>
+    </marker>
+  </defs>
+  
+  <!-- Background transparent for PNG export -->
+  
+  <!-- Title -->
+  <text x="600" y="55" text-anchor="middle" fill="#fff" font-family="Red Hat Display, sans-serif" font-size="38" font-weight="700">Provider: Your Gateway Out</text>
+  <text x="600" y="88" text-anchor="middle" fill="#8892b0" font-family="Red Hat Text, sans-serif" font-size="22">Subscription management and event delivery to external subscribers</text>
+  
+  <!-- Flow diagram -->
+  
+  <!-- Left side: Internal Systems -->
+  <g transform="translate(30, 170)">
+    <rect x="0" y="0" width="200" height="200" rx="12" fill="#0f1624" stroke="#8892b0" stroke-width="2" stroke-dasharray="6,3"/>
+    <text x="100" y="28" text-anchor="middle" fill="#fff" font-family="Red Hat Display, sans-serif" font-size="15" font-weight="600">Your Internal Systems</text>
+    
+    <!-- Kafka publish -->
+    <rect x="10" y="45" width="180" height="55" rx="6" fill="#d4a106"/>
+    <text x="100" y="70" text-anchor="middle" fill="#000" font-family="Red Hat Text, sans-serif" font-size="14" font-weight="600">Publish to Kafka</text>
+    <text x="100" y="90" text-anchor="middle" fill="#000" font-family="Red Hat Mono, monospace" font-size="14">dnotam.outbound.*</text>
+    
+    <!-- REST call -->
+    <rect x="10" y="115" width="180" height="55" rx="6" fill="#7b1fa2"/>
+    <text x="100" y="140" text-anchor="middle" fill="#fff" font-family="Red Hat Text, sans-serif" font-size="14" font-weight="600">Call Provider API</text>
+    <text x="100" y="160" text-anchor="middle" fill="#e1bee7" font-family="Red Hat Mono, monospace" font-size="14">/internal/v1/trigger</text>
+  </g>
+  
+  <!-- Arrows from sources - horizontal straight lines with matching colors -->
+  <path d="M230 243 L290 243" stroke="#d4a106" stroke-width="2" marker-end="url(#arrow4k)"/>
+  <path d="M230 313 L290 313" stroke="#7b1fa2" stroke-width="2" marker-end="url(#arrow4p)"/>
+  
+  <!-- Provider box -->
+  <g transform="translate(300, 170)">
+    <rect x="0" y="0" width="260" height="200" rx="12" fill="#28a745"/>
+    <text x="130" y="28" text-anchor="middle" fill="#fff" font-family="Red Hat Display, sans-serif" font-size="18" font-weight="600">DNOTAM Provider</text>
+    
+    <!-- Internal components -->
+    <rect x="10" y="45" width="118" height="40" rx="6" fill="#1e7e34"/>
+    <text x="69" y="70" text-anchor="middle" fill="#fff" font-family="Red Hat Text, sans-serif" font-size="14">Subscriptions</text>
+    
+    <rect x="135" y="45" width="118" height="40" rx="6" fill="#1e7e34"/>
+    <text x="194" y="70" text-anchor="middle" fill="#fff" font-family="Red Hat Text, sans-serif" font-size="14">Queue Mgmt</text>
+    
+    <rect x="10" y="95" width="118" height="40" rx="6" fill="#1e7e34"/>
+    <text x="69" y="120" text-anchor="middle" fill="#fff" font-family="Red Hat Text, sans-serif" font-size="14">Filter Engine</text>
+    
+    <rect x="135" y="95" width="118" height="40" rx="6" fill="#1e7e34"/>
+    <text x="194" y="120" text-anchor="middle" fill="#fff" font-family="Red Hat Text, sans-serif" font-size="14">Event Router</text>
+    
+    <text x="130" y="158" text-anchor="middle" fill="#d4edda" font-family="Red Hat Text, sans-serif" font-size="14">Decides WHO receives WHAT</text>
+    <text x="130" y="176" text-anchor="middle" fill="#d4edda" font-family="Red Hat Text, sans-serif" font-size="14">based on subscription filters</text>
+    <text x="130" y="194" text-anchor="middle" fill="#fff" font-family="Red Hat Mono, monospace" font-size="14">Outbox → zero loss</text>
+  </g>
+  
+  <!-- Arrow to broker -->
+  <path d="M570 270 L610 270" stroke="#64ffda" stroke-width="2" marker-end="url(#arrow4)"/>
+  
+  <!-- AMQP Broker -->
+  <g transform="translate(620, 175)">
+    <rect x="0" y="0" width="220" height="190" rx="12" fill="#e74c3c"/>
+    <text x="110" y="28" text-anchor="middle" fill="#fff" font-family="Red Hat Display, sans-serif" font-size="16" font-weight="600">AMQP Broker</text>
+    <text x="110" y="48" text-anchor="middle" fill="#fadbd8" font-family="Red Hat Mono, monospace" font-size="14">Red Hat AMQ</text>
+    
+    <!-- Queues -->
+    <rect x="10" y="65" width="200" height="35" rx="4" fill="#c0392b"/>
+    <text x="110" y="88" text-anchor="middle" fill="#fff" font-family="Red Hat Mono, monospace" font-size="14">DNOTAM.v1.clientA.sub1</text>
+    
+    <rect x="10" y="105" width="200" height="35" rx="4" fill="#c0392b"/>
+    <text x="110" y="128" text-anchor="middle" fill="#fff" font-family="Red Hat Mono, monospace" font-size="14">DNOTAM.v1.clientB.sub2</text>
+    
+    <rect x="10" y="145" width="200" height="35" rx="4" fill="#c0392b"/>
+    <text x="110" y="168" text-anchor="middle" fill="#fff" font-family="Red Hat Mono, monospace" font-size="14">DNOTAM.v1.clientC.sub3</text>
+  </g>
+  
+  <!-- Arrows to subscribers -->
+  <path d="M850 220 L900 195" stroke="#e74c3c" stroke-width="2" marker-end="url(#arrow4r)"/>
+  <path d="M850 270 L900 270" stroke="#e74c3c" stroke-width="2" marker-end="url(#arrow4r)"/>
+  <path d="M850 320 L900 345" stroke="#e74c3c" stroke-width="2" marker-end="url(#arrow4r)"/>
+  
+  <!-- External Subscribers -->
+  <g transform="translate(910, 130)">
+    <rect x="0" y="0" width="270" height="260" rx="12" fill="#0f1624" stroke="#e74c3c" stroke-width="2"/>
+    <text x="135" y="28" text-anchor="middle" fill="#fff" font-family="Red Hat Display, sans-serif" font-size="15" font-weight="600">External Subscribers</text>
+    
+    <rect x="10" y="45" width="250" height="60" rx="6" fill="#1a1a2e" stroke="#8892b0" stroke-width="1"/>
+    <text x="135" y="70" text-anchor="middle" fill="#fff" font-family="Red Hat Text, sans-serif" font-size="14">ANSP One</text>
+    <text x="135" y="92" text-anchor="middle" fill="#8892b0" font-family="Red Hat Mono, monospace" font-size="14">runway-closure, obstacle</text>
+    
+    <rect x="10" y="115" width="250" height="60" rx="6" fill="#1a1a2e" stroke="#8892b0" stroke-width="1"/>
+    <text x="135" y="140" text-anchor="middle" fill="#fff" font-family="Red Hat Text, sans-serif" font-size="14">Airline X</text>
+    <text x="135" y="162" text-anchor="middle" fill="#8892b0" font-family="Red Hat Mono, monospace" font-size="14">navaid, airspace</text>
+    
+    <rect x="10" y="185" width="250" height="60" rx="6" fill="#1a1a2e" stroke="#8892b0" stroke-width="1"/>
+    <text x="135" y="210" text-anchor="middle" fill="#fff" font-family="Red Hat Text, sans-serif" font-size="14">Airport Y</text>
+    <text x="135" y="232" text-anchor="middle" fill="#8892b0" font-family="Red Hat Mono, monospace" font-size="14">all events (wildcard)</text>
+  </g>
+  
+  <!-- Key message box -->
+  <g transform="translate(100, 420)">
+    <rect x="0" y="0" width="1000" height="120" rx="16" fill="#0f1624" stroke="#28a745" stroke-width="2"/>
+    
+    <text x="500" y="30" text-anchor="middle" fill="#64ffda" font-family="Red Hat Display, sans-serif" font-size="20" font-weight="600">Provider Responsibility</text>
+    
+    <text x="40" y="60" fill="#fff" font-family="Red Hat Text, sans-serif" font-size="16">✓ Manage Subscriptions and deliver events (ED-254 bindings)</text>
+    <text x="40" y="85" fill="#fff" font-family="Red Hat Text, sans-serif" font-size="16">✓ Receive events from Kafka or via Internal REST API</text>
+    <text x="40" y="110" fill="#fff" font-family="Red Hat Text, sans-serif" font-size="16">✓ Deliver to subscribers via AMQP 1.0 + mTLS based on their filters</text>
+  </g>
+  
+  <!-- Footer -->
+  <text x="600" y="585" text-anchor="middle" fill="#28a745" font-family="Red Hat Display, sans-serif" font-size="22" font-weight="600">Internal modules just publish → Provider handles who receives what</text>
+  <text x="600" y="615" text-anchor="middle" fill="#8892b0" font-family="Red Hat Text, sans-serif" font-size="18">No need to know subscriber details. Just emit events.</text>
+  
+  <!-- Independence callout -->
+  <rect x="400" y="640" width="400" height="40" rx="8" fill="#28a745"/>
+  <text x="600" y="667" text-anchor="middle" fill="#fff" font-family="Red Hat Display, sans-serif" font-size="16" font-weight="600">Works without Consumer</text>
+</svg>

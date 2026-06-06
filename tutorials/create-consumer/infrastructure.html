@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Part 5: Infrastructure | Create Consumer Tutorial | SWIM Developer</title>
+    <meta name="description" content="Local FF-ICE consumer stack: Podman Compose services, Artemis broker TLS, certificate generation, starting infrastructure, and development profile properties.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@400;500;600;700;900&family=Red+Hat+Text:wght@400;500;600&family=Red+Hat+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="../../styles.css">
+</head>
+<body>
+    <nav class="navbar"></nav>
+
+    <header class="page-header">
+        <div class="container">
+            <div class="page-header-content">
+                <h1><i class="fas fa-graduation-cap"></i> Tutorials</h1>
+                <p class="page-subtitle">Step-by-step guides for deploying, configuring, and validating SWIM services</p>
+            </div>
+        </div>
+    </header>
+
+    <div class="wiki-layout">
+        <aside class="wiki-sidebar">
+            <nav class="wiki-nav">
+                <div class="wiki-nav-group">
+                    <h4 class="wiki-nav-title"><i class="fas fa-rocket"></i> Getting Started</h4>
+                    <ul>
+                        <li><a href="../deploy-gitops.html">GitOps (Argo CD)</a></li>
+                        <li><a href="../deploy-openshift.html">OpenShift</a></li>
+                        <li><a href="../deploy-kubernetes.html">Kubernetes</a></li>
+                        <li><a href="../deploy-openshift-local.html">OpenShift Local</a></li>
+                        <li><a href="../deploy-minikube.html">Minikube</a></li>
+                        <li><a href="../deploy-podman.html">Container Local (Podman)</a></li>
+                        <li><a href="../deploy-java.html">Java / Binary</a></li>
+                    </ul>
+                </div>
+                <div class="wiki-nav-group">
+                    <h4 class="wiki-nav-title"><i class="fas fa-bell"></i> Digital NOTAM</h4>
+                    <ul>
+                        <li><a href="../dnotam-consumer-deploy.html">Deploy Consumer</a></li>
+                        <li><a href="../dnotam-consumer-explore.html">Explore Consumer</a></li>
+                        <li><a href="../dnotam-provider-deploy.html">Deploy Provider</a></li>
+                        <li><a href="../dnotam-provider-explore.html">Explore Provider</a></li>
+                        <li><a href="../consumer-validator-deploy.html">Deploy Consumer Validator</a></li>
+                        <li><a href="../consumer-validator-explore.html">Explore Consumer Validator</a></li>
+                        <li><a href="../provider-validator-deploy.html">Deploy Provider Validator</a></li>
+                        <li><a href="../e2e-test.html">End-to-End Test</a></li>
+                    </ul>
+                </div>
+                <div class="wiki-nav-group">
+                    <h4 class="wiki-nav-title"><i class="fas fa-plane-arrival"></i> ED-254 (AMAN)</h4>
+                    <ul>
+                        <li><a href="../ed254-consumer-deploy.html">Deploy Consumer</a></li>
+                        <li><a href="../ed254-provider-deploy.html">Deploy Provider</a></li>
+                    </ul>
+                </div>
+                <div class="wiki-nav-group">
+                    <h4 class="wiki-nav-title"><i class="fas fa-wand-magic-sparkles"></i> Build Your Own</h4>
+                    <ul>
+                        <li><a href="../create-provider.html">Create Provider</a></li>
+                    </ul>
+                    <h4 class="wiki-nav-title" style="margin-top: 8px;"><i class="fas fa-book"></i> Create Consumer</h4>
+                    <ul class="chapter-list">
+                        <li><a href="index.html">Introduction &amp; Setup</a></li>
+                        <li><a href="data-model.html">Part 1: Data Model</a></li>
+                        <li><a href="outbox-extension.html">Part 2: Outbox Extension</a></li>
+                        <li><a href="consumer.html">Part 3: Consumer Service</a></li>
+                        <li><a href="validator.html">Part 4: Consumer Validator</a></li>
+                        <li><a href="infrastructure.html" class="chapter-active">Part 5: Infrastructure</a></li>
+                        <li><a href="tests.html">Part 6: Tests</a></li>
+                        <li><a href="run.html">Part 7: Run &amp; Verify</a></li>
+                    </ul>
+                </div>
+            </nav>
+        </aside>
+
+        <main class="wiki-content">
+            <div class="tutorial-progress">
+                <span>Step 6 of 8</span>
+                <div class="progress-bar"><div class="progress-fill" style="width: 75%"></div></div>
+            </div>
+
+            <section class="wiki-section">
+                <h2>Part 5: Infrastructure</h2>
+                <p>Create a <code>compose.yml</code> in the root of your <code>swim-ffice-consumer</code> project. This file defines the complete local stack:</p>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Service</th>
+                            <th>Image</th>
+                            <th>Host Ports</th>
+                            <th>Purpose</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>ffice-consumer-validator</td>
+                            <td>Local build</td>
+                            <td>8086, 8447</td>
+                            <td>Mock SM API + event generator</td>
+                        </tr>
+                        <tr>
+                            <td>ffice-consumer-validator-artemis</td>
+                            <td>Local build (Artemis)</td>
+                            <td>5673, 5674, 8166</td>
+                            <td>AMQP broker</td>
+                        </tr>
+                        <tr>
+                            <td>ffice-consumer-validator-mariadb</td>
+                            <td>mariadb:12-ubi</td>
+                            <td>3310</td>
+                            <td>Validator persistence</td>
+                        </tr>
+                        <tr>
+                            <td>mongodb</td>
+                            <td>mongodb-community-server:8.2</td>
+                            <td>27019</td>
+                            <td>Consumer event store</td>
+                        </tr>
+                        <tr>
+                            <td>mongo-express</td>
+                            <td>mongo-express:1.0</td>
+                            <td>9084</td>
+                            <td>MongoDB web UI</td>
+                        </tr>
+                        <tr>
+                            <td>kafka</td>
+                            <td>apache/kafka:4.1.2</td>
+                            <td>9093</td>
+                            <td>Event streaming</td>
+                        </tr>
+                        <tr>
+                            <td>akhq</td>
+                            <td>tchiotludo/akhq</td>
+                            <td>9085</td>
+                            <td>Kafka web UI</td>
+                        </tr>
+                        <tr>
+                            <td>kafka-init</td>
+                            <td>apache/kafka:4.1.2</td>
+                            <td>--</td>
+                            <td>Creates Kafka topics on startup</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>compose.yml</h3>
+                <pre class="wiki-code"><code>services:
+
+  ffice-consumer-validator:
+    build:
+      context: ../swim-ffice-consumer-validator
+      dockerfile: src/main/docker/Containerfile.jvm
+    container_name: ffice-consumer-validator
+    ports:
+      - "8086:8080"
+      - "8447:8443"
+    environment:
+      AMQP_BROKER_HOST: ffice-consumer-validator-artemis
+      AMQP_BROKER_PORT: 5672
+      AMQP_BROKER_USERNAME: admin
+      AMQP_BROKER_PASSWORD: admin
+      MARIADB_HOST: ffice-consumer-validator-mariadb
+      MARIADB_PORT: 3306
+      MARIADB_DATABASE: swim_ffice_consumer_validator
+      MARIADB_USERNAME: swim
+      MARIADB_PASSWORD: swim
+      EVENT_GENERATOR_ENABLED: "true"
+      EVENT_GENERATOR_SCHEDULE: "0 */1 * * * ?"
+      HEARTBEAT_PUBLISHER_ENABLED: "true"
+      HEARTBEAT_PUBLISHER_INTERVAL: 15s
+      QUARKUS_HTTP_INSECURE_REQUESTS: enabled
+    volumes:
+      - ./certs/validator.crt:/certs/server/tls.crt:ro,Z
+      - ./certs/validator.key:/certs/server/tls.key:ro,Z
+      - ./certs/ca.crt:/certs/ca/ca.crt:ro,Z
+    networks:
+      - swim-network
+    depends_on:
+      ffice-consumer-validator-artemis:
+        condition: service_healthy
+      ffice-consumer-validator-mariadb:
+        condition: service_healthy
+
+  ffice-consumer-validator-artemis:
+    build:
+      context: ./src/local-dev/artemis
+      dockerfile: Containerfile
+    container_name: ffice-consumer-validator-artemis
+    ports:
+      - "5673:5672"
+      - "5674:5671"
+      - "8166:8161"
+    environment:
+      ARTEMIS_USER: admin
+      ARTEMIS_PASSWORD: admin
+    volumes:
+      - ./certs/broker.p12:/certs/broker.p12:ro,Z
+      - ./certs/ca-truststore.p12:/certs/ca-truststore.p12:ro,Z
+    networks:
+      - swim-network
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost:8161/console/ || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 60s
+
+  ffice-consumer-validator-mariadb:
+    image: docker.io/library/mariadb:12-ubi
+    container_name: ffice-consumer-validator-mariadb
+    ports:
+      - "3310:3306"
+    environment:
+      MARIADB_DATABASE: swim_ffice_consumer_validator
+      MARIADB_USER: swim
+      MARIADB_PASSWORD: swim
+      MARIADB_ROOT_PASSWORD: root
+    volumes:
+      - ffice-consumer-validator-mariadb-data:/var/lib/mysql
+    networks:
+      - swim-network
+    healthcheck:
+      test: ["CMD-SHELL", "healthcheck.sh --connect --innodb_initialized"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  mongodb:
+    image: quay.io/mongodb/mongodb-community-server:8.2-ubi9-slim
+    container_name: ffice-consumer-mongodb
+    command: ["mongod", "--quiet", "--logpath", "/dev/null"]
+    environment:
+      MONGO_INITDB_DATABASE: swim_ffice
+      GLIBC_TUNABLES: glibc.cpu.hwcaps=-SHSTK
+    ports:
+      - "27019:27017"
+    volumes:
+      - ffice-consumer-mongodb-data:/data/db
+    networks:
+      - swim-network
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  mongo-express:
+    image: docker.io/library/mongo-express:1.0
+    container_name: ffice-consumer-mongo-express
+    environment:
+      ME_CONFIG_MONGODB_URL: mongodb://mongodb:27017/
+      ME_CONFIG_BASICAUTH: false
+    ports:
+      - "9084:8081"
+    networks:
+      - swim-network
+    depends_on:
+      mongodb:
+        condition: service_healthy
+
+  kafka:
+    image: docker.io/apache/kafka:4.1.2
+    hostname: ffice-kafka
+    container_name: ffice-kafka
+    ports:
+      - "9093:9092"
+    networks:
+      - swim-network
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT,CONTROLLER:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://ffice-kafka:29092,PLAINTEXT_HOST://localhost:9093
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_NODE_ID: 1
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@ffice-kafka:29093
+      KAFKA_LISTENERS: PLAINTEXT://ffice-kafka:29092,CONTROLLER://ffice-kafka:29093,PLAINTEXT_HOST://0.0.0.0:9092
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_LOG_DIRS: /tmp/kraft-combined-logs
+      CLUSTER_ID: FFICE_CONSUMER_LOCAL
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: false
+
+  akhq:
+    image: docker.io/tchiotludo/akhq:latest
+    container_name: ffice-consumer-akhq
+    environment:
+      AKHQ_CONFIGURATION: |
+        akhq:
+          connections:
+            local:
+              properties:
+                bootstrap.servers: "ffice-kafka:29092"
+    ports:
+      - "9085:8080"
+    networks:
+      - swim-network
+    depends_on:
+      - kafka
+
+  kafka-init:
+    image: docker.io/apache/kafka:4.1.2
+    container_name: ffice-kafka-init
+    depends_on:
+      - kafka
+    networks:
+      - swim-network
+    restart: "no"
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - |
+        echo 'Waiting for Kafka...'
+        until /opt/kafka/bin/kafka-topics.sh --bootstrap-server ffice-kafka:29092 --list &gt; /dev/null 2&gt;&amp;1; do sleep 2; done
+        echo 'Creating FF-ICE topics...'
+        /opt/kafka/bin/kafka-topics.sh --bootstrap-server ffice-kafka:29092 --create --if-not-exists --topic ffice-inbox-topic          --partitions 10 --replication-factor 1
+        /opt/kafka/bin/kafka-topics.sh --bootstrap-server ffice-kafka:29092 --create --if-not-exists --topic ffice-flight-plan-topic    --partitions 3  --replication-factor 1
+        /opt/kafka/bin/kafka-topics.sh --bootstrap-server ffice-kafka:29092 --create --if-not-exists --topic ffice-flight-update-topic  --partitions 3  --replication-factor 1
+        /opt/kafka/bin/kafka-topics.sh --bootstrap-server ffice-kafka:29092 --create --if-not-exists --topic ffice-operations-topic     --partitions 3  --replication-factor 1
+        /opt/kafka/bin/kafka-topics.sh --bootstrap-server ffice-kafka:29092 --create --if-not-exists --topic ffice-trial-topic          --partitions 3  --replication-factor 1
+        /opt/kafka/bin/kafka-topics.sh --bootstrap-server ffice-kafka:29092 --create --if-not-exists --topic ffice-submission-topic     --partitions 3  --replication-factor 1
+        /opt/kafka/bin/kafka-topics.sh --bootstrap-server ffice-kafka:29092 --create --if-not-exists --topic ffice-data-topic           --partitions 3  --replication-factor 1
+        /opt/kafka/bin/kafka-topics.sh --bootstrap-server ffice-kafka:29092 --create --if-not-exists --topic ffice-dlq-topic            --partitions 1  --replication-factor 1
+        /opt/kafka/bin/kafka-topics.sh --bootstrap-server ffice-kafka:29092 --create --if-not-exists --topic ffice-events-topic         --partitions 3  --replication-factor 1
+        /opt/kafka/bin/kafka-topics.sh --bootstrap-server ffice-kafka:29092 --create --if-not-exists --topic ffice-events-dlq-topic     --partitions 1  --replication-factor 1
+        echo 'Done.'
+
+volumes:
+  ffice-consumer-mongodb-data:
+  ffice-consumer-validator-mariadb-data:
+
+networks:
+  swim-network:
+    name: swim-ffice-consumer-network
+    driver: bridge</code></pre>
+
+                <h3>5.1 Artemis broker files</h3>
+                <p>The Artemis service requires custom files in <code>src/local-dev/artemis/</code>. Create this directory structure:</p>
+                <pre class="wiki-code"><code>src/local-dev/artemis/
+  Containerfile
+  broker.xml
+  tls-entrypoint.sh</code></pre>
+
+                <h4>Containerfile</h4>
+                <pre class="wiki-code"><code>FROM apache/activemq-artemis:2.41.0
+
+USER root
+COPY tls-entrypoint.sh /opt/tls-entrypoint.sh
+RUN chmod +x /opt/tls-entrypoint.sh
+USER artemis
+
+COPY broker.xml /var/lib/artemis-instance/etc/broker.xml
+
+ENTRYPOINT ["/opt/tls-entrypoint.sh"]</code></pre>
+
+                <h4>broker.xml</h4>
+                <p>Create a standard Artemis <code>broker.xml</code> with AMQP and AMQPS acceptors. The key configuration is:</p>
+                <pre class="wiki-code"><code>&lt;?xml version="1.0" encoding="UTF-8" standalone="no"?&gt;
+&lt;configuration xmlns="urn:activemq" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="urn:activemq /schema/artemis-configuration.xsd"&gt;
+  &lt;core xmlns="urn:activemq:core"&gt;
+    &lt;name&gt;ffice-consumer-validator-artemis&lt;/name&gt;
+    &lt;persistence-enabled&gt;true&lt;/persistence-enabled&gt;
+    &lt;journal-type&gt;NIO&lt;/journal-type&gt;
+
+    &lt;acceptors&gt;
+      &lt;acceptor name="amqp"&gt;tcp://0.0.0.0:5672?protocols=AMQP;tcpSendBufferSize=1048576;tcpReceiveBufferSize=1048576;amqpCredits=1000;amqpLowCredits=300;amqpMinLargeMessageSize=102400;amqpDuplicateDetection=true&lt;/acceptor&gt;
+      &lt;acceptor name="amqps"&gt;tcp://0.0.0.0:5671?protocols=AMQP;sslEnabled=true;keyStorePath=/certs/broker.p12;keyStorePassword=changeit;trustStorePath=/certs/ca-truststore.p12;trustStorePassword=changeit;needClientAuth=false&lt;/acceptor&gt;
+    &lt;/acceptors&gt;
+
+    &lt;security-settings&gt;
+      &lt;security-setting match="#"&gt;
+        &lt;permission type="createNonDurableQueue" roles="amq"/&gt;
+        &lt;permission type="deleteNonDurableQueue" roles="amq"/&gt;
+        &lt;permission type="createDurableQueue" roles="amq"/&gt;
+        &lt;permission type="deleteDurableQueue" roles="amq"/&gt;
+        &lt;permission type="createAddress" roles="amq"/&gt;
+        &lt;permission type="deleteAddress" roles="amq"/&gt;
+        &lt;permission type="consume" roles="amq"/&gt;
+        &lt;permission type="browse" roles="amq"/&gt;
+        &lt;permission type="send" roles="amq"/&gt;
+        &lt;permission type="manage" roles="amq"/&gt;
+      &lt;/security-setting&gt;
+    &lt;/security-settings&gt;
+
+    &lt;address-settings&gt;
+      &lt;address-setting match="#"&gt;
+        &lt;dead-letter-address&gt;DLQ&lt;/dead-letter-address&gt;
+        &lt;expiry-address&gt;ExpiryQueue&lt;/expiry-address&gt;
+        &lt;redelivery-delay&gt;1000&lt;/redelivery-delay&gt;
+        &lt;max-size-bytes&gt;-1&lt;/max-size-bytes&gt;
+        &lt;message-counter-history-day-limit&gt;10&lt;/message-counter-history-day-limit&gt;
+        &lt;address-full-policy&gt;PAGE&lt;/address-full-policy&gt;
+        &lt;auto-create-queues&gt;true&lt;/auto-create-queues&gt;
+        &lt;auto-create-addresses&gt;true&lt;/auto-create-addresses&gt;
+      &lt;/address-setting&gt;
+    &lt;/address-settings&gt;
+  &lt;/core&gt;
+&lt;/configuration&gt;</code></pre>
+
+                <h4>tls-entrypoint.sh</h4>
+                <pre class="wiki-code"><code>#!/bin/bash
+set -e
+
+if [ -f /certs/broker.p12 ]; then
+  echo "TLS certificates found, starting with AMQPS support"
+else
+  echo "No TLS certificates found, starting with AMQP only"
+fi
+
+exec /opt/activemq-artemis/bin/artemis run</code></pre>
+
+                <h3>5.2 Generate TLS certificates</h3>
+                <p>Create a <code>certs/generate.sh</code> script that generates a local CA and service certificates.</p>
+                <pre class="wiki-code"><code>#!/bin/bash
+set -euo pipefail
+
+CERTS_DIR="$(cd "$(dirname "$0")" &amp;&amp; pwd)"
+CA_PASS="changeit"
+
+echo "=== Generating local CA ==="
+mkcert -install
+cp "$(mkcert -CAROOT)/rootCA.pem" "$CERTS_DIR/ca.crt"
+cp "$(mkcert -CAROOT)/rootCA-key.pem" "$CERTS_DIR/ca.key"
+
+echo "=== Generating broker certificate ==="
+mkcert -cert-file "$CERTS_DIR/broker.crt" -key-file "$CERTS_DIR/broker.key" \
+  ffice-consumer-validator-artemis localhost 127.0.0.1
+
+echo "=== Generating validator certificate ==="
+mkcert -cert-file "$CERTS_DIR/validator.crt" -key-file "$CERTS_DIR/validator.key" \
+  ffice-consumer-validator localhost 127.0.0.1
+
+echo "=== Creating PKCS12 keystores ==="
+openssl pkcs12 -export -in "$CERTS_DIR/broker.crt" -inkey "$CERTS_DIR/broker.key" \
+  -out "$CERTS_DIR/broker.p12" -name broker -password "pass:$CA_PASS"
+
+keytool -importcert -noprompt -alias ca -file "$CERTS_DIR/ca.crt" \
+  -keystore "$CERTS_DIR/ca-truststore.p12" -storetype PKCS12 -storepass "$CA_PASS"
+
+echo "=== Creating JKS keystores for consumer ==="
+keytool -importcert -noprompt -alias ca -file "$CERTS_DIR/ca.crt" \
+  -keystore "$CERTS_DIR/truststore.jks" -storepass "$CA_PASS"
+
+mkcert -cert-file "$CERTS_DIR/consumer.crt" -key-file "$CERTS_DIR/consumer.key" \
+  ffice-consumer localhost 127.0.0.1
+
+openssl pkcs12 -export -in "$CERTS_DIR/consumer.crt" -inkey "$CERTS_DIR/consumer.key" \
+  -out "$CERTS_DIR/consumer.p12" -name consumer -password "pass:$CA_PASS"
+
+keytool -importkeystore -noprompt \
+  -srckeystore "$CERTS_DIR/consumer.p12" -srcstoretype PKCS12 -srcstorepass "$CA_PASS" \
+  -destkeystore "$CERTS_DIR/keystore.jks" -deststorepass "$CA_PASS"
+
+echo "=== Done. Generated files: ==="
+ls -la "$CERTS_DIR"</code></pre>
+
+                <p>Run the script:</p>
+                <pre class="wiki-code"><code>chmod +x certs/generate.sh              # Linux / macOS only
+./certs/generate.sh</code></pre>
+                <p>On Windows, run the equivalent commands manually or use Git Bash / WSL to execute the shell script.</p>
+                <p>After running, the <code>certs/</code> directory should contain:</p>
+                <ul>
+                    <li><code>ca.crt</code>, <code>ca.key</code> - CA certificate and key</li>
+                    <li><code>broker.p12</code> - broker keystore (PKCS12)</li>
+                    <li><code>ca-truststore.p12</code> - CA truststore (PKCS12)</li>
+                    <li><code>validator.crt</code>, <code>validator.key</code> - validator server certificate</li>
+                    <li><code>truststore.jks</code>, <code>keystore.jks</code> - Java keystores for the consumer</li>
+                </ul>
+            </section>
+
+            <section class="wiki-section">
+                <h2>Part 6: Run</h2>
+
+                <h3>6.1 Start infrastructure</h3>
+                <p>From the <code>swim-ffice-consumer</code> directory:</p>
+                <pre class="wiki-code"><code>podman compose up --build -d</code></pre>
+                <p>Wait for all services to be healthy. Verify with <code>podman compose ps</code>.</p>
+
+                <h3>6.2 Create the development profile</h3>
+                <p>Create <code>src/main/resources/application-dev.properties</code>. This profile is used when running with <code>quarkus:dev</code> and connects to the local infrastructure from <code>compose.yml</code>:</p>
+                <pre class="wiki-code"><code># =============================================================================
+# SWIM FF-ICE Consumer - Development Profile
+# =============================================================================
+# Uses swim-ffice-consumer-validator (port 8086) as Subscription Manager
+# and ffice-consumer-validator-artemis (port 5672) as AMQP broker
+# DevServices are DISABLED to prevent Testcontainers from starting
+# =============================================================================
+
+# =============================================================================
+# MongoDB (ffice-consumer-mongodb on port 27019)
+# =============================================================================
+quarkus.mongodb.connection-string=${MONGODB_URI:mongodb://localhost:27019}
+
+# =============================================================================
+# FF-ICE Subscriptions (Hard-coded for local testing)
+# =============================================================================
+ffice.subscriptions=[{"provider":"validator","topic":"ffice.v1","messageTypes":["FILED_FLIGHT_PLAN","FLIGHT_PLAN_UPDATE","FLIGHT_DEPARTURE","FLIGHT_ARRIVAL","FLIGHT_CANCELLATION","PLANNING_STATUS","FILING_STATUS"],"aerodromes":["LPPT","LEMD","LFPG"],"description":"FF-ICE messages for Lisbon, Madrid, Paris"}]
+
+# =============================================================================
+# SWIM Providers (Dev - ffice-consumer-validator-artemis AMQPS + mTLS)
+# SM: http://localhost:8086 (swim-ffice-consumer-validator)
+# AMQP: localhost:5673 -&gt; container 5672 (plain AMQP for dev simplicity)
+# =============================================================================
+swim.providers=[{"providerId":"validator","subscriptionManager":{"url":"http://localhost:8086","tls":null,"resilience":{"connectTimeoutMs":5000,"readTimeoutMs":5000,"retryMaxAttempts":3,"retryDelayMs":1000}},"amqpBroker":{"host":"localhost","port":5673,"sslEnabled":false,"username":"admin","password":"admin","tls":null}}]
+
+# =============================================================================
+# Subscription Renewal (Faster intervals for dev)
+# =============================================================================
+swim.subscription.renewal.check-interval=2m
+swim.subscription.renewal.threshold=30m
+
+# =============================================================================
+# DevServices - DISABLED (use compose.yml instead)
+# =============================================================================
+quarkus.devservices.enabled=false
+
+# =============================================================================
+# Kafka
+# =============================================================================
+kafka.bootstrap.servers=${KAFKA_BOOTSTRAP_SERVERS:localhost:9093}
+
+# =============================================================================
+# Per-Subscription Heartbeat Monitor (faster check interval for dev)
+# =============================================================================
+swim.heartbeat.monitor.check-interval=10s
+
+# =============================================================================
+# OpenTelemetry - DISABLED in dev (no collector running)
+# =============================================================================
+quarkus.otel.enabled=false
+quarkus.otel.sdk.disabled=true
+
+# =============================================================================
+# TLS
+# =============================================================================
+swim.tls.reload-period=off
+
+# =============================================================================
+# Logging
+# =============================================================================
+quarkus.log.level=INFO
+quarkus.log.file.enabled=true
+quarkus.log.file.path=target/app.log</code></pre>
+            </section>
+
+            <div class="tutorial-nav-footer">
+                <a href="validator.html" class="nav-prev">
+                    <span class="nav-label"><i class="fas fa-arrow-left"></i> Previous</span>
+                    <span class="nav-title">Part 4: Consumer Validator</span>
+                </a>
+                <a href="tests.html" class="nav-next">
+                    <span class="nav-label">Next <i class="fas fa-arrow-right"></i></span>
+                    <span class="nav-title">Part 6: Tests</span>
+                </a>
+            </div>
+        </main>
+    </div>
+
+    <footer class="footer"></footer>
+    <script src="../../script.js"></script>
+</body>
+</html>

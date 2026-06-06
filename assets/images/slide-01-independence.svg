@@ -1,0 +1,119 @@
+<svg viewBox="0 0 1200 700" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1a1a2e"/>
+      <stop offset="100%" style="stop-color:#16213e"/>
+    </linearGradient>
+    <marker id="arrow1" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#64ffda"/>
+    </marker>
+  </defs>
+  
+  <!-- Background transparent for PNG export -->
+  
+  <!-- Title -->
+  <text x="600" y="65" text-anchor="middle" fill="#fff" font-family="Red Hat Display, sans-serif" font-size="42" font-weight="700">Independent Modules</text>
+  <text x="600" y="105" text-anchor="middle" fill="#8892b0" font-family="Red Hat Text, sans-serif" font-size="24">Deploy what you need. Nothing more.</text>
+  
+  <!-- Left side: Consumer -->
+  <g transform="translate(80, 140)">
+    <rect x="0" y="0" width="440" height="430" rx="16" fill="#0f1624" stroke="#004085" stroke-width="3"/>
+    <rect x="0" y="0" width="440" height="52" rx="16" fill="#004085"/>
+    <rect x="0" y="44" width="440" height="8" fill="#004085"/>
+    <text x="220" y="38" text-anchor="middle" fill="#fff" font-family="Red Hat Display, sans-serif" font-size="24" font-weight="600">Consumer</text>
+    
+    <!-- Row 1: External AISP and AMQP Broker side by side -->
+    <!-- External AISP -->
+    <rect x="30" y="75" width="170" height="75" rx="10" fill="#28a745"/>
+    <text x="115" y="120" text-anchor="middle" fill="#fff" font-family="Red Hat Text, sans-serif" font-size="16" font-weight="600">External AISP</text>
+    
+    <!-- AMQP Broker (External) -->
+    <rect x="240" y="75" width="170" height="75" rx="10" fill="#e74c3c"/>
+    <text x="325" y="112" text-anchor="middle" fill="#fff" font-family="Red Hat Text, sans-serif" font-size="16" font-weight="600">AMQP Broker</text>
+    <text x="325" y="135" text-anchor="middle" fill="#fadbd8" font-family="Red Hat Mono, monospace" font-size="11">(external)</text>
+    
+    <!-- Arrow AISP to Broker (horizontal) -->
+    <path d="M200 112 L240 112" stroke="#64ffda" stroke-width="2" marker-end="url(#arrow1)"/>
+    
+    <!-- Row 2: Consumer centered -->
+    <!-- Consumer box -->
+    <rect x="135" y="190" width="170" height="75" rx="10" fill="#004085"/>
+    <text x="220" y="222" text-anchor="middle" fill="#fff" font-family="Red Hat Text, sans-serif" font-size="16" font-weight="600">DNOTAM</text>
+    <text x="220" y="245" text-anchor="middle" fill="#fff" font-family="Red Hat Text, sans-serif" font-size="16" font-weight="600">Consumer</text>
+    
+    <!-- Arrow Broker to Consumer: bottom of broker → right, curve 90º → right side of consumer -->
+    <path d="M325 150 L325 227 L305 227" stroke="#64ffda" stroke-width="2" marker-end="url(#arrow1)" fill="none"/>
+    <text x="335" y="195" fill="#64ffda" font-family="Red Hat Mono, monospace" font-size="14">AMQP</text>
+    
+    <!-- REST arrow Consumer to AISP: left of consumer → 90º curve → bottom of AISP -->
+    <path d="M135 227 L115 227 L115 150" stroke="#64ffda" stroke-width="2" stroke-dasharray="4,3" marker-end="url(#arrow1)" fill="none"/>
+    <text x="95" y="195" fill="#64ffda" font-family="Red Hat Mono, monospace" font-size="14">REST</text>
+    
+    <!-- Row 3: Kafka centered -->
+    <!-- Kafka -->
+    <rect x="100" y="310" width="240" height="60" rx="10" fill="#d4a106"/>
+    <text x="220" y="350" text-anchor="middle" fill="#000" font-family="Red Hat Text, sans-serif" font-size="18" font-weight="600">Apache Kafka</text>
+    
+    <!-- Arrow Consumer to Kafka (vertical) -->
+    <path d="M220 265 L220 310" stroke="#64ffda" stroke-width="2" marker-end="url(#arrow1)"/>
+  </g>
+  
+  <!-- Center divider -->
+  <line x1="600" y1="160" x2="600" y2="550" stroke="#8892b0" stroke-width="1" stroke-dasharray="8,4"/>
+  <text x="600" y="595" text-anchor="middle" fill="#64ffda" font-family="Red Hat Display, sans-serif" font-size="26" font-weight="600">Deploy one. Deploy both. Your choice.</text>
+  
+  <!-- Right side: Provider -->
+  <g transform="translate(680, 140)">
+    <rect x="0" y="0" width="440" height="430" rx="16" fill="#0f1624" stroke="#28a745" stroke-width="3"/>
+    <rect x="0" y="0" width="440" height="52" rx="16" fill="#28a745"/>
+    <rect x="0" y="44" width="440" height="8" fill="#28a745"/>
+    <text x="220" y="38" text-anchor="middle" fill="#fff" font-family="Red Hat Display, sans-serif" font-size="24" font-weight="600">Provider</text>
+    
+    <!-- Row 1: Your Systems and Kafka side by side -->
+    <!-- Internal Systems -->
+    <rect x="30" y="75" width="170" height="75" rx="10" fill="#1a1a2e" stroke="#8892b0" stroke-width="2" stroke-dasharray="5,3"/>
+    <text x="115" y="115" text-anchor="middle" fill="#fff" font-family="Red Hat Text, sans-serif" font-size="15" font-weight="500">Your Systems</text>
+    <text x="115" y="138" text-anchor="middle" fill="#64ffda" font-family="Red Hat Mono, monospace" font-size="11">REST</text>
+    
+    <!-- Kafka -->
+    <rect x="240" y="75" width="170" height="75" rx="10" fill="#d4a106"/>
+    <text x="325" y="120" text-anchor="middle" fill="#000" font-family="Red Hat Text, sans-serif" font-size="16" font-weight="600">Apache Kafka</text>
+    
+    <!-- Row 2: Provider and External Subscribers -->
+    <!-- Provider box -->
+    <rect x="30" y="190" width="170" height="75" rx="10" fill="#28a745"/>
+    <text x="115" y="222" text-anchor="middle" fill="#fff" font-family="Red Hat Text, sans-serif" font-size="16" font-weight="600">DNOTAM</text>
+    <text x="115" y="245" text-anchor="middle" fill="#fff" font-family="Red Hat Text, sans-serif" font-size="16" font-weight="600">Provider</text>
+    
+    <!-- Arrow Your Systems to Provider (vertical) -->
+    <path d="M115 150 L115 190" stroke="#64ffda" stroke-width="2" marker-end="url(#arrow1)"/>
+    
+    <!-- Arrow Kafka to Provider: bottom-left of Kafka → top-right of Provider (straight line) -->
+    <path d="M240 150 L200 190" stroke="#64ffda" stroke-width="2" marker-end="url(#arrow1)"/>
+    
+    <!-- External Subscribers -->
+    <rect x="240" y="190" width="170" height="75" rx="10" fill="#1a1a2e" stroke="#8892b0" stroke-width="2"/>
+    <text x="325" y="222" text-anchor="middle" fill="#fff" font-family="Red Hat Text, sans-serif" font-size="15" font-weight="500">External</text>
+    <text x="325" y="245" text-anchor="middle" fill="#fff" font-family="Red Hat Text, sans-serif" font-size="15" font-weight="500">Subscribers</text>
+    
+    <!-- REST arrow Subscribers to Provider (horizontal) -->
+    <path d="M240 227 L200 227" stroke="#64ffda" stroke-width="2" stroke-dasharray="4,3" marker-end="url(#arrow1)"/>
+    <text x="220" y="215" fill="#64ffda" font-family="Red Hat Mono, monospace" font-size="14">REST</text>
+    
+    <!-- Row 3: AMQP Broker centered -->
+    <!-- AMQP Broker (Internal) -->
+    <rect x="30" y="310" width="170" height="60" rx="10" fill="#e74c3c"/>
+    <text x="115" y="338" text-anchor="middle" fill="#fff" font-family="Red Hat Text, sans-serif" font-size="16" font-weight="600">AMQP Broker</text>
+    <text x="115" y="358" text-anchor="middle" fill="#fadbd8" font-family="Red Hat Mono, monospace" font-size="11">(internal)</text>
+    
+    <!-- Arrow Provider to Broker (vertical) -->
+    <path d="M115 265 L115 310" stroke="#64ffda" stroke-width="2" marker-end="url(#arrow1)"/>
+    
+    <!-- Arrow Broker to Subscribers (L shape) -->
+    <path d="M200 340 L325 340 L325 265" stroke="#64ffda" stroke-width="2" marker-end="url(#arrow1)" fill="none"/>
+    <text x="265" y="332" fill="#64ffda" font-family="Red Hat Mono, monospace" font-size="14">AMQP</text>
+  </g>
+  
+  <!-- Footer message -->
+  <text x="600" y="655" text-anchor="middle" fill="#8892b0" font-family="Red Hat Text, sans-serif" font-size="22">Each module works independently. No dependencies between them.</text>
+</svg>

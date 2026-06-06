@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deploy with GitOps (Argo CD) | Tutorials | SWIM Developer</title>
+    <meta name="description" content="Deploy the full SWIM ecosystem using GitOps with Argo CD and Tekton CI. Tested on OpenShift Local, ready for any Kubernetes or OpenShift cluster.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@400;500;600;700;900&family=Red+Hat+Text:wght@400;500;600&family=Red+Hat+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+    <nav class="navbar"></nav>
+
+    <header class="page-header">
+        <div class="container">
+            <div class="page-header-content">
+                <h1><i class="fas fa-graduation-cap"></i> Tutorials</h1>
+                <p class="page-subtitle">Step-by-step guides for deploying, configuring, and validating SWIM services</p>
+            </div>
+        </div>
+    </header>
+
+    <div class="wiki-layout">
+        <aside class="wiki-sidebar">
+            <nav class="wiki-nav">
+                <div class="wiki-nav-group">
+                    <h4 class="wiki-nav-title"><i class="fas fa-rocket"></i> Getting Started</h4>
+                    <ul>
+                        <li><a href="deploy-gitops.html" class="active">GitOps (Argo CD)</a></li>
+                        <li><a href="deploy-openshift.html">OpenShift</a></li>
+                        <li><a href="deploy-kubernetes.html">Kubernetes</a></li>
+                        <li><a href="deploy-openshift-local.html">OpenShift Local</a></li>
+                        <li><a href="deploy-minikube.html">Minikube</a></li>
+                        <li><a href="deploy-podman.html">Container Local (Podman)</a></li>
+                        <li><a href="deploy-java.html">Java / Binary</a></li>
+                    </ul>
+                </div>
+                <div class="wiki-nav-group">
+                    <h4 class="wiki-nav-title"><i class="fas fa-bell"></i> Digital NOTAM</h4>
+                    <ul>
+                        <li><a href="dnotam-consumer-deploy.html">Deploy Consumer</a></li>
+                        <li><a href="dnotam-consumer-explore.html">Explore Consumer</a></li>
+                        <li><a href="dnotam-provider-deploy.html">Deploy Provider</a></li>
+                        <li><a href="dnotam-provider-explore.html">Explore Provider</a></li>
+                        <li><a href="consumer-validator-deploy.html">Deploy Consumer Validator</a></li>
+                        <li><a href="consumer-validator-explore.html">Explore Consumer Validator</a></li>
+                        <li><a href="provider-validator-deploy.html">Deploy Provider Validator</a></li>
+                        <li><a href="e2e-test.html">End-to-End Test</a></li>
+                    </ul>
+                </div>
+                <div class="wiki-nav-group">
+                    <h4 class="wiki-nav-title"><i class="fas fa-plane-arrival"></i> ED-254 (AMAN)</h4>
+                    <ul>
+                        <li><a href="ed254-consumer-deploy.html">Deploy Consumer</a></li>
+                        <li><a href="ed254-provider-deploy.html">Deploy Provider</a></li>
+                    </ul>
+                </div>
+                <div class="wiki-nav-group">
+                    <h4 class="wiki-nav-title"><i class="fas fa-wand-magic-sparkles"></i> Build Your Own</h4>
+                    <ul>
+                        <li><a href="create-consumer.html">Create Consumer</a></li>
+                        <li><a href="create-provider.html">Create Provider</a></li>
+                    </ul>
+                </div>
+            </nav>
+        </aside>
+
+        <main class="wiki-content">
+            <section class="wiki-section">
+                <h2>Deploy with GitOps (Argo CD)</h2>
+                <p>
+                    Deploy the complete SWIM ecosystem using <strong>GitOps</strong> &mdash; a declarative
+                    approach where Git is the single source of truth for your entire infrastructure and
+                    application stack. Every change is a Git commit, every deployment is auditable,
+                    and rollback is a <code>git revert</code>.
+                </p>
+                <p>
+                    This tutorial uses <a href="https://argo-cd.readthedocs.io/" target="_blank">Argo CD</a>
+                    for continuous delivery and
+                    <a href="https://tekton.dev/" target="_blank">Tekton</a> for
+                    continuous integration. This tutorial demonstrates how to set up
+                    a <strong>fully self-contained local environment on OpenShift Local (CRC)</strong>
+                    using Gitea as the local Git server &mdash; with zero dependency on
+                    external services. Once validated locally, the same configuration can be
+                    deployed to any remote Kubernetes or OpenShift cluster by simply
+                    reconfiguring the Git source URL &mdash; see
+                    <a href="#production">Moving to Production</a> at the end of this page.
+                </p>
+
+                <div class="wiki-note">
+                    <i class="fas fa-star"></i>
+                    <div>
+                        <p><strong>Recommended path</strong></p>
+                        <p>
+                            This is the recommended deployment method for new adopters. It provides
+                            full CI/CD automation, Git-based audit trail, and reproducible environments.
+                            First, replicate the full flow locally on
+                            <a href="deploy-openshift-local.html">OpenShift Local (CRC)</a>,
+                            then promote to production. For alternative approaches, see
+                            <a href="deploy-openshift-local.html">OpenShift Local (Helm)</a> or
+                            <a href="deploy-openshift.html">OpenShift (Operator)</a>.
+                        </p>
+                    </div>
+                </div>
+
+                <h3>How It Works</h3>
+                <p>
+                    The <a href="https://github.com/swim-developer/swim-gitops" target="_blank">swim-gitops</a>
+                    repository (cloned from GitHub) contains everything needed to deploy the SWIM platform.
+                    After initial clone, all runtime Git operations use a <strong>local Gitea instance</strong>
+                    &mdash; the CRC environment has zero dependency on GitHub:
+                </p>
+                <div class="wiki-requirements">
+                    <div class="wiki-req-item">
+                        <i class="fas fa-code-branch"></i>
+                        <div>
+                            <strong>Argo CD watches the Git repo</strong>
+                            <span>Detects changes and automatically reconciles the cluster state to match Git</span>
+                        </div>
+                    </div>
+                    <div class="wiki-req-item">
+                        <i class="fas fa-layer-group"></i>
+                        <div>
+                            <strong>Sync waves deploy in order</strong>
+                            <span>Operators (wave 0) &rarr; Infrastructure (wave 1-2) &rarr; Validators (wave 4) &rarr; Services (wave 5)</span>
+                        </div>
+                    </div>
+                    <div class="wiki-req-item">
+                        <i class="fas fa-download"></i>
+                        <div>
+                            <strong>Pre-built images bootstrap the environment</strong>
+                            <span>Images from Quay.io are imported into the internal registry &mdash; all services start immediately</span>
+                        </div>
+                    </div>
+                    <div class="wiki-req-item">
+                        <i class="fas fa-hammer"></i>
+                        <div>
+                            <strong>Tekton CI builds from source</strong>
+                            <span>Clone, compile (JAR or native), build container image &mdash; overwrites the pre-built images with your own</span>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>What Gets Deployed</h3>
+                <p>The GitOps repository manages 16 Argo CD Applications organized in layers:</p>
+                <div class="wiki-requirements">
+                    <div class="wiki-req-item">
+                        <i class="fas fa-cog"></i>
+                        <div>
+                            <strong>Platform Operators (wave 0)</strong>
+                            <span>cert-manager, Strimzi/AMQ Streams (Kafka), ArtemisCloud/AMQ Broker, Keycloak</span>
+                        </div>
+                    </div>
+                    <div class="wiki-req-item">
+                        <i class="fas fa-layer-group"></i>
+                        <div>
+                            <strong>Core Infrastructure (waves 1-2)</strong>
+                            <span>PKI, Kafka cluster, Keycloak, Artemis brokers, per-stack databases and Kafka topics</span>
+                        </div>
+                    </div>
+                    <div class="wiki-req-item">
+                        <i class="fas fa-vial"></i>
+                        <div>
+                            <strong>Validators (wave 4)</strong>
+                            <span>DNOTAM, ED-254, and FF-ICE consumer/provider validators</span>
+                        </div>
+                    </div>
+                    <div class="wiki-req-item">
+                        <i class="fas fa-cogs"></i>
+                        <div>
+                            <strong>SWIM Services (wave 5)</strong>
+                            <span>DNOTAM, ED-254, and FF-ICE consumers and providers</span>
+                        </div>
+                    </div>
+                    <div class="wiki-req-item">
+                        <i class="fas fa-hammer"></i>
+                        <div>
+                            <strong>CI Pipelines (Tekton)</strong>
+                            <span>12 pipelines for all services, with JAR (default) and native binary build modes</span>
+                        </div>
+                    </div>
+                    <div class="wiki-req-item">
+                        <i class="fab fa-git-alt"></i>
+                        <div>
+                            <strong>Gitea (local Git server)</strong>
+                            <span>Deployed before Argo CD &mdash; serves as the single source of truth for all GitOps operations on CRC</span>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>Prerequisites</h3>
+                <p>
+                    This tutorial walks through the full GitOps setup on
+                    <strong>OpenShift Local (CRC)</strong>. If you haven't set up CRC yet, see
+                    <a href="deploy-openshift-local.html">Deploy on OpenShift Local</a> first.
+                </p>
+                <div class="wiki-requirements">
+                    <div class="wiki-req-item">
+                        <i class="fab fa-redhat"></i>
+                        <div>
+                            <strong>OpenShift Local (CRC) 2.x</strong>
+                            <span>From <a href="https://developers.redhat.com/products/openshift-local" target="_blank">Red Hat Developers</a>. Can also be installed via <a href="https://podman-desktop.io/" target="_blank">Podman Desktop</a></span>
+                        </div>
+                    </div>
+                    <div class="wiki-req-item">
+                        <i class="fas fa-terminal"></i>
+                        <div>
+                            <strong>oc CLI + Make + Git</strong>
+                            <span><code>oc</code> is included with CRC. <code>make</code> and <code>git</code> are pre-installed on Linux/macOS. On Windows: <code>choco install make git</code></span>
+                        </div>
+                    </div>
+                    <div class="wiki-req-item">
+                        <i class="fas fa-dharmachakra"></i>
+                        <div>
+                            <strong>Helm CLI</strong>
+                            <span>Required to deploy Gitea. Install from <a href="https://helm.sh/docs/intro/install/" target="_blank">helm.sh/docs/intro/install</a> or via package manager: <code>choco install kubernetes-helm</code> (Windows), <code>brew install helm</code> (macOS), <code>sudo snap install helm --classic</code> (Linux)</span>
+                        </div>
+                    </div>
+                    <div class="wiki-req-item">
+                        <i class="fas fa-microchip"></i>
+                        <div>
+                            <strong>8 CPUs, 20 GB RAM (single stack)</strong>
+                            <span>Defaults: 8 CPUs, 20 GB RAM, 100 GB disk. For all 3 stacks (DNOTAM + ED-254 + FF-ICE), use 10 CPUs and 24 GB RAM. See Step 2 for how to customize</span>
+                        </div>
+                    </div>
+                    <div class="wiki-req-item">
+                        <i class="fas fa-box"></i>
+                        <div>
+                            <strong>skopeo</strong>
+                            <span>Used to import pre-built images into the internal registry. Install: <code>sudo dnf install skopeo</code> (Fedora/RHEL), <code>brew install skopeo</code> (macOS), <code>choco install skopeo</code> (Windows)</span>
+                        </div>
+                    </div>
+                    <div class="wiki-req-item">
+                        <i class="fas fa-id-card"></i>
+                        <div>
+                            <strong>Red Hat Developer Account</strong>
+                            <span>Free account from <a href="https://developers.redhat.com" target="_blank">developers.redhat.com</a> for the CRC pull secret</span>
+                        </div>
+                    </div>
+                    <div class="wiki-req-item">
+                        <i class="fa-brands fa-windows"></i>
+                        <div>
+                            <strong>Windows: use PowerShell</strong>
+                            <span>Install <a href="https://community.chocolatey.org/packages/make" target="_blank">GNU Make</a> (<code>choco install make</code>) and <a href="https://gitforwindows.org/" target="_blank">Git for Windows</a> (default install location). The Makefile auto-detects bash from Git for Windows — no additional configuration needed.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>1. Clone the GitOps Repository</h3>
+                <pre class="wiki-code"><code>git clone https://github.com/swim-developer/swim-gitops.git
+cd swim-gitops</code></pre>
+
+                <h3>2. Start OpenShift Local</h3>
+                <p>
+                    Download your pull secret from
+                    <a href="https://console.redhat.com/openshift/create/local" target="_blank">console.redhat.com/openshift/create/local</a>
+                    and save it as <code>pull-secret.txt</code> in the repository root.
+                </p>
+                <pre class="wiki-code"><code># One-time setup (first time only)
+make crc-setup
+
+# Place pull-secret.txt next to the Makefile
+cp ~/Downloads/pull-secret.txt ./pull-secret.txt
+
+# Start CRC (first run takes a few minutes)
+make crc-start
+
+# Point oc to CRC
+eval $(crc oc-env)
+make crc-use-local</code></pre>
+
+                <div class="wiki-note">
+                    <i class="fa-brands fa-windows"></i>
+                    <p>
+                        <strong>Windows:</strong> The Makefile automatically adds CRC's <code>oc</code> to PATH, so all
+                        <code>make</code> targets work without manual setup. If you need <code>oc</code> directly
+                        in PowerShell (outside of <code>make</code>), run:
+                    </p>
+                    <pre class="wiki-code"><code>crc oc-env --shell powershell | Invoke-Expression</code></pre>
+                </div>
+
+                <div class="wiki-note">
+                    <i class="fas fa-sliders"></i>
+                    <div>
+                        <p><strong>Customizing CRC resources</strong></p>
+                        <p>
+                            <code>make crc-setup</code> configures CRC with defaults suitable for a single
+                            stack: 8 CPUs, 20 GB RAM, 100 GB disk. You can override any of these:
+                        </p>
+                        <pre class="wiki-code"><code># Deploy all 3 stacks (more resources needed)
+make crc-setup SWIM_STACKS=all          # auto: 10 CPUs, 24 GB RAM, 100 GB disk
+
+# Or set each value individually
+make crc-setup CRC_CPUS=8 CRC_MEMORY_MB=20480 CRC_DISK_GB=80</code></pre>
+                        <p>
+                            Changing CRC resources requires <code>crc delete</code> and <code>crc start</code>
+                            to take effect (the VM is recreated).
+                        </p>
+                    </div>
+                </div>
+
+                <h3>3. Deploy Gitea (Local Git Server)</h3>
+                <p>
+                    Gitea is the local Git server that serves as the single source of truth
+                    for the entire GitOps flow. Argo CD will read from it, and all changes
+                    (commits, reverts, releases) happen here. It must be deployed
+                    <strong>before</strong> Argo CD:
+                </p>
+                <pre class="wiki-code"><code># Install Gitea via Helm
+make gitea-deploy
+
+# Create admin user and all repositories
+make gitea-init
+
+# Push swim-gitops to Gitea
+make gitea-push
+
+# Mirror all service and library repos from GitHub to Gitea
+make gitea-mirror SWIM_STACKS=ed254</code></pre>
+                <p>
+                    <code>gitea-mirror</code> clones the service repos and shared libraries from
+                    GitHub and pushes them to Gitea. This is a one-time operation that ensures
+                    the CRC environment is fully self-contained with <strong>zero runtime dependency
+                    on GitHub</strong>. Use <code>SWIM_STACKS=all</code> to mirror all stacks.
+                </p>
+                <p>
+                    You can browse the Gitea UI at
+                    <a href="https://gitea.apps-crc.testing" target="_blank"><code>https://gitea.apps-crc.testing</code></a>
+                    (login: <code>swimadmin</code> / <code>Swim@Local1</code>).
+                    From this point forward, all Git operations (commits, releases, reverts) happen
+                    exclusively through Gitea &mdash; GitHub is no longer used.
+                </p>
+
+                <h3>4. Install Argo CD</h3>
+                <p>
+                    Install Argo CD into the cluster. The Makefile creates the operator
+                    subscription and waits for the Argo CD server pod to become ready:
+                </p>
+                <pre class="wiki-code"><code>make gitops-install</code></pre>
+
+                <h3>5. Bootstrap GitOps (App of Apps)</h3>
+                <p>
+                    Create the <code>swim</code> AppProject and deploy the selected stacks.
+                    Argo CD reads directly from the local Gitea.
+                    By default, only DNOTAM is deployed:
+                </p>
+                <pre class="wiki-code"><code># Deploy DNOTAM only (default)
+make gitops-bootstrap
+
+# Or deploy ED-254
+# make gitops-bootstrap SWIM_STACKS=ed254
+
+# Or deploy all 3 stacks
+# make gitops-bootstrap SWIM_STACKS=all
+
+# Or pick specific stacks
+# make gitops-bootstrap SWIM_STACKS="dnotam ed254"</code></pre>
+                <div class="wiki-note">
+                    <i class="fas fa-sync"></i>
+                    <p>
+                        <strong>Consistency:</strong> Use the same <code>SWIM_STACKS</code> value
+                        across all commands: <code>crc-setup</code>, <code>gitea-mirror</code>,
+                        <code>gitops-bootstrap</code>, and <code>ci-bootstrap-images</code>.
+                    </p>
+                </div>
+                <p>
+                    Argo CD immediately begins syncing from Gitea. Platform operators are deployed first (wave 0),
+                    followed by infrastructure (waves 1-2), then the selected stack services. This is fully automatic.
+                </p>
+
+                <h3>6. Wait for Infrastructure</h3>
+                <p>
+                    The operator CRDs (Kafka, cert-manager, Artemis, Keycloak) take a few minutes to
+                    install. Wait for them, then check Argo CD status:
+                </p>
+                <pre class="wiki-code"><code># Wait for all operator CRDs
+make operators-wait
+
+# Check Argo CD Application states
+make argocd-status</code></pre>
+
+                <div class="wiki-note">
+                    <i class="fas fa-clock"></i>
+                    <div>
+                        <p><strong>Timing</strong></p>
+                        <p>
+                            Kafka and Keycloak are the slowest to initialize. Run
+                            <code>make argocd-status</code> periodically to check progress.
+                            Wait until <code>swim-core-infra</code> and <code>swim-shared-brokers</code>
+                            show <strong>Synced / Healthy</strong> before proceeding.
+                        </p>
+                    </div>
+                </div>
+
+                <h3>7. Create Artemis TLS Secrets</h3>
+                <p>
+                    All SWIM components use mTLS. Certificates are generated automatically by
+                    cert-manager — Keycloak, Kafka, and the SWIM services consume them directly
+                    in PEM format. Artemis is the only component that requires a manual step:
+                    it needs JKS (Java KeyStore) format, so we extract the PEM certificates and
+                    convert them:
+                </p>
+                <pre class="wiki-code"><code>make artemis-ssl</code></pre>
+
+                <h3>8. Bootstrap Pre-built Images</h3>
+                <p>
+                    All service deployments reference the cluster's internal registry. Before running
+                    CI, import pre-built images from Quay.io so that every pod starts immediately:
+                </p>
+                <pre class="wiki-code"><code>make ci-bootstrap-images</code></pre>
+                <p>
+                    This uses <code>skopeo</code> to copy the latest images from
+                    <a href="https://quay.io/organization/masales" target="_blank"><code>quay.io/masales</code></a>
+                    into the OpenShift internal registry. After a few seconds, pods that were in
+                    <code>ImagePullBackOff</code> will automatically pull the imported images and start running.
+                </p>
+                <div class="wiki-note">
+                    <i class="fas fa-info-circle"></i>
+                    <div>
+                        <p>
+                            The images imported in this step serve as a <strong>baseline</strong>.
+                            In the next steps, you will run the CI pipelines to build your own images
+                            from source, which will overwrite these pre-built versions in the internal registry.
+                        </p>
+                    </div>
+                </div>
+
+                <h3>9. Install Tekton CI</h3>
+                <p>
+                    Install the 12 CI pipelines, tasks, and triggers. The CRC overlay configures
+                    pipelines to push images to the cluster's internal registry instead of an external one:
+                </p>
+                <pre class="wiki-code"><code># Apply Tekton pipelines, tasks, triggers, and registry credentials
+make ci-install-crc</code></pre>
+                <p>
+                    This creates the <code>swim-pipeline</code> namespace with 12 pipelines
+                    covering all DNOTAM, ED-254, and FF-ICE services.
+                </p>
+
+                <h3>10. Run a CI Pipeline</h3>
+                <p>
+                    Validate the CI flow by building one service. Each pipeline clones the source
+                    from Gitea (not GitHub), compiles a self-contained uber-JAR, creates a release
+                    in Gitea with the JAR as a downloadable artifact, and builds a container image
+                    that overwrites the pre-built image imported in Step 8:
+                </p>
+                <pre class="wiki-code"><code># Build a validator (fastest — fewer dependencies)
+make ci-run CI_SERVICE=ed254-consumer-validator
+
+# Or for DNOTAM:
+# make ci-run CI_SERVICE=dnotam-consumer-validator
+
+# Monitor the pipeline
+make ci-status</code></pre>
+                <p>
+                    When the pipeline completes, check the Gitea release at
+                    <a href="https://gitea.apps-crc.testing" target="_blank"><code>https://gitea.apps-crc.testing</code></a>
+                    &rarr; your service repo &rarr; Releases.
+                </p>
+
+                <div class="wiki-note">
+                    <i class="fas fa-microchip"></i>
+                    <div>
+                        <p><strong>Build modes</strong></p>
+                        <p>
+                            Set <code>build-native: "false"</code> (default) for a JVM JAR build
+                            (~1 Gi RAM, 2 minutes). Set <code>build-native: "true"</code> for a
+                            GraalVM native binary (requires 12+ Gi RAM, 4+ CPUs, 10+ minutes).
+                            The JAR mode is recommended for validation on resource-constrained CRC.
+                        </p>
+                    </div>
+                </div>
+
+                <h3>11. Validate All Pipelines</h3>
+                <p>
+                    Run all 4 pipelines for the stack you deployed. Each creates a Gitea release with a
+                    downloadable uber-JAR and pushes a container image to the internal registry, replacing
+                    the pre-built images from Step 8 with your own locally-built versions:
+                </p>
+                <pre class="wiki-code"><code># ED-254 stack:
+make ci-run CI_SERVICE=ed254-consumer-validator
+make ci-run CI_SERVICE=ed254-provider-validator
+make ci-run CI_SERVICE=ed254-consumer
+make ci-run CI_SERVICE=ed254-provider
+
+# DNOTAM stack:
+# make ci-run CI_SERVICE=dnotam-consumer-validator
+# make ci-run CI_SERVICE=dnotam-provider-validator
+# make ci-run CI_SERVICE=dnotam-consumer
+# make ci-run CI_SERVICE=dnotam-provider
+
+# Check results
+make ci-status</code></pre>
+                <p>All 4 should show <strong>SUCCEEDED</strong>. Verify:</p>
+                <ul>
+                    <li><strong>Releases:</strong> each service has a downloadable uber-JAR at
+                        <a href="https://gitea.apps-crc.testing" target="_blank"><code>https://gitea.apps-crc.testing</code></a></li>
+                    <li><strong>Container images:</strong> <code>oc get imagestream -n swim-demo</code> shows all 4 images updated</li>
+                    <li><strong>Pods:</strong> <code>oc get pods -n swim-demo</code> confirms services are running with the newly-built images</li>
+                </ul>
+
+                <h3>12. Verify the Deployment</h3>
+                <pre class="wiki-code"><code># Argo CD Applications
+oc get applications -n openshift-gitops
+
+# Container images in the internal registry
+oc get imagestream -n swim-demo
+
+# Tekton pipelines
+oc get pipelines -n swim-pipeline
+
+# All pods
+oc get pods -n swim-demo</code></pre>
+                <p>Key endpoints on CRC:</p>
+                <div class="wiki-requirements">
+                    <div class="wiki-req-item">
+                        <i class="fas fa-sync-alt"></i>
+                        <div>
+                            <strong>Argo CD Console</strong>
+                            <span><a href="https://openshift-gitops-server-openshift-gitops.apps-crc.testing" target="_blank"><code>https://openshift-gitops-server-openshift-gitops.apps-crc.testing</code></a>
+                            (user: <code>admin</code> / pass: <code>oc get secret openshift-gitops-cluster -n openshift-gitops -o jsonpath='{.data.admin\.password}' | base64 -d</code>)</span>
+                        </div>
+                    </div>
+                    <div class="wiki-req-item">
+                        <i class="fab fa-git-alt"></i>
+                        <div>
+                            <strong>Gitea</strong>
+                            <span><a href="https://gitea.apps-crc.testing" target="_blank"><code>https://gitea.apps-crc.testing</code></a> (user: <code>swimadmin</code> / pass: <code>Swim@Local1</code>)</span>
+                        </div>
+                    </div>
+                    <div class="wiki-req-item">
+                        <i class="fas fa-key"></i>
+                        <div>
+                            <strong>Keycloak</strong>
+                            <span><a href="https://rhbk.apps-crc.testing" target="_blank"><code>https://rhbk.apps-crc.testing</code></a></span>
+                        </div>
+                    </div>
+                </div>
+                <p>
+                    Keycloak admin credentials are auto-generated per deployment. Retrieve them with:
+                </p>
+                <pre class="wiki-code"><code># Username
+oc get secret keycloak-initial-admin -n swim-demo -o jsonpath='{.data.username}' | base64 -d
+
+# Password
+oc get secret keycloak-initial-admin -n swim-demo -o jsonpath='{.data.password}' | base64 -d</code></pre>
+                <div class="wiki-requirements">
+                    <div class="wiki-req-item">
+                        <i class="fas fa-desktop"></i>
+                        <div>
+                            <strong>OpenShift Console</strong>
+                            <span><a href="https://console-openshift-console.apps-crc.testing" target="_blank"><code>https://console-openshift-console.apps-crc.testing</code></a></span>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>GitOps vs Other Deployment Paths</h3>
+                <table style="width: 100%; border-collapse: collapse; margin: 16px 0;">
+                    <thead>
+                        <tr style="border-bottom: 1px solid var(--color-border); text-align: left;">
+                            <th style="padding: 8px; color: var(--color-text-primary);">Aspect</th>
+                            <th style="padding: 8px; color: var(--color-text-primary);">GitOps (this tutorial)</th>
+                            <th style="padding: 8px; color: var(--color-text-primary);"><a href="deploy-openshift-local.html">Helm / make all</a></th>
+                            <th style="padding: 8px; color: var(--color-text-primary);"><a href="deploy-openshift.html">Operator</a></th>
+                        </tr>
+                    </thead>
+                    <tbody style="color: var(--color-text-secondary);">
+                        <tr style="border-bottom: 1px solid var(--color-border);">
+                            <td style="padding: 8px;">Deployment method</td>
+                            <td style="padding: 8px;">Git commit &rarr; Argo CD syncs</td>
+                            <td style="padding: 8px;"><code>helm upgrade</code> / <code>make all</code></td>
+                            <td style="padding: 8px;"><code>oc apply</code> CR</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid var(--color-border);">
+                            <td style="padding: 8px;">Audit trail</td>
+                            <td style="padding: 8px;">Full Git history</td>
+                            <td style="padding: 8px;">Manual / shell history</td>
+                            <td style="padding: 8px;">Controller logs</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid var(--color-border);">
+                            <td style="padding: 8px;">Rollback</td>
+                            <td style="padding: 8px;"><code>git revert</code></td>
+                            <td style="padding: 8px;"><code>helm rollback</code></td>
+                            <td style="padding: 8px;">Delete/recreate CR</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid var(--color-border);">
+                            <td style="padding: 8px;">CI included</td>
+                            <td style="padding: 8px;">Yes (12 Tekton pipelines)</td>
+                            <td style="padding: 8px;">No</td>
+                            <td style="padding: 8px;">No</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid var(--color-border);">
+                            <td style="padding: 8px;">Drift detection</td>
+                            <td style="padding: 8px;">Automatic (Argo CD)</td>
+                            <td style="padding: 8px;">Manual</td>
+                            <td style="padding: 8px;">Operator reconciliation</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 8px;">Best for</td>
+                            <td style="padding: 8px;">Production, teams, CI/CD</td>
+                            <td style="padding: 8px;">Quick local testing</td>
+                            <td style="padding: 8px;">Single-CR provisioning</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>Troubleshooting</h3>
+                <table style="width: 100%; border-collapse: collapse; margin: 16px 0;">
+                    <thead>
+                        <tr style="border-bottom: 1px solid var(--color-border); text-align: left;">
+                            <th style="padding: 8px; color: var(--color-text-primary);">Symptom</th>
+                            <th style="padding: 8px; color: var(--color-text-primary);">Fix</th>
+                        </tr>
+                    </thead>
+                    <tbody style="color: var(--color-text-secondary);">
+                        <tr style="border-bottom: 1px solid var(--color-border);">
+                            <td style="padding: 8px;"><code>swim-gitops-root</code> shows Unknown</td>
+                            <td style="padding: 8px;"><code>oc apply -f argocd/projects/swim.yaml -n openshift-gitops</code></td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid var(--color-border);">
+                            <td style="padding: 8px;">App stays OutOfSync</td>
+                            <td style="padding: 8px;">Check <code>oc get application &lt;name&gt; -n openshift-gitops -o yaml</code></td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid var(--color-border);">
+                            <td style="padding: 8px;">PipelineRun Pending (insufficient resources)</td>
+                            <td style="padding: 8px;">Use <code>build-native: "false"</code> or scale down unused services</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid var(--color-border);">
+                            <td style="padding: 8px;">Buildah push TLS error</td>
+                            <td style="padding: 8px;">CRC overlay sets <code>TLSVERIFY: "false"</code> for the internal registry</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid var(--color-border);">
+                            <td style="padding: 8px;">Kafka NotReady</td>
+                            <td style="padding: 8px;">Check Kafka version in <code>infra/overlays/crc-local/values.yaml</code></td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 8px;"><code>oc</code> targets wrong cluster</td>
+                            <td style="padding: 8px;"><code>eval $(crc oc-env) && make crc-use-local</code></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3 id="production">Moving to Production</h3>
+                <div class="wiki-note">
+                    <i class="fas fa-info-circle"></i>
+                    <p>
+                        <strong>This tutorial is designed for OpenShift Local (CRC).</strong>
+                        All Git operations use a local Gitea instance, and container images
+                        are stored in the internal OpenShift registry. No hardcoded URLs
+                        exist &mdash; everything is configurable for your target environment.
+                    </p>
+                </div>
+                <p>
+                    Once you have validated the full GitOps flow on CRC,
+                    the same configuration can be deployed to any remote environment:
+                </p>
+                <div class="wiki-requirements">
+                    <div class="wiki-req-item">
+                        <i class="fab fa-redhat"></i>
+                        <div>
+                            <strong>Remote OpenShift cluster</strong>
+                            <span>Install the OpenShift GitOps and OpenShift Pipelines operators from OperatorHub, reconfigure the Git source, and run <code>make gitops-bootstrap</code></span>
+                        </div>
+                    </div>
+                    <div class="wiki-req-item">
+                        <i class="fas fa-dharmachakra"></i>
+                        <div>
+                            <strong>Vanilla Kubernetes cluster</strong>
+                            <span>Install Argo CD and Tekton from their upstream Helm charts or YAML manifests, reconfigure the Git source, then apply the same <code>argocd/</code> manifests. Replace <code>oc</code> with <code>kubectl</code></span>
+                        </div>
+                    </div>
+                </div>
+
+                <h4>Step 1: Reconfigure the Git source</h4>
+                <p>
+                    The most important change is pointing all Argo CD applications and
+                    CI pipelines to your production Git server. A single Makefile command
+                    replaces all internal Gitea URLs with your target:
+                </p>
+                <pre class="wiki-code"><code># GitHub
+make configure-git GIT_REPO_BASE=https://github.com/my-org
+
+# GitLab
+make configure-git GIT_REPO_BASE=https://gitlab.com/my-group
+
+# Self-hosted Gitea / Forgejo
+make configure-git GIT_REPO_BASE=https://git.mycompany.com/swim</code></pre>
+                <p>
+                    This updates every <code>repoURL</code> in Argo CD Application definitions,
+                    every <code>git-url</code> and <code>dep-repos</code> default in Tekton
+                    pipelines and tasks, and the bootstrap files. After running, review the
+                    changes with <code>git diff</code>, then commit and push.
+                </p>
+
+                <h4>Step 2: Adjust environment-specific values</h4>
+                <ul class="wiki-list">
+                    <li><strong>Image registry:</strong> Update the CRC-local values overlays
+                        (<code>apps/*/overlays/crc-local/values.yaml</code>) to point
+                        <code>image.repository</code> at your production registry
+                        (Quay.io, Docker Hub, ECR, etc.). Create a new overlay directory
+                        (e.g. <code>overlays/production/</code>) for environment separation.</li>
+                    <li><strong>TLS certificates:</strong> Set <code>certManager.issuerKind: ClusterIssuer</code>
+                        (the default) and configure a production <code>ClusterIssuer</code> backed
+                        by a real CA (Let&rsquo;s Encrypt, Venafi, etc.) instead of the self-signed
+                        issuer used on CRC.</li>
+                    <li><strong>Release artifacts:</strong> Configure Tekton tasks to publish JARs
+                        and binaries to your artifact repository (GitHub Releases, Nexus,
+                        Artifactory, etc.).</li>
+                    <li><strong>Resource limits:</strong> Adjust CPU and memory requests/limits
+                        in the values overlays for production workloads.</li>
+                </ul>
+
+                <h4>Step 3: Deploy to the production cluster</h4>
+                <pre class="wiki-code"><code># Log in to your production cluster
+oc login https://api.my-cluster.example.com:6443
+
+# Apply the same bootstrap (no Gitea needed — your Git server is external)
+make gitops-bootstrap SWIM_STACKS=all</code></pre>
+                <p>
+                    For detailed step-by-step instructions, see the
+                    <a href="https://github.com/swim-developer/swim-gitops/blob/main/docs/production-migration.md" target="_blank">Production Migration Guide</a>
+                    in the swim-gitops repository.
+                </p>
+
+                <h3>Next Steps</h3>
+                <ul class="wiki-list">
+                    <li><strong>Compare deployment paths:</strong> Read <a href="https://github.com/swim-developer/swim-gitops/blob/main/docs/deployment-paths.md" target="_blank">GitOps vs Operator vs Helm</a> for a detailed comparison</li>
+                    <li><strong>Explore services:</strong> After deploying, follow the <a href="dnotam-consumer-deploy.html">Digital NOTAM</a> and <a href="ed254-consumer-deploy.html">ED-254</a> tutorials to explore individual services</li>
+                    <li><strong>Build your own:</strong> Use the <a href="create-consumer.html">Create Consumer</a> tutorial to build a new SWIM service from scratch</li>
+                </ul>
+            </section>
+        </main>
+    </div>
+
+    <button class="wiki-sidebar-toggle" aria-label="Toggle tutorial navigation">
+        <i class="fas fa-list"></i>
+    </button>
+
+    <footer class="footer"></footer>
+
+    <script src="../script.js"></script>
+</body>
+</html>

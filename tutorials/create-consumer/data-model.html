@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Part 1: Data Model | Create Consumer Tutorial | SWIM Developer</title>
+    <meta name="description" content="Generate swim-fixm-ffice-model from FIXM 4.3 and FF-ICE 1.1 XSD schemas: copy schemas, JAXB bindings, Maven plugin, and build.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@400;500;600;700;900&family=Red+Hat+Text:wght@400;500;600&family=Red+Hat+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="../../styles.css">
+</head>
+<body>
+    <nav class="navbar"></nav>
+
+    <header class="page-header">
+        <div class="container">
+            <div class="page-header-content">
+                <h1><i class="fas fa-graduation-cap"></i> Tutorials</h1>
+                <p class="page-subtitle">Step-by-step guides for deploying, configuring, and validating SWIM services</p>
+            </div>
+        </div>
+    </header>
+
+    <div class="wiki-layout">
+        <aside class="wiki-sidebar">
+            <nav class="wiki-nav">
+                <div class="wiki-nav-group">
+                    <h4 class="wiki-nav-title"><i class="fas fa-rocket"></i> Getting Started</h4>
+                    <ul>
+                        <li><a href="../deploy-gitops.html">GitOps (Argo CD)</a></li>
+                        <li><a href="../deploy-openshift.html">OpenShift</a></li>
+                        <li><a href="../deploy-kubernetes.html">Kubernetes</a></li>
+                        <li><a href="../deploy-openshift-local.html">OpenShift Local</a></li>
+                        <li><a href="../deploy-minikube.html">Minikube</a></li>
+                        <li><a href="../deploy-podman.html">Container Local (Podman)</a></li>
+                        <li><a href="../deploy-java.html">Java / Binary</a></li>
+                    </ul>
+                </div>
+                <div class="wiki-nav-group">
+                    <h4 class="wiki-nav-title"><i class="fas fa-bell"></i> Digital NOTAM</h4>
+                    <ul>
+                        <li><a href="../dnotam-consumer-deploy.html">Deploy Consumer</a></li>
+                        <li><a href="../dnotam-consumer-explore.html">Explore Consumer</a></li>
+                        <li><a href="../dnotam-provider-deploy.html">Deploy Provider</a></li>
+                        <li><a href="../dnotam-provider-explore.html">Explore Provider</a></li>
+                        <li><a href="../consumer-validator-deploy.html">Deploy Consumer Validator</a></li>
+                        <li><a href="../consumer-validator-explore.html">Explore Consumer Validator</a></li>
+                        <li><a href="../provider-validator-deploy.html">Deploy Provider Validator</a></li>
+                        <li><a href="../e2e-test.html">End-to-End Test</a></li>
+                    </ul>
+                </div>
+                <div class="wiki-nav-group">
+                    <h4 class="wiki-nav-title"><i class="fas fa-plane-arrival"></i> ED-254 (AMAN)</h4>
+                    <ul>
+                        <li><a href="../ed254-consumer-deploy.html">Deploy Consumer</a></li>
+                        <li><a href="../ed254-provider-deploy.html">Deploy Provider</a></li>
+                    </ul>
+                </div>
+                <div class="wiki-nav-group">
+                    <h4 class="wiki-nav-title"><i class="fas fa-wand-magic-sparkles"></i> Build Your Own</h4>
+                    <ul>
+                        <li><a href="../create-provider.html">Create Provider</a></li>
+                    </ul>
+                    <h4 class="wiki-nav-title" style="margin-top: 8px;"><i class="fas fa-book"></i> Create Consumer</h4>
+                    <ul class="chapter-list">
+                        <li><a href="index.html">Introduction &amp; Setup</a></li>
+                        <li><a href="data-model.html" class="chapter-active">Part 1: Data Model</a></li>
+                        <li><a href="outbox-extension.html">Part 2: Outbox Extension</a></li>
+                        <li><a href="consumer.html">Part 3: Consumer Service</a></li>
+                        <li><a href="validator.html">Part 4: Consumer Validator</a></li>
+                        <li><a href="infrastructure.html">Part 5: Infrastructure</a></li>
+                        <li><a href="tests.html">Part 6: Tests</a></li>
+                        <li><a href="run.html">Part 7: Run &amp; Verify</a></li>
+                    </ul>
+                </div>
+            </nav>
+        </aside>
+
+        <main class="wiki-content">
+            <div class="tutorial-progress">
+                <span>Step 2 of 8</span>
+                <div class="progress-bar"><div class="progress-fill" style="width: 25%"></div></div>
+            </div>
+
+            <section class="wiki-section">
+                <h2>Part 1: Data Model (swim-fixm-ffice-model)</h2>
+
+                <h3>1.1 Download the XSD schemas</h3>
+                <p>Download the FIXM 4.3 + FF-ICE 1.1 schemas from <a href="https://www.fixm.aero/" target="_blank">fixm.aero</a>. The distribution contains three top-level directories:</p>
+                <pre class="wiki-code"><code>schemas/
+  core/         FIXM 4.3 core (base types, flight types)
+  applications/ FF-ICE Application 1.1 (message types, templates)
+  extensions/   Bug fix extensions</code></pre>
+
+                <h3>1.2 Generate the model project</h3>
+                <p>Choose a working directory for your new project and run:</p>
+                <pre class="wiki-code"><code>mvn archetype:generate \
+  -DarchetypeGroupId=com.github.swim-developer \
+  -DarchetypeArtifactId=swim-model-archetype \
+  -DarchetypeVersion=1.0.0-SNAPSHOT \
+  -DgroupId=com.github.swim-developer \
+  -DartifactId=swim-fixm-ffice-model \
+  -Dversion=1.0.0-SNAPSHOT \
+  -Dpackage=aero.fixm.ffice \
+  -DmodelName=ffice \
+  -DmodelDisplayName="FF-ICE" \
+  -DmodelPrefix=Ffice \
+  -DrootSchema=FficeMessage.xsd \
+  -DdataStandard=FIXM \
+  -DinteractiveMode=false</code></pre>
+                <p>Enter the generated project:</p>
+                <pre class="wiki-code"><code>cd swim-fixm-ffice-model
+chmod +x mvnw                            # Linux / macOS only</code></pre>
+                <p>On Windows, use <code>mvnw.cmd</code> instead of <code>./mvnw</code> in all subsequent commands. The <code>chmod</code> step is not needed.</p>
+
+                <h3>1.3 Copy the XSD schemas</h3>
+                <p>Copy the three directories from the FIXM distribution into <code>src/main/resources/schemas/</code>. Use your file manager or the appropriate command for your OS:</p>
+                <pre class="wiki-code"><code># Linux / macOS
+cp -r /path/to/fixm-distribution/schemas/core       src/main/resources/schemas/
+cp -r /path/to/fixm-distribution/schemas/applications src/main/resources/schemas/
+cp -r /path/to/fixm-distribution/schemas/extensions  src/main/resources/schemas/</code></pre>
+                <pre class="wiki-code"><code># Windows (PowerShell)
+Copy-Item -Recurse C:\path\to\fixm-distribution\schemas\core       src\main\resources\schemas\
+Copy-Item -Recurse C:\path\to\fixm-distribution\schemas\applications src\main\resources\schemas\
+Copy-Item -Recurse C:\path\to\fixm-distribution\schemas\extensions  src\main\resources\schemas\</code></pre>
+                <p>The final structure should be:</p>
+                <pre class="wiki-code"><code>src/main/resources/schemas/
+  core/
+    base/          Base.xsd, Types.xsd, AeronauticalReference.xsd, ...
+    flight/        Flight.xsd, Arrival.xsd, Departure.xsd, ...
+  applications/
+    fficemessage/  FficeMessage.xsd
+      fficetemplates/
+        filedflightplan/
+        flightdeparture/
+        ...
+  extensions/
+    fficemessagebugfix/  FficeMessageBugFix.xsd</code></pre>
+
+                <h3>1.4 Configure the JAXB binding file</h3>
+                <p>Edit <code>src/main/resources/bindings/ffice.xjb</code> to map each XSD namespace to a Java package:</p>
+                <pre class="wiki-code"><code>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;jaxb:bindings xmlns:jaxb="https://jakarta.ee/xml/ns/jaxb"
+               xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
+               xmlns:xs="http://www.w3.org/2001/XMLSchema"
+               jaxb:extensionBindingPrefixes="xjc"
+               version="3.0"&gt;
+
+    &lt;jaxb:globalBindings&gt;
+        &lt;xjc:serializable uid="1"/&gt;
+    &lt;/jaxb:globalBindings&gt;
+
+    &lt;jaxb:bindings schemaLocation="../schemas/applications/fficemessage/FficeMessage.xsd" node="/xs:schema"&gt;
+        &lt;jaxb:schemaBindings&gt;
+            &lt;jaxb:package name="aero.fixm.ffice"/&gt;
+        &lt;/jaxb:schemaBindings&gt;
+    &lt;/jaxb:bindings&gt;
+
+    &lt;jaxb:bindings schemaLocation="../schemas/core/base/Base.xsd" node="/xs:schema"&gt;
+        &lt;jaxb:schemaBindings&gt;
+            &lt;jaxb:package name="aero.fixm.base"/&gt;
+        &lt;/jaxb:schemaBindings&gt;
+    &lt;/jaxb:bindings&gt;
+
+    &lt;jaxb:bindings schemaLocation="../schemas/core/flight/Flight.xsd" node="/xs:schema"&gt;
+        &lt;jaxb:schemaBindings&gt;
+            &lt;jaxb:package name="aero.fixm.flight"/&gt;
+        &lt;/jaxb:schemaBindings&gt;
+    &lt;/jaxb:bindings&gt;
+
+    &lt;jaxb:bindings schemaLocation="../schemas/extensions/fficemessagebugfix/FficeMessageBugFix.xsd" node="/xs:schema"&gt;
+        &lt;jaxb:schemaBindings&gt;
+            &lt;jaxb:package name="aero.fixm.ffice.bugfix"/&gt;
+        &lt;/jaxb:schemaBindings&gt;
+    &lt;/jaxb:bindings&gt;
+
+&lt;/jaxb:bindings&gt;</code></pre>
+
+                <h3>1.5 Configure the JAXB Maven plugin</h3>
+                <p>In <code>pom.xml</code>, update the <code>schemaIncludes</code> inside the <code>generate-xjc</code> profile to point to your root schemas:</p>
+                <pre class="wiki-code"><code>&lt;schemaIncludes&gt;
+    &lt;include&gt;applications/fficemessage/FficeMessage.xsd&lt;/include&gt;
+    &lt;include&gt;extensions/fficemessagebugfix/FficeMessageBugFix.xsd&lt;/include&gt;
+&lt;/schemaIncludes&gt;</code></pre>
+                <p>Update the <code>clean-generated-sources</code> execution to list the generated packages:</p>
+                <pre class="wiki-code"><code>&lt;target&gt;
+    &lt;delete dir="${project.basedir}/src/main/java/aero/fixm/base" failonerror="false"/&gt;
+    &lt;delete dir="${project.basedir}/src/main/java/aero/fixm/flight" failonerror="false"/&gt;
+    &lt;delete dir="${project.basedir}/src/main/java/aero/fixm/ffice/bugfix" failonerror="false"/&gt;
+    &lt;delete failonerror="false"&gt;
+        &lt;fileset dir="${project.basedir}/src/main/java/aero/fixm/ffice" includes="*.java"/&gt;
+    &lt;/delete&gt;
+&lt;/target&gt;</code></pre>
+
+                <h3>1.6 Generate JAXB classes</h3>
+                <pre class="wiki-code"><code>./mvnw process-sources -Pgenerate-xjc        # Linux / macOS
+mvnw.cmd process-sources -Pgenerate-xjc      # Windows</code></pre>
+                <p>This generates Java classes from the XSD schemas and copies them into <code>src/main/java/</code>. The hand-written <code>FficeUnmarshallerPool</code> and <code>FficeXsdValidator</code> in the <code>validation</code> package are preserved.</p>
+
+                <h3>1.7 Update the UnmarshallerPool</h3>
+                <p>Edit <code>src/main/java/aero/fixm/ffice/validation/FficeUnmarshallerPool.java</code> and register all generated <code>ObjectFactory</code> classes in the <code>JAXBContext</code>:</p>
+                <pre class="wiki-code"><code>this.jaxbContext = JAXBContext.newInstance(
+    aero.fixm.ffice.ObjectFactory.class,
+    aero.fixm.base.ObjectFactory.class,
+    aero.fixm.flight.ObjectFactory.class,
+    aero.fixm.ffice.bugfix.ObjectFactory.class);</code></pre>
+                <p>Set the <code>ROOT_XSD</code> constant to match the path of your root schema on the classpath:</p>
+                <pre class="wiki-code"><code>private static final String ROOT_XSD = "schemas/applications/fficemessage/FficeMessage.xsd";</code></pre>
+
+                <h3>1.8 Build and install</h3>
+                <pre class="wiki-code"><code>./mvnw clean install -DskipTests        # Linux / macOS
+mvnw.cmd clean install -DskipTests      # Windows</code></pre>
+            </section>
+
+            <div class="tutorial-nav-footer">
+                <a href="index.html" class="nav-prev">
+                    <span class="nav-label"><i class="fas fa-arrow-left"></i> Previous</span>
+                    <span class="nav-title">Introduction &amp; Setup</span>
+                </a>
+                <a href="outbox-extension.html" class="nav-next">
+                    <span class="nav-label">Next <i class="fas fa-arrow-right"></i></span>
+                    <span class="nav-title">Part 2: Outbox Extension</span>
+                </a>
+            </div>
+        </main>
+    </div>
+
+    <footer class="footer"></footer>
+    <script src="../../script.js"></script>
+</body>
+</html>

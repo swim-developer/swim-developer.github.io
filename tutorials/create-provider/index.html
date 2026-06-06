@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Introduction &amp; Setup | Create Provider Tutorial | SWIM Developer</title>
+    <meta name="description" content="Prerequisites and local setup for building an FF-ICE provider: clone swim-developer repositories and install Maven artifacts.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@400;500;600;700;900&family=Red+Hat+Text:wght@400;500;600&family=Red+Hat+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="../../styles.css">
+</head>
+<body>
+    <nav class="navbar"></nav>
+
+    <header class="page-header">
+        <div class="container">
+            <div class="page-header-content">
+                <h1><i class="fas fa-graduation-cap"></i> Tutorials</h1>
+                <p class="page-subtitle">Step-by-step guides for deploying, configuring, and validating SWIM services</p>
+            </div>
+        </div>
+    </header>
+
+    <div class="wiki-layout">
+        <aside class="wiki-sidebar">
+            <nav class="wiki-nav">
+                <div class="wiki-nav-group">
+                    <h4 class="wiki-nav-title"><i class="fas fa-rocket"></i> Getting Started</h4>
+                    <ul>
+                        <li><a href="../deploy-gitops.html">GitOps (Argo CD)</a></li>
+                        <li><a href="../deploy-openshift.html">OpenShift</a></li>
+                        <li><a href="../deploy-kubernetes.html">Kubernetes</a></li>
+                        <li><a href="../deploy-openshift-local.html">OpenShift Local</a></li>
+                        <li><a href="../deploy-minikube.html">Minikube</a></li>
+                        <li><a href="../deploy-podman.html">Container Local (Podman)</a></li>
+                        <li><a href="../deploy-java.html">Java / Binary</a></li>
+                    </ul>
+                </div>
+                <div class="wiki-nav-group">
+                    <h4 class="wiki-nav-title"><i class="fas fa-bell"></i> Digital NOTAM</h4>
+                    <ul>
+                        <li><a href="../dnotam-consumer-deploy.html">Deploy Consumer</a></li>
+                        <li><a href="../dnotam-consumer-explore.html">Explore Consumer</a></li>
+                        <li><a href="../dnotam-provider-deploy.html">Deploy Provider</a></li>
+                        <li><a href="../dnotam-provider-explore.html">Explore Provider</a></li>
+                        <li><a href="../consumer-validator-deploy.html">Deploy Consumer Validator</a></li>
+                        <li><a href="../consumer-validator-explore.html">Explore Consumer Validator</a></li>
+                        <li><a href="../provider-validator-deploy.html">Deploy Provider Validator</a></li>
+                        <li><a href="../e2e-test.html">End-to-End Test</a></li>
+                    </ul>
+                </div>
+                <div class="wiki-nav-group">
+                    <h4 class="wiki-nav-title"><i class="fas fa-plane-arrival"></i> ED-254 (AMAN)</h4>
+                    <ul>
+                        <li><a href="../ed254-consumer-deploy.html">Deploy Consumer</a></li>
+                        <li><a href="../ed254-provider-deploy.html">Deploy Provider</a></li>
+                    </ul>
+                </div>
+                <div class="wiki-nav-group">
+                    <h4 class="wiki-nav-title"><i class="fas fa-wand-magic-sparkles"></i> Build Your Own</h4>
+                    <h4 class="wiki-nav-title" style="margin-top: 8px;"><i class="fas fa-upload"></i> Create Provider</h4>
+                    <ul class="chapter-list">
+                        <li><a href="index.html" class="chapter-active">Introduction &amp; Setup</a></li>
+                        <li><a href="data-model.html">Part 1: Data Model</a></li>
+                        <li><a href="provider.html">Part 2: Provider Service</a></li>
+                        <li><a href="validator.html">Part 3: Provider Validator</a></li>
+                        <li><a href="infrastructure.html">Part 4: Infrastructure</a></li>
+                        <li><a href="run.html">Part 5: Run &amp; Verify</a></li>
+                        <li><a href="tests.html">Part 6: Tests</a></li>
+                    </ul>
+                    <h4 class="wiki-nav-title" style="margin-top: 16px;"><i class="fas fa-book"></i> Create Consumer</h4>
+                    <ul>
+                        <li><a href="../create-consumer/index.html">Introduction &amp; Setup</a></li>
+                    </ul>
+                </div>
+            </nav>
+        </aside>
+
+        <main class="wiki-content">
+            <div class="tutorial-progress">
+                <span>Step 1 of 7</span>
+                <div class="progress-bar"><div class="progress-fill" style="width: 14.3%"></div></div>
+            </div>
+
+            <section class="wiki-section">
+                <h2>Building an FF-ICE Provider with SWIM Developer</h2>
+                <p>This tutorial walks through creating a complete SWIM provider service for FF-ICE (Flight and Flow Information for a Collaborative Environment) messages, from the data model to a running application with automated tests.</p>
+                <p>By the end, you will have three projects:</p>
+                <ol>
+                    <li><strong>swim-fixm-ffice-model</strong> — JAXB data model generated from FIXM 4.3 + FF-ICE 1.1 XSD schemas</li>
+                    <li><strong>swim-ffice-provider</strong> — Quarkus provider service that ingests FF-ICE messages from Kafka, validates and persists them, then delivers to subscribers via AMQP</li>
+                    <li><strong>swim-ffice-provider-validator</strong> — AMQP consumer test harness that subscribes to the provider, receives events, and runs conformance tests</li>
+                </ol>
+
+                <div class="wiki-note">
+                    <p><strong>Already have <code>swim-fixm-ffice-model</code>?</strong> If you completed the FF-ICE Consumer tutorial, the data model is already in your local Maven repository. You can skip Part 1 and start directly at <a href="provider.html">Part 2: Provider Service</a>.</p>
+                </div>
+
+                <h2>Prerequisites</h2>
+                <table>
+                    <thead>
+                        <tr><th>Tool</th><th>Version</th><th>Purpose</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>JDK</td><td>21+</td><td>Runtime and compilation</td></tr>
+                        <tr><td>Maven</td><td>3.9+</td><td>Build system</td></tr>
+                        <tr><td>Git</td><td>2.40+</td><td>Source control</td></tr>
+                        <tr>
+                            <td><a href="https://podman-desktop.io" target="_blank">Podman Desktop</a></td>
+                            <td>Latest</td>
+                            <td>Container runtime (includes Podman engine + GUI, available for Linux, macOS, and Windows)</td>
+                        </tr>
+                        <tr><td>mkcert</td><td>Latest</td><td>Local TLS certificate generation</td></tr>
+                    </tbody>
+                </table>
+
+                <div class="wiki-note">
+                    <p>All commands in this tutorial are shown for Linux/macOS. Windows equivalents are provided where they differ (primarily <code>mvnw.cmd</code> instead of <code>./mvnw</code>). On Windows, <a href="https://gitforwindows.org/" target="_blank">Git Bash</a> or <a href="https://learn.microsoft.com/en-us/windows/wsl/" target="_blank">WSL</a> can be used to run shell scripts (e.g., <code>certs/generate.sh</code>).</p>
+                </div>
+
+                <h2>Setup: Install Dependencies</h2>
+                <p>Each SWIM Developer component lives in its own Git repository. Clone and install only what you need.</p>
+
+                <h3>Parent POM</h3>
+                <pre class="wiki-code"><code>git clone https://github.com/swim-developer/swim-developer
+cd swim-developer
+./mvnw clean install -DskipTests        # Linux / macOS
+mvnw.cmd clean install -DskipTests      # Windows</code></pre>
+
+                <h3>Framework</h3>
+                <pre class="wiki-code"><code>git clone https://github.com/swim-developer/swim-developer-framework
+cd swim-developer-framework
+./mvnw clean install -DskipTests        # Linux / macOS
+mvnw.cmd clean install -DskipTests      # Windows</code></pre>
+
+                <h3>Extensions</h3>
+                <pre class="wiki-code"><code>git clone https://github.com/swim-developer/swim-developer-extensions
+cd swim-developer-extensions
+./mvnw clean install -DskipTests        # Linux / macOS
+mvnw.cmd clean install -DskipTests      # Windows</code></pre>
+
+                <h3>Validators</h3>
+                <pre class="wiki-code"><code>git clone https://github.com/swim-developer/swim-developer-validators
+cd swim-developer-validators
+./mvnw clean install -DskipTests        # Linux / macOS
+mvnw.cmd clean install -DskipTests      # Windows</code></pre>
+
+                <h3>Model Archetype</h3>
+                <pre class="wiki-code"><code>git clone https://github.com/swim-developer/swim-model-archetype
+cd swim-model-archetype
+mvn clean install</code></pre>
+
+                <h3>Provider Archetype</h3>
+                <pre class="wiki-code"><code>git clone https://github.com/swim-developer/swim-provider-archetype
+cd swim-provider-archetype
+mvn clean install</code></pre>
+
+                <div class="wiki-note">
+                    <p>After this setup, all artifacts are in your local Maven repository (<code>~/.m2/repository</code>). You can work from any directory going forward.</p>
+                </div>
+            </section>
+
+            <div class="tutorial-nav-footer">
+                <a href="data-model.html" class="nav-next">
+                    <span class="nav-label">Next <i class="fas fa-arrow-right"></i></span>
+                    <span class="nav-title">Part 1: Data Model</span>
+                </a>
+            </div>
+        </main>
+    </div>
+
+    <footer class="footer"></footer>
+    <script src="../../script.js"></script>
+</body>
+</html>

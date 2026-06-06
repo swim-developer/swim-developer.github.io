@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 1100 720" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+        <style>
+            @import url('https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@400;700&amp;family=Red+Hat+Text:wght@400;500&amp;family=Red+Hat+Mono:wght@400&amp;display=swap');
+        </style>
+        <linearGradient id="grad-framework" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#37474f;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#546e7a;stop-opacity:1" />
+        </linearGradient>
+        <linearGradient id="grad-extension" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#7b1fa2;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#9c27b0;stop-opacity:1" />
+        </linearGradient>
+        <linearGradient id="grad-dnotam" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#1565c0;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#1976d2;stop-opacity:1" />
+        </linearGradient>
+        <linearGradient id="grad-aman" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#2e7d32;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#43a047;stop-opacity:1" />
+        </linearGradient>
+        <linearGradient id="grad-met" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#f57c00;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#ff9800;stop-opacity:1" />
+        </linearGradient>
+        <filter id="ext-shadow" x="-10%" y="-10%" width="120%" height="120%">
+            <feDropShadow dx="0" dy="3" stdDeviation="3" flood-opacity="0.15"/>
+        </filter>
+        <marker id="ext-arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+            <polygon points="0 0, 8 3, 0 6" fill="#7b1fa2"/>
+        </marker>
+    </defs>
+
+    <!-- Title -->
+    <text x="550" y="28" text-anchor="middle" fill="#1a1a1a" font-weight="700" font-size="16" font-family="'Red Hat Display', Arial, sans-serif">Extensible Architecture — Common Framework + Service-Specific Extensions</text>
+
+    <!-- ==================== CONSUMER SIDE ==================== -->
+    <g>
+        <text x="280" y="55" text-anchor="middle" fill="#004085" font-weight="700" font-size="14" font-family="'Red Hat Display', Arial, sans-serif">CONSUMER</text>
+
+        <!-- Framework Base Box -->
+        <rect x="30" y="70" width="500" height="200" rx="10" fill="#eceff1" stroke="#607d8b" stroke-width="2" filter="url(#ext-shadow)"/>
+        <rect x="30" y="70" width="500" height="32" rx="10" fill="url(#grad-framework)"/>
+        <rect x="30" y="92" width="500" height="10" fill="url(#grad-framework)"/>
+        <text x="280" y="93" text-anchor="middle" fill="#fff" font-weight="600" font-size="12" font-family="'Red Hat Text', Arial, sans-serif">Common Framework (Designed for Yellow Profile)</text>
+
+        <!-- Framework capabilities -->
+        <text x="55" y="125" fill="#37474f" font-size="10" font-weight="600" font-family="'Red Hat Text', Arial, sans-serif">Built-in Capabilities:</text>
+        
+        <rect x="55" y="135" width="130" height="22" rx="4" fill="#ffffff" stroke="#90a4ae" stroke-width="1"/>
+        <text x="120" y="150" text-anchor="middle" fill="#546e7a" font-size="9" font-family="'Red Hat Text', Arial, sans-serif">Subscription Manager</text>
+        
+        <rect x="195" y="135" width="100" height="22" rx="4" fill="#ffffff" stroke="#90a4ae" stroke-width="1"/>
+        <text x="245" y="150" text-anchor="middle" fill="#546e7a" font-size="9" font-family="'Red Hat Text', Arial, sans-serif">AMQP Consumer</text>
+        
+        <rect x="305" y="135" width="90" height="22" rx="4" fill="#ffffff" stroke="#90a4ae" stroke-width="1"/>
+        <text x="350" y="150" text-anchor="middle" fill="#546e7a" font-size="9" font-family="'Red Hat Text', Arial, sans-serif">mTLS Security</text>
+        
+        <rect x="405" y="135" width="105" height="22" rx="4" fill="#ffffff" stroke="#90a4ae" stroke-width="1"/>
+        <text x="457" y="150" text-anchor="middle" fill="#546e7a" font-size="9" font-family="'Red Hat Text', Arial, sans-serif">Inbox/Outbox</text>
+
+        <rect x="55" y="165" width="100" height="22" rx="4" fill="#ffffff" stroke="#90a4ae" stroke-width="1"/>
+        <text x="105" y="180" text-anchor="middle" fill="#546e7a" font-size="9" font-family="'Red Hat Text', Arial, sans-serif">Fault Tolerance</text>
+        
+        <rect x="165" y="165" width="95" height="22" rx="4" fill="#ffffff" stroke="#90a4ae" stroke-width="1"/>
+        <text x="212" y="180" text-anchor="middle" fill="#546e7a" font-size="9" font-family="'Red Hat Text', Arial, sans-serif">Observability</text>
+        
+        <rect x="270" y="165" width="90" height="22" rx="4" fill="#ffffff" stroke="#90a4ae" stroke-width="1"/>
+        <text x="315" y="180" text-anchor="middle" fill="#546e7a" font-size="9" font-family="'Red Hat Text', Arial, sans-serif">Health Checks</text>
+        
+        <rect x="370" y="165" width="140" height="22" rx="4" fill="#ffffff" stroke="#90a4ae" stroke-width="1"/>
+        <text x="440" y="180" text-anchor="middle" fill="#546e7a" font-size="9" font-family="'Red Hat Text', Arial, sans-serif">12-Factor / Cloud-Native</text>
+
+        <!-- Extension Points Header -->
+        <rect x="55" y="200" width="450" height="55" rx="6" fill="#f3e5f5" stroke="#7b1fa2" stroke-width="2"/>
+        <rect x="55" y="200" width="450" height="22" rx="6" fill="url(#grad-extension)"/>
+        <rect x="55" y="214" width="450" height="8" fill="url(#grad-extension)"/>
+        <text x="280" y="217" text-anchor="middle" fill="#fff" font-weight="600" font-size="11" font-family="'Red Hat Text', Arial, sans-serif">Extension Points (Interfaces to Implement)</text>
+        
+        <text x="115" y="242" text-anchor="middle" fill="#7b1fa2" font-size="9" font-family="'Red Hat Text', Arial, sans-serif">• Subscription Builder</text>
+        <text x="225" y="242" text-anchor="middle" fill="#7b1fa2" font-size="9" font-family="'Red Hat Text', Arial, sans-serif">• Message Validator</text>
+        <text x="335" y="242" text-anchor="middle" fill="#7b1fa2" font-size="9" font-family="'Red Hat Text', Arial, sans-serif">• Message Enricher</text>
+        <text x="445" y="242" text-anchor="middle" fill="#7b1fa2" font-size="9" font-family="'Red Hat Text', Arial, sans-serif">• Distribution Router</text>
+
+        <!-- Arrows to Service Modules -->
+        <line x1="125" y1="260" x2="125" y2="295" stroke="#7b1fa2" stroke-width="2" marker-end="url(#ext-arrow)"/>
+        <line x1="280" y1="260" x2="280" y2="295" stroke="#7b1fa2" stroke-width="2" marker-end="url(#ext-arrow)"/>
+        <line x1="435" y1="260" x2="435" y2="295" stroke="#7b1fa2" stroke-width="2" marker-end="url(#ext-arrow)"/>
+
+        <!-- Service Modules -->
+        <rect x="55" y="300" width="140" height="85" rx="8" fill="#e3f2fd" stroke="#1565c0" stroke-width="2" filter="url(#ext-shadow)"/>
+        <rect x="55" y="300" width="140" height="25" rx="8" fill="url(#grad-dnotam)"/>
+        <rect x="55" y="317" width="140" height="8" fill="url(#grad-dnotam)"/>
+        <text x="125" y="318" text-anchor="middle" fill="#fff" font-weight="600" font-size="10" font-family="'Red Hat Text', Arial, sans-serif">DNOTAM Module</text>
+        <text x="125" y="345" text-anchor="middle" fill="#1565c0" font-size="8" font-family="'Red Hat Text', Arial, sans-serif">AIXM 5.1.1 schemas</text>
+        <text x="125" y="358" text-anchor="middle" fill="#1565c0" font-size="8" font-family="'Red Hat Text', Arial, sans-serif">Scenario-based routing</text>
+        <text x="125" y="371" text-anchor="middle" fill="#1565c0" font-size="8" font-family="'Red Hat Text', Arial, sans-serif">Event enrichment</text>
+
+        <rect x="210" y="300" width="140" height="85" rx="8" fill="#e8f5e9" stroke="#2e7d32" stroke-width="2" filter="url(#ext-shadow)"/>
+        <rect x="210" y="300" width="140" height="25" rx="8" fill="url(#grad-aman)"/>
+        <rect x="210" y="317" width="140" height="8" fill="url(#grad-aman)"/>
+        <text x="280" y="318" text-anchor="middle" fill="#fff" font-weight="600" font-size="10" font-family="'Red Hat Text', Arial, sans-serif">AMAN Module</text>
+        <text x="280" y="345" text-anchor="middle" fill="#2e7d32" font-size="8" font-family="'Red Hat Text', Arial, sans-serif">FIXM schemas</text>
+        <text x="280" y="358" text-anchor="middle" fill="#2e7d32" font-size="8" font-family="'Red Hat Text', Arial, sans-serif">Airport-based routing</text>
+        <text x="280" y="371" text-anchor="middle" fill="#2e7d32" font-size="8" font-family="'Red Hat Text', Arial, sans-serif">Sequence enrichment</text>
+
+        <rect x="365" y="300" width="140" height="85" rx="8" fill="#fff3e0" stroke="#f57c00" stroke-width="2" filter="url(#ext-shadow)"/>
+        <rect x="365" y="300" width="140" height="25" rx="8" fill="url(#grad-met)"/>
+        <rect x="365" y="317" width="140" height="8" fill="url(#grad-met)"/>
+        <text x="435" y="318" text-anchor="middle" fill="#fff" font-weight="600" font-size="10" font-family="'Red Hat Text', Arial, sans-serif">MET Module</text>
+        <text x="435" y="345" text-anchor="middle" fill="#e65100" font-size="8" font-family="'Red Hat Text', Arial, sans-serif">IWXXM schemas</text>
+        <text x="435" y="358" text-anchor="middle" fill="#e65100" font-size="8" font-family="'Red Hat Text', Arial, sans-serif">Weather-based routing</text>
+        <text x="435" y="371" text-anchor="middle" fill="#e65100" font-size="8" font-family="'Red Hat Text', Arial, sans-serif">METAR/TAF enrichment</text>
+    </g>
+
+    <!-- ==================== PROVIDER SIDE ==================== -->
+    <g>
+        <text x="820" y="55" text-anchor="middle" fill="#28a745" font-weight="700" font-size="14" font-family="'Red Hat Display', Arial, sans-serif">PROVIDER</text>
+
+        <!-- Framework Base Box -->
+        <rect x="570" y="70" width="500" height="200" rx="10" fill="#eceff1" stroke="#607d8b" stroke-width="2" filter="url(#ext-shadow)"/>
+        <rect x="570" y="70" width="500" height="32" rx="10" fill="url(#grad-framework)"/>
+        <rect x="570" y="92" width="500" height="10" fill="url(#grad-framework)"/>
+        <text x="820" y="93" text-anchor="middle" fill="#fff" font-weight="600" font-size="12" font-family="'Red Hat Text', Arial, sans-serif">Common Framework (Designed for Yellow Profile)</text>
+
+        <!-- Framework capabilities -->
+        <text x="595" y="125" fill="#37474f" font-size="10" font-weight="600" font-family="'Red Hat Text', Arial, sans-serif">Built-in Capabilities:</text>
+        
+        <rect x="595" y="135" width="130" height="22" rx="4" fill="#ffffff" stroke="#90a4ae" stroke-width="1"/>
+        <text x="660" y="150" text-anchor="middle" fill="#546e7a" font-size="9" font-family="'Red Hat Text', Arial, sans-serif">Subscription CRUD</text>
+        
+        <rect x="735" y="135" width="100" height="22" rx="4" fill="#ffffff" stroke="#90a4ae" stroke-width="1"/>
+        <text x="785" y="150" text-anchor="middle" fill="#546e7a" font-size="9" font-family="'Red Hat Text', Arial, sans-serif">Queue Manager</text>
+        
+        <rect x="845" y="135" width="90" height="22" rx="4" fill="#ffffff" stroke="#90a4ae" stroke-width="1"/>
+        <text x="890" y="150" text-anchor="middle" fill="#546e7a" font-size="9" font-family="'Red Hat Text', Arial, sans-serif">mTLS + OIDC</text>
+        
+        <rect x="945" y="135" width="105" height="22" rx="4" fill="#ffffff" stroke="#90a4ae" stroke-width="1"/>
+        <text x="997" y="150" text-anchor="middle" fill="#546e7a" font-size="9" font-family="'Red Hat Text', Arial, sans-serif">JWT Validation</text>
+
+        <rect x="595" y="165" width="100" height="22" rx="4" fill="#ffffff" stroke="#90a4ae" stroke-width="1"/>
+        <text x="645" y="180" text-anchor="middle" fill="#546e7a" font-size="9" font-family="'Red Hat Text', Arial, sans-serif">AMQP Publisher</text>
+        
+        <rect x="705" y="165" width="110" height="22" rx="4" fill="#ffffff" stroke="#90a4ae" stroke-width="1"/>
+        <text x="760" y="180" text-anchor="middle" fill="#546e7a" font-size="9" font-family="'Red Hat Text', Arial, sans-serif">State Machine</text>
+        
+        <rect x="825" y="165" width="90" height="22" rx="4" fill="#ffffff" stroke="#90a4ae" stroke-width="1"/>
+        <text x="870" y="180" text-anchor="middle" fill="#546e7a" font-size="9" font-family="'Red Hat Text', Arial, sans-serif">Observability</text>
+        
+        <rect x="925" y="165" width="125" height="22" rx="4" fill="#ffffff" stroke="#90a4ae" stroke-width="1"/>
+        <text x="987" y="180" text-anchor="middle" fill="#546e7a" font-size="9" font-family="'Red Hat Text', Arial, sans-serif">12-Factor / Cloud-Native</text>
+
+        <!-- Extension Points Header -->
+        <rect x="595" y="200" width="450" height="55" rx="6" fill="#f3e5f5" stroke="#7b1fa2" stroke-width="2"/>
+        <rect x="595" y="200" width="450" height="22" rx="6" fill="url(#grad-extension)"/>
+        <rect x="595" y="214" width="450" height="8" fill="url(#grad-extension)"/>
+        <text x="820" y="217" text-anchor="middle" fill="#fff" font-weight="600" font-size="11" font-family="'Red Hat Text', Arial, sans-serif">Extension Points (Interfaces to Implement)</text>
+        
+        <text x="655" y="242" text-anchor="middle" fill="#7b1fa2" font-size="9" font-family="'Red Hat Text', Arial, sans-serif">• Subscription Validator</text>
+        <text x="765" y="242" text-anchor="middle" fill="#7b1fa2" font-size="9" font-family="'Red Hat Text', Arial, sans-serif">• Data Model</text>
+        <text x="875" y="242" text-anchor="middle" fill="#7b1fa2" font-size="9" font-family="'Red Hat Text', Arial, sans-serif">• Query Indexes</text>
+        <text x="985" y="242" text-anchor="middle" fill="#7b1fa2" font-size="9" font-family="'Red Hat Text', Arial, sans-serif">• Distribution Router</text>
+
+        <!-- Arrows to Service Modules -->
+        <line x1="665" y1="260" x2="665" y2="295" stroke="#7b1fa2" stroke-width="2" marker-end="url(#ext-arrow)"/>
+        <line x1="820" y1="260" x2="820" y2="295" stroke="#7b1fa2" stroke-width="2" marker-end="url(#ext-arrow)"/>
+        <line x1="975" y1="260" x2="975" y2="295" stroke="#7b1fa2" stroke-width="2" marker-end="url(#ext-arrow)"/>
+
+        <!-- Service Modules -->
+        <rect x="595" y="300" width="140" height="85" rx="8" fill="#e3f2fd" stroke="#1565c0" stroke-width="2" filter="url(#ext-shadow)"/>
+        <rect x="595" y="300" width="140" height="25" rx="8" fill="url(#grad-dnotam)"/>
+        <rect x="595" y="317" width="140" height="8" fill="url(#grad-dnotam)"/>
+        <text x="665" y="318" text-anchor="middle" fill="#fff" font-weight="600" font-size="10" font-family="'Red Hat Text', Arial, sans-serif">DNOTAM Module</text>
+        <text x="665" y="345" text-anchor="middle" fill="#1565c0" font-size="8" font-family="'Red Hat Text', Arial, sans-serif">AIXM validation</text>
+        <text x="665" y="358" text-anchor="middle" fill="#1565c0" font-size="8" font-family="'Red Hat Text', Arial, sans-serif">Scenario-based queues</text>
+        <text x="665" y="371" text-anchor="middle" fill="#1565c0" font-size="8" font-family="'Red Hat Text', Arial, sans-serif">Event filtering</text>
+
+        <rect x="750" y="300" width="140" height="85" rx="8" fill="#e8f5e9" stroke="#2e7d32" stroke-width="2" filter="url(#ext-shadow)"/>
+        <rect x="750" y="300" width="140" height="25" rx="8" fill="url(#grad-aman)"/>
+        <rect x="750" y="317" width="140" height="8" fill="url(#grad-aman)"/>
+        <text x="820" y="318" text-anchor="middle" fill="#fff" font-weight="600" font-size="10" font-family="'Red Hat Text', Arial, sans-serif">AMAN Module</text>
+        <text x="820" y="345" text-anchor="middle" fill="#2e7d32" font-size="8" font-family="'Red Hat Text', Arial, sans-serif">FIXM validation</text>
+        <text x="820" y="358" text-anchor="middle" fill="#2e7d32" font-size="8" font-family="'Red Hat Text', Arial, sans-serif">Airport-based queues</text>
+        <text x="820" y="371" text-anchor="middle" fill="#2e7d32" font-size="8" font-family="'Red Hat Text', Arial, sans-serif">Sequence filtering</text>
+
+        <rect x="905" y="300" width="140" height="85" rx="8" fill="#fff3e0" stroke="#f57c00" stroke-width="2" filter="url(#ext-shadow)"/>
+        <rect x="905" y="300" width="140" height="25" rx="8" fill="url(#grad-met)"/>
+        <rect x="905" y="317" width="140" height="8" fill="url(#grad-met)"/>
+        <text x="975" y="318" text-anchor="middle" fill="#fff" font-weight="600" font-size="10" font-family="'Red Hat Text', Arial, sans-serif">MET Module</text>
+        <text x="975" y="345" text-anchor="middle" fill="#e65100" font-size="8" font-family="'Red Hat Text', Arial, sans-serif">IWXXM validation</text>
+        <text x="975" y="358" text-anchor="middle" fill="#e65100" font-size="8" font-family="'Red Hat Text', Arial, sans-serif">Weather-based queues</text>
+        <text x="975" y="371" text-anchor="middle" fill="#e65100" font-size="8" font-family="'Red Hat Text', Arial, sans-serif">METAR/TAF filtering</text>
+    </g>
+
+    <!-- ==================== CONTAINER IMAGES ==================== -->
+    <g>
+        <text x="550" y="420" text-anchor="middle" fill="#37474f" font-weight="700" font-size="14" font-family="'Red Hat Display', Arial, sans-serif">Resulting Container Images</text>
+
+        <!-- Consumer Containers -->
+        <rect x="55" y="440" width="140" height="50" rx="6" fill="#1565c0" filter="url(#ext-shadow)"/>
+        <text x="125" y="460" text-anchor="middle" fill="#fff" font-size="9" font-weight="500" font-family="'Red Hat Text', Arial, sans-serif">swim-dnotam-consumer</text>
+        <text x="125" y="478" text-anchor="middle" fill="#bbdefb" font-size="8" font-family="'Red Hat Text', Arial, sans-serif">Framework + DNOTAM ext.</text>
+
+        <rect x="210" y="440" width="140" height="50" rx="6" fill="#2e7d32" filter="url(#ext-shadow)"/>
+        <text x="280" y="460" text-anchor="middle" fill="#fff" font-size="9" font-weight="500" font-family="'Red Hat Text', Arial, sans-serif">swim-aman-consumer</text>
+        <text x="280" y="478" text-anchor="middle" fill="#c8e6c9" font-size="8" font-family="'Red Hat Text', Arial, sans-serif">Framework + AMAN ext.</text>
+
+        <rect x="365" y="440" width="140" height="50" rx="6" fill="#f57c00" filter="url(#ext-shadow)"/>
+        <text x="435" y="460" text-anchor="middle" fill="#fff" font-size="9" font-weight="500" font-family="'Red Hat Text', Arial, sans-serif">swim-met-consumer</text>
+        <text x="435" y="478" text-anchor="middle" fill="#ffe0b2" font-size="8" font-family="'Red Hat Text', Arial, sans-serif">Framework + MET ext.</text>
+
+        <!-- Provider Containers -->
+        <rect x="595" y="440" width="140" height="50" rx="6" fill="#1565c0" filter="url(#ext-shadow)"/>
+        <text x="665" y="460" text-anchor="middle" fill="#fff" font-size="9" font-weight="500" font-family="'Red Hat Text', Arial, sans-serif">swim-dnotam-provider</text>
+        <text x="665" y="478" text-anchor="middle" fill="#bbdefb" font-size="8" font-family="'Red Hat Text', Arial, sans-serif">Framework + DNOTAM ext.</text>
+
+        <rect x="750" y="440" width="140" height="50" rx="6" fill="#2e7d32" filter="url(#ext-shadow)"/>
+        <text x="820" y="460" text-anchor="middle" fill="#fff" font-size="9" font-weight="500" font-family="'Red Hat Text', Arial, sans-serif">swim-aman-provider</text>
+        <text x="820" y="478" text-anchor="middle" fill="#c8e6c9" font-size="8" font-family="'Red Hat Text', Arial, sans-serif">Framework + AMAN ext.</text>
+
+        <rect x="905" y="440" width="140" height="50" rx="6" fill="#f57c00" filter="url(#ext-shadow)"/>
+        <text x="975" y="460" text-anchor="middle" fill="#fff" font-size="9" font-weight="500" font-family="'Red Hat Text', Arial, sans-serif">swim-met-provider</text>
+        <text x="975" y="478" text-anchor="middle" fill="#ffe0b2" font-size="8" font-family="'Red Hat Text', Arial, sans-serif">Framework + MET ext.</text>
+    </g>
+
+    <!-- ==================== DEPLOYMENT MODEL ==================== -->
+    <g>
+        <rect x="30" y="520" width="1040" height="185" rx="10" fill="#e8f5e9" stroke="#2e7d32" stroke-width="2" filter="url(#ext-shadow)"/>
+        <rect x="30" y="520" width="1040" height="35" rx="10" fill="#2e7d32"/>
+        <rect x="30" y="545" width="1040" height="10" fill="#2e7d32"/>
+        <text x="550" y="545" text-anchor="middle" fill="#fff" font-weight="700" font-size="13" font-family="'Red Hat Display', Arial, sans-serif">Deployment Model — Same Image, Different Configurations</text>
+
+        <!-- Environment Examples -->
+        <rect x="60" y="575" width="230" height="115" rx="8" fill="#ffffff" stroke="#81c784" stroke-width="1.5"/>
+        <text x="175" y="598" text-anchor="middle" fill="#2e7d32" font-weight="600" font-size="11" font-family="'Red Hat Text', Arial, sans-serif">Development</text>
+        <text x="175" y="618" text-anchor="middle" fill="#37474f" font-size="9" font-family="'Red Hat Text', Arial, sans-serif">Pulls: swim-dnotam-consumer</text>
+        <rect x="80" y="630" width="190" height="50" rx="4" fill="#f5f5f5" stroke="#e0e0e0" stroke-width="1"/>
+        <text x="175" y="648" text-anchor="middle" fill="#546e7a" font-size="8" font-family="'Red Hat Mono', monospace">AISP_URL=https://aisp.dev.local</text>
+        <text x="175" y="662" text-anchor="middle" fill="#546e7a" font-size="8" font-family="'Red Hat Mono', monospace">KAFKA_BROKERS=kafka.dev.local</text>
+        <text x="175" y="676" text-anchor="middle" fill="#546e7a" font-size="8" font-family="'Red Hat Mono', monospace">MONGO_URI=mongodb://db.dev.local</text>
+
+        <rect x="310" y="575" width="230" height="115" rx="8" fill="#ffffff" stroke="#81c784" stroke-width="1.5"/>
+        <text x="425" y="598" text-anchor="middle" fill="#2e7d32" font-weight="600" font-size="11" font-family="'Red Hat Text', Arial, sans-serif">UAT</text>
+        <text x="425" y="618" text-anchor="middle" fill="#37474f" font-size="9" font-family="'Red Hat Text', Arial, sans-serif">Pulls: swim-dnotam-consumer</text>
+        <rect x="330" y="630" width="190" height="50" rx="4" fill="#f5f5f5" stroke="#e0e0e0" stroke-width="1"/>
+        <text x="425" y="648" text-anchor="middle" fill="#546e7a" font-size="8" font-family="'Red Hat Mono', monospace">AISP_URL=https://aisp.uat.local</text>
+        <text x="425" y="662" text-anchor="middle" fill="#546e7a" font-size="8" font-family="'Red Hat Mono', monospace">KAFKA_BROKERS=kafka.uat.local</text>
+        <text x="425" y="676" text-anchor="middle" fill="#546e7a" font-size="8" font-family="'Red Hat Mono', monospace">MONGO_URI=mongodb://db.uat.local</text>
+
+        <rect x="560" y="575" width="230" height="115" rx="8" fill="#ffffff" stroke="#81c784" stroke-width="1.5"/>
+        <text x="675" y="598" text-anchor="middle" fill="#2e7d32" font-weight="600" font-size="11" font-family="'Red Hat Text', Arial, sans-serif">Pre-Production</text>
+        <text x="675" y="618" text-anchor="middle" fill="#37474f" font-size="9" font-family="'Red Hat Text', Arial, sans-serif">Pulls: swim-dnotam-consumer</text>
+        <rect x="580" y="630" width="190" height="50" rx="4" fill="#f5f5f5" stroke="#e0e0e0" stroke-width="1"/>
+        <text x="675" y="648" text-anchor="middle" fill="#546e7a" font-size="8" font-family="'Red Hat Mono', monospace">AISP_URL=https://aisp.preprod.local</text>
+        <text x="675" y="662" text-anchor="middle" fill="#546e7a" font-size="8" font-family="'Red Hat Mono', monospace">KAFKA_BROKERS=kafka.preprod.local</text>
+        <text x="675" y="676" text-anchor="middle" fill="#546e7a" font-size="8" font-family="'Red Hat Mono', monospace">MONGO_URI=mongodb://db.preprod.local</text>
+
+        <rect x="810" y="575" width="230" height="115" rx="8" fill="#ffffff" stroke="#81c784" stroke-width="1.5"/>
+        <text x="925" y="598" text-anchor="middle" fill="#2e7d32" font-weight="600" font-size="11" font-family="'Red Hat Text', Arial, sans-serif">Production</text>
+        <text x="925" y="618" text-anchor="middle" fill="#37474f" font-size="9" font-family="'Red Hat Text', Arial, sans-serif">Pulls: swim-dnotam-consumer</text>
+        <rect x="830" y="630" width="190" height="50" rx="4" fill="#f5f5f5" stroke="#e0e0e0" stroke-width="1"/>
+        <text x="925" y="648" text-anchor="middle" fill="#546e7a" font-size="8" font-family="'Red Hat Mono', monospace">AISP_URL=https://ead.eurocontrol.int</text>
+        <text x="925" y="662" text-anchor="middle" fill="#546e7a" font-size="8" font-family="'Red Hat Mono', monospace">KAFKA_BROKERS=kafka.prod.local</text>
+        <text x="925" y="676" text-anchor="middle" fill="#546e7a" font-size="8" font-family="'Red Hat Mono', monospace">MONGO_URI=mongodb://db.prod.local</text>
+    </g>
+</svg>

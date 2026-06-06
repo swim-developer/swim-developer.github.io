@@ -1,0 +1,150 @@
+<svg viewBox="0 0 1200 700" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="arrow3" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#64ffda"/>
+    </marker>
+    <marker id="arrow3b" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#d4a106"/>
+    </marker>
+  </defs>
+
+  <!-- Title -->
+  <text x="600" y="55" text-anchor="middle" fill="#fff" font-family="Red Hat Display, sans-serif" font-size="36" font-weight="700">Consumer: Your Gateway In</text>
+  <text x="600" y="88" text-anchor="middle" fill="#8892b0" font-family="Red Hat Text, sans-serif" font-size="20">Federated ingestion &#8212; validated events ready for internal processing</text>
+
+  <!-- ============================================================ -->
+  <!-- Multiple External AISPs (left side) -->
+  <!-- ============================================================ -->
+
+  <!-- AISP 1: EAD / EUROCONTROL -->
+  <g transform="translate(40, 125)">
+    <rect x="0" y="0" width="165" height="72" rx="10" fill="#28a745"/>
+    <text x="82" y="28" text-anchor="middle" fill="#fff" font-family="Red Hat Display, sans-serif" font-size="14" font-weight="600">EAD / EUROCONTROL</text>
+    <text x="82" y="48" text-anchor="middle" fill="#d4edda" font-family="Red Hat Text, sans-serif" font-size="12">DNOTAM Events</text>
+    <text x="82" y="64" text-anchor="middle" fill="#d4edda" font-family="Red Hat Mono, monospace" font-size="11">AMQP 1.0 + mTLS</text>
+  </g>
+
+  <!-- AISP 2: National AISP -->
+  <g transform="translate(40, 210)">
+    <rect x="0" y="0" width="165" height="72" rx="10" fill="#28a745"/>
+    <text x="82" y="28" text-anchor="middle" fill="#fff" font-family="Red Hat Display, sans-serif" font-size="14" font-weight="600">National AISP</text>
+    <text x="82" y="48" text-anchor="middle" fill="#d4edda" font-family="Red Hat Text, sans-serif" font-size="12">DNOTAM Events</text>
+    <text x="82" y="64" text-anchor="middle" fill="#d4edda" font-family="Red Hat Mono, monospace" font-size="11">AMQP 1.0 + mTLS</text>
+  </g>
+
+  <!-- AISP N: Future / Additional -->
+  <g transform="translate(40, 295)">
+    <rect x="0" y="0" width="165" height="72" rx="10" fill="#1b5e20" stroke="#28a745" stroke-width="2" stroke-dasharray="6,3"/>
+    <text x="82" y="28" text-anchor="middle" fill="#a5d6a7" font-family="Red Hat Display, sans-serif" font-size="14" font-weight="600">AISP N</text>
+    <text x="82" y="48" text-anchor="middle" fill="#a5d6a7" font-family="Red Hat Text, sans-serif" font-size="12">Any SWIM Provider</text>
+    <text x="82" y="64" text-anchor="middle" fill="#a5d6a7" font-family="Red Hat Mono, monospace" font-size="11">AMQP 1.0 + mTLS</text>
+  </g>
+
+  <!-- Convergence arrows from AISPs to Consumer -->
+  <path d="M210 161 L280 230" stroke="#64ffda" stroke-width="2.5" marker-end="url(#arrow3)"/>
+  <path d="M210 246 L280 246" stroke="#64ffda" stroke-width="2.5" marker-end="url(#arrow3)"/>
+  <path d="M210 331 L280 262" stroke="#64ffda" stroke-width="2.5" marker-end="url(#arrow3)"/>
+
+  <!-- ============================================================ -->
+  <!-- DNOTAM Consumer (center) -->
+  <!-- ============================================================ -->
+
+  <g transform="translate(290, 130)">
+    <rect x="0" y="0" width="290" height="240" rx="12" fill="#004085"/>
+    <text x="145" y="28" text-anchor="middle" fill="#fff" font-family="Red Hat Display, sans-serif" font-size="17" font-weight="600">DNOTAM Consumer</text>
+
+    <!-- Validation boxes -->
+    <rect x="12" y="42" width="128" height="40" rx="6" fill="#0056b3"/>
+    <text x="76" y="60" text-anchor="middle" fill="#fff" font-family="Red Hat Text, sans-serif" font-size="12" font-weight="600">XSD Validation</text>
+    <text x="76" y="74" text-anchor="middle" fill="#64ffda" font-family="Red Hat Mono, monospace" font-size="10">AIXM 5.1.1</text>
+
+    <rect x="150" y="42" width="128" height="40" rx="6" fill="#0056b3"/>
+    <text x="214" y="60" text-anchor="middle" fill="#fff" font-family="Red Hat Text, sans-serif" font-size="12" font-weight="600">Custom Rules</text>
+    <text x="214" y="74" text-anchor="middle" fill="#64ffda" font-family="Red Hat Mono, monospace" font-size="10">SPI pluggable</text>
+
+    <rect x="12" y="92" width="128" height="40" rx="6" fill="#0056b3"/>
+    <text x="76" y="110" text-anchor="middle" fill="#fff" font-family="Red Hat Text, sans-serif" font-size="12" font-weight="600">Custom Validators</text>
+    <text x="76" y="124" text-anchor="middle" fill="#64ffda" font-family="Red Hat Mono, monospace" font-size="10">SPI pluggable</text>
+
+    <rect x="150" y="92" width="128" height="40" rx="6" fill="#0056b3"/>
+    <text x="214" y="110" text-anchor="middle" fill="#fff" font-family="Red Hat Text, sans-serif" font-size="12" font-weight="600">Deduplication</text>
+    <text x="214" y="124" text-anchor="middle" fill="#8892b0" font-family="Red Hat Mono, monospace" font-size="10">Inbox Pattern</text>
+
+    <!-- Multi-provider label -->
+    <rect x="12" y="145" width="266" height="35" rx="6" fill="#002752"/>
+    <text x="145" y="162" text-anchor="middle" fill="#28a745" font-family="Red Hat Mono, monospace" font-size="11" font-weight="600">Multi-provider</text>
+    <text x="145" y="175" text-anchor="middle" fill="#28a745" font-family="Red Hat Mono, monospace" font-size="10">N simultaneous connections</text>
+
+    <!-- Bottom message -->
+    <text x="145" y="205" text-anchor="middle" fill="#64ffda" font-family="Red Hat Mono, monospace" font-size="12">Validated at the edge</text>
+    <text x="145" y="222" text-anchor="middle" fill="#64ffda" font-family="Red Hat Mono, monospace" font-size="12">Only valid events proceed</text>
+  </g>
+
+  <!-- Arrow to Kafka -->
+  <path d="M585 250 L618 250" stroke="#64ffda" stroke-width="3" marker-end="url(#arrow3)"/>
+
+  <!-- ============================================================ -->
+  <!-- Kafka -->
+  <!-- ============================================================ -->
+
+  <g transform="translate(625, 150)">
+    <rect x="0" y="0" width="250" height="160" rx="12" fill="#d4a106"/>
+    <text x="125" y="28" text-anchor="middle" fill="#000" font-family="Red Hat Display, sans-serif" font-size="17" font-weight="700">Apache Kafka</text>
+
+    <rect x="12" y="45" width="226" height="28" rx="4" fill="#b8860b"/>
+    <text x="125" y="64" text-anchor="middle" fill="#000" font-family="Red Hat Mono, monospace" font-size="13">dnotam.runway-closure</text>
+
+    <rect x="12" y="80" width="226" height="28" rx="4" fill="#b8860b"/>
+    <text x="125" y="99" text-anchor="middle" fill="#000" font-family="Red Hat Mono, monospace" font-size="13">dnotam.navaid-unserviceable</text>
+
+    <rect x="12" y="115" width="226" height="28" rx="4" fill="#b8860b"/>
+    <text x="125" y="134" text-anchor="middle" fill="#000" font-family="Red Hat Mono, monospace" font-size="13">dnotam.airspace-activation</text>
+  </g>
+
+  <!-- Arrow to Internal Systems -->
+  <path d="M880 230 L915 230" stroke="#d4a106" stroke-width="3" marker-end="url(#arrow3b)"/>
+
+  <!-- ============================================================ -->
+  <!-- Internal Systems -->
+  <!-- ============================================================ -->
+
+  <g transform="translate(925, 160)">
+    <rect x="0" y="0" width="220" height="140" rx="12" fill="#0f1624" stroke="#8892b0" stroke-width="2" stroke-dasharray="6,3"/>
+    <text x="110" y="28" text-anchor="middle" fill="#fff" font-family="Red Hat Display, sans-serif" font-size="15" font-weight="600">Your Systems</text>
+
+    <rect x="15" y="45" width="90" height="35" rx="4" fill="#1a1a2e" stroke="#8892b0" stroke-width="1"/>
+    <text x="60" y="68" text-anchor="middle" fill="#8892b0" font-family="Red Hat Text, sans-serif" font-size="13">Analytics</text>
+
+    <rect x="115" y="45" width="90" height="35" rx="4" fill="#1a1a2e" stroke="#8892b0" stroke-width="1"/>
+    <text x="160" y="68" text-anchor="middle" fill="#8892b0" font-family="Red Hat Text, sans-serif" font-size="13">Alerting</text>
+
+    <rect x="15" y="90" width="90" height="35" rx="4" fill="#1a1a2e" stroke="#8892b0" stroke-width="1"/>
+    <text x="60" y="113" text-anchor="middle" fill="#8892b0" font-family="Red Hat Text, sans-serif" font-size="13">Compliance</text>
+
+    <rect x="115" y="90" width="90" height="35" rx="4" fill="#1a1a2e" stroke="#8892b0" stroke-width="1"/>
+    <text x="160" y="113" text-anchor="middle" fill="#8892b0" font-family="Red Hat Text, sans-serif" font-size="13">Custom</text>
+  </g>
+
+  <!-- ============================================================ -->
+  <!-- Consumer Responsibility box -->
+  <!-- ============================================================ -->
+
+  <g transform="translate(100, 410)">
+    <rect x="0" y="0" width="1000" height="155" rx="16" fill="#0f1624" stroke="#004085" stroke-width="2"/>
+
+    <text x="500" y="30" text-anchor="middle" fill="#64ffda" font-family="Red Hat Display, sans-serif" font-size="19" font-weight="600">Consumer Responsibility</text>
+
+    <text x="35" y="60" fill="#fff" font-family="Red Hat Text, sans-serif" font-size="15">&#10003; Federated Connectivity: connect to N providers simultaneously (e.g., EAD + National AISP)</text>
+    <text x="35" y="85" fill="#fff" font-family="Red Hat Text, sans-serif" font-size="15">&#10003; Receive events from each provider via AMQP 1.0 with independent mTLS sessions</text>
+    <text x="35" y="110" fill="#fff" font-family="Red Hat Text, sans-serif" font-size="15">&#10003; Validate against XSD and pluggable business rules / custom validators (SPI)</text>
+    <text x="35" y="135" fill="#fff" font-family="Red Hat Text, sans-serif" font-size="15">&#10003; Route to Kafka topics by event type (business intent)</text>
+  </g>
+
+  <!-- Footer -->
+  <text x="600" y="610" text-anchor="middle" fill="#d4a106" font-family="Red Hat Display, sans-serif" font-size="20" font-weight="600">Events in Kafka &#8594; Any internal module can consume them</text>
+  <text x="600" y="640" text-anchor="middle" fill="#8892b0" font-family="Red Hat Text, sans-serif" font-size="16">Consumer does not know (or care) who will process the events</text>
+
+  <!-- Independence callout -->
+  <rect x="400" y="660" width="400" height="35" rx="8" fill="#004085"/>
+  <text x="600" y="683" text-anchor="middle" fill="#fff" font-family="Red Hat Display, sans-serif" font-size="15" font-weight="600">Works without Provider</text>
+</svg>

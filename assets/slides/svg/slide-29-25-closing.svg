@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" font-family="Red Hat Display, sans-serif">
+  <defs>
+    <radialGradient id="glow25" cx="50%" cy="45%" r="50%">
+      <stop offset="0%" stop-color="#0d419d" stop-opacity="0.15"/>
+      <stop offset="100%" stop-color="#0d1117" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1280" height="720" fill="#0d1117"/>
+  <rect width="1280" height="720" fill="url(#glow25)"/>
+
+  <!-- Opening quote mark -->
+  <text x="180" y="180" fill="#58a6ff" font-size="120" font-weight="bold" opacity="0.2">"</text>
+
+  <!-- Quote text -->
+  <text x="640" y="220" text-anchor="middle" fill="#f0f6fc" font-size="30" font-weight="300">Instead of each ANSP</text>
+  <text x="640" y="265" text-anchor="middle" fill="#f0f6fc" font-size="30" font-weight="300">building everything from scratch,</text>
+  <text x="640" y="310" text-anchor="middle" fill="#f0f6fc" font-size="30" font-weight="300">they implement</text>
+  <text x="640" y="370" text-anchor="middle" fill="#58a6ff" font-size="52" font-weight="900">5 interfaces</text>
+  <text x="640" y="420" text-anchor="middle" fill="#f0f6fc" font-size="30" font-weight="300">and share the container.</text>
+
+  <!-- Divider -->
+  <rect x="540" y="450" width="200" height="2" rx="1" fill="#58a6ff" opacity="0.4"/>
+
+  <text x="640" y="500" text-anchor="middle" fill="#f0f6fc" font-size="34" font-weight="600">One entity develops.</text>
+  <text x="640" y="545" text-anchor="middle" fill="#f0f6fc" font-size="34" font-weight="600">All benefit.</text>
+
+  <!-- Closing quote mark -->
+  <text x="1080" y="560" fill="#58a6ff" font-size="120" font-weight="bold" opacity="0.2">"</text>
+
+  <!-- Project info -->
+  <text x="640" y="620" text-anchor="middle" fill="#58a6ff" font-size="20" font-weight="bold">swim-developer</text>
+  <text x="640" y="650" text-anchor="middle" fill="#8b949e" font-size="14">github.com/swim-developer/rhone · Apache 2.0</text>
+
+  <!-- Red Hat accent -->
+  <rect x="580" y="680" width="120" height="3" rx="1.5" fill="#EE0000"/>
+</svg>
+

@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SWIM Developer | Open Source Community for Aviation Information Exchange</title>
+    <meta name="description" content="Open Source community building reusable, tested, and validated components for SWIM (System Wide Information Management) adoption in aviation.">
+    <meta name="keywords" content="SWIM, Aviation, ATM, SESAR, EUROCONTROL, Digital NOTAM, DNOTAM, ED-254, FF-ICE, FIXM, Open Source, Kubernetes, OpenShift">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@400;500;600;700;900&family=Red+Hat+Text:wght@400;500;600&family=Red+Hat+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav class="navbar"></nav>
+
+    <header class="hero">
+        <div class="hero-bg"></div>
+        <div class="container hero-content">
+            <div class="hero-badge">
+                <i class="fas fa-code-branch"></i>
+                Open Source Initiative
+            </div>
+            <h1>SWIM is an open standard. Now it has an <span class="highlight">open implementation</span></h1>
+            <p class="hero-subtitle">
+                Reference components for providers, consumers, and validators,
+                ready to inspect, deploy, and extend. Built for ANSPs, AISPs, system integrators,
+                and anyone building SWIM-compliant services.
+            </p>
+            <div class="hero-actions">
+                <a href="tutorials.html" class="btn btn-primary">
+                    <i class="fas fa-play-circle"></i> See How It Works
+                </a>
+                <a href="projects.html" class="btn btn-secondary">
+                    <i class="fas fa-rocket"></i> Get Started
+                </a>
+            </div>
+            <div class="hero-stats">
+                <div class="stat">
+                    <span class="stat-number">450+</span>
+                    <span class="stat-label">Automated Tests</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-number">6</span>
+                    <span class="stat-label">Deployment Options</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-number">Apache 2.0</span>
+                    <span class="stat-label">Open Source License</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <section id="about" class="section section-about">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">What We Provide</span>
+                <h2>Open Standards, Open Implementation</h2>
+            </div>
+            <div class="about-grid">
+                <div class="about-content">
+                    <p class="lead">
+                        SWIM specifications and data models are well defined.
+                        swim-developer provides reusable, tested components so that
+                        organizations can focus on what makes their services unique
+                        instead of rebuilding infrastructure from scratch.
+                    </p>
+                    <p>
+                        ANSPs, AISPs, system integrators, and developers
+                        co-create components that are validated and ready to deploy.
+                        Each new SWIM service starts from working infrastructure
+                        instead of an empty project.
+                    </p>
+                    <div class="philosophy-cards">
+                        <div class="philosophy-card">
+                            <i class="fas fa-users"></i>
+                            <h4>Community Driven</h4>
+                            <p>Built by aviation practitioners. Real-world solutions validated in real infrastructure.</p>
+                        </div>
+                        <div class="philosophy-card">
+                            <i class="fas fa-lock-open"></i>
+                            <h4>No Vendor Lock-in</h4>
+                            <p>Standard Quarkus/Java services. Run on bare metal, VMs, containers (Podman, Docker), or any Kubernetes distribution.</p>
+                        </div>
+                        <div class="philosophy-card">
+                            <i class="fas fa-bullseye"></i>
+                            <h4>Production Ready</h4>
+                            <p>Tested in production OpenShift environments with real-world scenarios. Currently under evaluation by multiple ANSPs. Built to meet EUROCONTROL SPEC-170 and EU Regulation 2021/116 (CP1).</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="about-visual">
+                    <div class="compliance-badge">
+                        <div class="badge-header">
+                            <i class="fas fa-shield-halved"></i>
+                            What's Implemented
+                        </div>
+                        <p class="badge-subtitle">Technical capabilities already in place:</p>
+                        <ul class="badge-list">
+                            <li><i class="fas fa-check"></i> AMQP 1.0 over mutual TLS (SPEC-170)</li>
+                            <li><i class="fas fa-check"></i> AIXM 5.1.1 and FIXM 4.3 data models</li>
+                            <li><i class="fas fa-check"></i> Subscription lifecycle with heartbeat</li>
+                            <li><i class="fas fa-check"></i> DNOTAM, ED-254, and FF-ICE services implemented</li>
+                            <li><i class="fas fa-check"></i> Inbox/Outbox with zero message loss</li>
+                            <li><i class="fas fa-check"></i> E2E tested on Kubernetes and OpenShift</li>
+                        </ul>
+                        <p class="badge-subtitle" style="margin-top: 12px; font-size: 0.85rem; opacity: 0.8;">Technical compliance with SPEC-170 is our foundation. Formal certification is the next milestone.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section-nav-cards">
+                <a href="framework.html" class="nav-card">
+                    <i class="fas fa-puzzle-piece"></i>
+                    <span>Extensible Architecture</span>
+                </a>
+                <a href="projects.html" class="nav-card">
+                    <i class="fas fa-cubes"></i>
+                    <span>Open Source Components</span>
+                </a>
+                <a href="architecture.html" class="nav-card">
+                    <i class="fas fa-layer-group"></i>
+                    <span>Reference Architecture</span>
+                </a>
+                <a href="documentation.html" class="nav-card">
+                    <i class="fas fa-book-open"></i>
+                    <span>Documentation</span>
+                </a>
+                <a href="tutorials.html" class="nav-card">
+                    <i class="fas fa-graduation-cap"></i>
+                    <span>Tutorials</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <section id="deliverables" class="section" style="background: #111;">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">What You Get</span>
+                <h2>Ready-to-Deploy SWIM Components</h2>
+            </div>
+            <p class="section-intro">
+                Each component is an independent container image. Deploy only what your organization needs.
+            </p>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin-top: 2rem;">
+                <div style="background: #1a1a1a; border-radius: 12px; padding: 1.5rem; border-left: 4px solid #4da3ff; box-shadow: 0 2px 8px rgba(0,0,0,0.3);">
+                    <h4 style="color: #4da3ff; margin-top: 0; font-size: 1.1rem;"><i class="fas fa-bell"></i> Digital NOTAM (DNOTAM)</h4>
+                    <p style="color: #b3b3b3; font-size: 1rem; margin-bottom: 0;">Consumer and Provider for Digital NOTAM services. AIXM 5.1.1 data model, Subscription Manager API, WFS GetFeature.</p>
+                </div>
+                <div style="background: #1a1a1a; border-radius: 12px; padding: 1.5rem; border-left: 4px solid #5cb85c; box-shadow: 0 2px 8px rgba(0,0,0,0.3);">
+                    <h4 style="color: #5cb85c; margin-top: 0; font-size: 1.1rem;"><i class="fas fa-plane-arrival"></i> ED-254 Arrival Sequence</h4>
+                    <p style="color: #b3b3b3; font-size: 1rem; margin-bottom: 0;">Consumer and Provider for EUROCAE ED-254 (Extended AMAN). Same framework, FIXM data model. High-frequency, low-latency.</p>
+                </div>
+                <div style="background: #1a1a1a; border-radius: 12px; padding: 1.5rem; border-left: 4px solid #42a5f5; box-shadow: 0 2px 8px rgba(0,0,0,0.3);">
+                    <h4 style="color: #42a5f5; margin-top: 0; font-size: 1.1rem;"><i class="fas fa-plane-up"></i> FF-ICE Flight Planning</h4>
+                    <p style="color: #b3b3b3; font-size: 1rem; margin-bottom: 0;">Consumer and Provider for FF-ICE flight planning services. Same framework, FIXM 4.3 + FF-ICE 1.1 data model. Includes step-by-step <a href="tutorials/create-consumer/index.html" style="color: #42a5f5;">consumer</a> and <a href="tutorials/create-provider/index.html" style="color: #42a5f5;">provider</a> tutorials.</p>
+                </div>
+                <div style="background: #1a1a1a; border-radius: 12px; padding: 1.5rem; border-left: 4px solid #f0ad4e; box-shadow: 0 2px 8px rgba(0,0,0,0.3);">
+                    <h4 style="color: #f0ad4e; margin-top: 0; font-size: 1.1rem;"><i class="fas fa-flask"></i> Validators</h4>
+                    <p style="color: #b3b3b3; font-size: 1rem; margin-bottom: 0;">Develop and test without external dependencies. Simulate providers and consumers locally. Create chaotic scenarios to prepare for production.</p>
+                </div>
+                <div style="background: #1a1a1a; border-radius: 12px; padding: 1.5rem; border-left: 4px solid #ce93d8; box-shadow: 0 2px 8px rgba(0,0,0,0.3);">
+                    <h4 style="color: #ce93d8; margin-top: 0; font-size: 1.1rem;"><i class="fas fa-puzzle-piece"></i> Extensible Framework</h4>
+                    <p style="color: #b3b3b3; font-size: 1rem; margin-bottom: 0;">16 SPIs and 3 extension points. Implement only what differs for your service. <a href="framework.html" style="color: #ce93d8;">See the framework</a>.</p>
+                </div>
+                <div style="background: #1a1a1a; border-radius: 12px; padding: 1.5rem; border-left: 4px solid #ef5350; box-shadow: 0 2px 8px rgba(0,0,0,0.3);">
+                    <h4 style="color: #ef5350; margin-top: 0; font-size: 1.1rem;"><i class="fas fa-drafting-compass"></i> Clean Architecture</h4>
+                    <p style="color: #b3b3b3; font-size: 1rem; margin-bottom: 0;">Hexagonal architecture with strict layer separation: domain, application, infrastructure. <a href="architecture.html" style="color: #ef5350;">See the architecture</a>.</p>
+                </div>
+                <div style="background: #1a1a1a; border-radius: 12px; padding: 1.5rem; border-left: 4px solid #90a4ae; box-shadow: 0 2px 8px rgba(0,0,0,0.3);">
+                    <h4 style="color: #90a4ae; margin-top: 0; font-size: 1.1rem;"><i class="fas fa-rocket"></i> 6 Deployment Options</h4>
+                    <p style="color: #b3b3b3; font-size: 1rem; margin-bottom: 0;">OpenShift, Kubernetes, Minikube, OpenShift Local, Podman Compose, or build from source. <a href="tutorials.html" style="color: #90a4ae;">See the tutorials</a>.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="quickstart" style="background: #0a0a0a; padding: 3.5rem 0; text-align: center;">
+        <div class="container">
+            <h2 style="color: #fff; font-size: 1.8rem; margin-bottom: 0.75rem;">Try It Locally</h2>
+            <p style="color: #b3b3b3; font-size: 1.1rem; max-width: 750px; margin: 0 auto 1.5rem;">
+                Deploy the complete SWIM ecosystem on your machine with a single command.
+                DNOTAM, ED-254, and FF-ICE services, validators, Kafka, Keycloak, Artemis,
+                databases, observability stack, and example applications.
+            </p>
+            <div style="display: flex; gap: 1.5rem; justify-content: center; flex-wrap: wrap; margin-bottom: 1.5rem;">
+                <div style="display: inline-block; background: #1a1a1a; border-radius: 12px; padding: 1.25rem 2rem; border: 1px solid #5cb85c; text-align: left; max-width: 500px;">
+                    <p style="color: #5cb85c; font-size: 0.8rem; font-weight: 600; margin: 0 0 0.5rem; text-transform: uppercase; letter-spacing: 1px;">GitOps with Argo CD (Recommended)</p>
+                    <code style="color: #4da3ff; font-size: 1.1rem; font-family: 'Red Hat Mono', monospace;">make gitops-bootstrap</code>
+                    <p style="color: #888; font-size: 0.85rem; margin: 0.5rem 0 0;">Argo CD + Tekton CI, Git-driven, auditable, full CI/CD</p>
+                </div>
+                <div style="display: inline-block; background: #1a1a1a; border-radius: 12px; padding: 1.25rem 2rem; border: 1px solid #333; text-align: left; max-width: 500px;">
+                    <p style="color: #888; font-size: 0.8rem; font-weight: 600; margin: 0 0 0.5rem; text-transform: uppercase; letter-spacing: 1px;">OpenShift Local (Helm)</p>
+                    <code style="color: #4da3ff; font-size: 1.1rem; font-family: 'Red Hat Mono', monospace;">make all</code>
+                    <p style="color: #888; font-size: 0.85rem; margin: 0.5rem 0 0;">Helm charts, operator subscriptions, mTLS, full E2E validated</p>
+                </div>
+            </div>
+            <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                <a href="tutorials/deploy-gitops.html" class="btn btn-primary" style="font-size: 1.05rem;">
+                    <i class="fas fa-code-branch"></i> Deploy with GitOps
+                </a>
+                <a href="tutorials/deploy-openshift-local.html" class="btn btn-secondary" style="font-size: 1.05rem;">
+                    <i class="fas fa-rocket"></i> Deploy on OpenShift Local
+                </a>
+                <a href="tutorials.html" class="btn btn-secondary" style="font-size: 1.05rem;">
+                    <i class="fas fa-list"></i> All Options
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer"></footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" font-family="Red Hat Display, sans-serif">
+  <defs>
+    <radialGradient id="glow4" cx="50%" cy="50%" r="40%">
+      <stop offset="0%" stop-color="#0d419d" stop-opacity="0.2"/>
+      <stop offset="100%" stop-color="#0d1117" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1280" height="720" fill="#0d1117"/>
+  <rect width="1280" height="720" fill="url(#glow4)"/>
+
+  <text x="640" y="280" text-anchor="middle" fill="#f0f6fc" font-size="40" font-weight="300">What if a new SWIM service</text>
+  <text x="640" y="340" text-anchor="middle" fill="#f0f6fc" font-size="40" font-weight="300">required only</text>
+  <text x="640" y="420" text-anchor="middle" fill="#58a6ff" font-size="80" font-weight="900">5 interfaces</text>
+  <text x="640" y="490" text-anchor="middle" fill="#f0f6fc" font-size="40" font-weight="300">instead of rebuilding</text>
+  <text x="640" y="540" text-anchor="middle" fill="#f0f6fc" font-size="40" font-weight="300">the entire infrastructure?</text>
+</svg>
+

@@ -1,0 +1,95 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" font-family="Red Hat Display, sans-serif">
+  <rect width="1280" height="720" fill="#0d1117"/>
+
+  <!-- Title -->
+  <text x="80" y="80" fill="#f0f6fc" font-size="44" font-weight="bold">swim-developer</text>
+  <rect x="80" y="95" width="320" height="3" rx="1.5" fill="#58a6ff"/>
+
+  <text x="80" y="140" fill="#8b949e" font-size="20">Open source reference implementation</text>
+  <text x="80" y="168" fill="#8b949e" font-size="20">demonstrating production-grade SWIM patterns.</text>
+
+  <!-- Feature badges -->
+  <rect x="80" y="210" width="520" height="60" rx="10" fill="#1c2333" stroke="#3fb950" stroke-width="1.5"/>
+  <circle cx="115" cy="240" r="12" fill="#3fb950"/>
+  <text x="115" y="245" text-anchor="middle" fill="#0d1117" font-size="14" font-weight="bold">1</text>
+  <text x="140" y="235" fill="#f0f6fc" font-size="16" font-weight="600">Framework with 5 extension points (SPIs)</text>
+  <text x="140" y="255" fill="#8b949e" font-size="13">Implement 5 interfaces, get a production-grade SWIM service</text>
+
+  <rect x="80" y="282" width="520" height="60" rx="10" fill="#1c2333" stroke="#d29922" stroke-width="1.5"/>
+  <circle cx="115" cy="312" r="12" fill="#d29922"/>
+  <text x="115" y="317" text-anchor="middle" fill="#0d1117" font-size="14" font-weight="bold">2</text>
+  <text x="140" y="307" fill="#f0f6fc" font-size="16" font-weight="600">DNOTAM + ED-254 already implemented</text>
+  <text x="140" y="327" fill="#8b949e" font-size="13">Two domains prove framework extensibility</text>
+
+  <rect x="80" y="354" width="520" height="60" rx="10" fill="#1c2333" stroke="#58a6ff" stroke-width="1.5"/>
+  <circle cx="115" cy="384" r="12" fill="#58a6ff"/>
+  <text x="115" y="389" text-anchor="middle" fill="#0d1117" font-size="14" font-weight="bold">3</text>
+  <text x="140" y="379" fill="#f0f6fc" font-size="16" font-weight="600">End-to-end validated on OpenShift 4.18</text>
+  <text x="140" y="399" fill="#8b949e" font-size="13">Running now — not a PoC, not a demo</text>
+
+  <rect x="80" y="426" width="520" height="60" rx="10" fill="#1c2333" stroke="#a371f7" stroke-width="1.5"/>
+  <circle cx="115" cy="456" r="12" fill="#a371f7"/>
+  <text x="115" y="461" text-anchor="middle" fill="#0d1117" font-size="14" font-weight="bold">4</text>
+  <text x="140" y="451" fill="#f0f6fc" font-size="16" font-weight="600">Apache 2.0 — use, adapt, contribute</text>
+  <text x="140" y="471" fill="#8b949e" font-size="13">Community-driven, vendor-neutral</text>
+
+  <!-- Tech stack (right side) -->
+  <text x="780" y="80" fill="#484f58" font-size="14" font-weight="bold">BUILT WITH</text>
+
+  <!-- Tech cards -->
+  <rect x="700" y="100" width="230" height="55" rx="8" fill="#21262d" stroke="#30363d" stroke-width="1"/>
+  <circle cx="730" cy="127" r="6" fill="#EE0000"/>
+  <text x="750" y="123" fill="#f0f6fc" font-size="15" font-weight="600">Quarkus 3.34</text>
+  <text x="750" y="142" fill="#484f58" font-size="11">Red Hat Build of Quarkus</text>
+
+  <rect x="950" y="100" width="230" height="55" rx="8" fill="#21262d" stroke="#30363d" stroke-width="1"/>
+  <circle cx="980" cy="127" r="6" fill="#EE0000"/>
+  <text x="1000" y="123" fill="#f0f6fc" font-size="15" font-weight="600">AMQ Artemis</text>
+  <text x="1000" y="142" fill="#484f58" font-size="11">AMQP 1.0 Broker</text>
+
+  <rect x="700" y="168" width="230" height="55" rx="8" fill="#21262d" stroke="#30363d" stroke-width="1"/>
+  <circle cx="730" cy="195" r="6" fill="#EE0000"/>
+  <text x="750" y="191" fill="#f0f6fc" font-size="15" font-weight="600">Kafka (Strimzi)</text>
+  <text x="750" y="210" fill="#484f58" font-size="11">Event Streaming</text>
+
+  <rect x="950" y="168" width="230" height="55" rx="8" fill="#21262d" stroke="#30363d" stroke-width="1"/>
+  <circle cx="980" cy="195" r="6" fill="#EE0000"/>
+  <text x="1000" y="191" fill="#f0f6fc" font-size="15" font-weight="600">OpenShift 4.18</text>
+  <text x="1000" y="210" fill="#484f58" font-size="11">Kubernetes Platform</text>
+
+  <rect x="700" y="236" width="230" height="55" rx="8" fill="#21262d" stroke="#30363d" stroke-width="1"/>
+  <circle cx="730" cy="263" r="6" fill="#EE0000"/>
+  <text x="750" y="259" fill="#f0f6fc" font-size="15" font-weight="600">Keycloak</text>
+  <text x="750" y="278" fill="#484f58" font-size="11">JWT/OIDC Authentication</text>
+
+  <rect x="950" y="236" width="230" height="55" rx="8" fill="#21262d" stroke="#30363d" stroke-width="1"/>
+  <circle cx="980" cy="263" r="6" fill="#EE0000"/>
+  <text x="1000" y="259" fill="#f0f6fc" font-size="15" font-weight="600">OpenTelemetry</text>
+  <text x="1000" y="278" fill="#484f58" font-size="11">Distributed Tracing</text>
+
+  <!-- Bottom stats bar -->
+  <rect x="80" y="540" width="1120" height="100" rx="12" fill="#161b22" stroke="#30363d" stroke-width="1"/>
+
+  <text x="230" y="575" text-anchor="middle" fill="#58a6ff" font-size="36" font-weight="900">132</text>
+  <text x="230" y="600" text-anchor="middle" fill="#8b949e" font-size="13">framework classes</text>
+  <text x="230" y="618" text-anchor="middle" fill="#484f58" font-size="11">core + consumer + provider</text>
+
+  <line x1="400" y1="555" x2="400" y2="630" stroke="#30363d" stroke-width="1"/>
+
+  <text x="540" y="575" text-anchor="middle" fill="#3fb950" font-size="36" font-weight="900">450+</text>
+  <text x="540" y="600" text-anchor="middle" fill="#8b949e" font-size="13">tests across 8 projects</text>
+  <text x="540" y="618" text-anchor="middle" fill="#484f58" font-size="11">integration + unit</text>
+
+  <line x1="680" y1="555" x2="680" y2="630" stroke="#30363d" stroke-width="1"/>
+
+  <text x="820" y="575" text-anchor="middle" fill="#d29922" font-size="36" font-weight="900">7</text>
+  <text x="820" y="600" text-anchor="middle" fill="#8b949e" font-size="13">CI/CD pipelines</text>
+  <text x="820" y="618" text-anchor="middle" fill="#484f58" font-size="11">Tekton on OpenShift</text>
+
+  <line x1="960" y1="555" x2="960" y2="630" stroke="#30363d" stroke-width="1"/>
+
+  <text x="1090" y="575" text-anchor="middle" fill="#f85149" font-size="36" font-weight="900">2</text>
+  <text x="1090" y="600" text-anchor="middle" fill="#8b949e" font-size="13">domains validated</text>
+  <text x="1090" y="618" text-anchor="middle" fill="#484f58" font-size="11">DNOTAM + ED-254</text>
+</svg>
+

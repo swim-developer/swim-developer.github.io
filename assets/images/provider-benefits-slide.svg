@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 1200 700" xmlns="http://www.w3.org/2000/svg">
+    <defs/>
+
+    <!-- Title -->
+    <text x="600" y="50" text-anchor="middle" fill="#ffffff" font-weight="700" font-size="32" font-family="Red Hat Display, Arial, sans-serif">Deploy the DNOTAM Provider &#8212; Get These Benefits</text>
+
+    <!-- Subtitle -->
+    <text x="600" y="85" text-anchor="middle" fill="#a0a0a0" font-weight="400" font-size="16" font-family="Red Hat Text, Arial, sans-serif">What you gain immediately with a single deployment</text>
+
+    <!-- Row 1: 3 cards -->
+
+    <!-- Card 1: DNOTAM Service APIs -->
+    <g>
+        <rect x="60" y="120" width="340" height="170" rx="12" fill="#1a1a2e" stroke="#2e7d32" stroke-width="2"/>
+        <rect x="60" y="120" width="340" height="50" rx="12" fill="#2e7d32"/>
+        <rect x="60" y="158" width="340" height="12" fill="#2e7d32"/>
+        <text x="230" y="155" text-anchor="middle" fill="#ffffff" font-weight="700" font-size="17" font-family="Red Hat Display, Arial, sans-serif">&#10003; DNOTAM SWIM Service APIs</text>
+        <text x="80" y="205" fill="#e0e0e0" font-size="14" font-family="Red Hat Text, Arial, sans-serif">Topics API (service discovery)</text>
+        <text x="80" y="230" fill="#e0e0e0" font-size="14" font-family="Red Hat Text, Arial, sans-serif">Subscription Manager (full CRUD)</text>
+        <text x="80" y="255" fill="#e0e0e0" font-size="14" font-family="Red Hat Text, Arial, sans-serif">WFS GetFeature (AIXM request/reply)</text>
+    </g>
+
+    <!-- Card 2: Multi-Channel Ingestion -->
+    <g>
+        <rect x="430" y="120" width="340" height="170" rx="12" fill="#1a1a2e" stroke="#1565c0" stroke-width="2"/>
+        <rect x="430" y="120" width="340" height="50" rx="12" fill="#1565c0"/>
+        <rect x="430" y="158" width="340" height="12" fill="#1565c0"/>
+        <text x="600" y="155" text-anchor="middle" fill="#ffffff" font-weight="700" font-size="18" font-family="Red Hat Display, Arial, sans-serif">&#10003; Multi-Channel Ingestion</text>
+        <text x="450" y="205" fill="#e0e0e0" font-size="14" font-family="Red Hat Text, Arial, sans-serif">Kafka topics (DNOTAM event types)</text>
+        <text x="450" y="230" fill="#e0e0e0" font-size="14" font-family="Red Hat Text, Arial, sans-serif">Internal REST API (port 9080)</text>
+        <text x="450" y="255" fill="#e0e0e0" font-size="14" font-family="Red Hat Text, Arial, sans-serif">Integrate legacy AIM systems easily</text>
+    </g>
+
+    <!-- Card 3: Dynamic Queue Provisioning -->
+    <g>
+        <rect x="800" y="120" width="340" height="170" rx="12" fill="#1a1a2e" stroke="#7b1fa2" stroke-width="2"/>
+        <rect x="800" y="120" width="340" height="50" rx="12" fill="#7b1fa2"/>
+        <rect x="800" y="158" width="340" height="12" fill="#7b1fa2"/>
+        <text x="970" y="155" text-anchor="middle" fill="#ffffff" font-weight="700" font-size="17" font-family="Red Hat Display, Arial, sans-serif">&#10003; Dynamic Queue Provisioning</text>
+        <text x="820" y="205" fill="#e0e0e0" font-size="14" font-family="Red Hat Text, Arial, sans-serif">Subscription &#8594; dedicated AMQP queue</text>
+        <text x="820" y="230" fill="#e0e0e0" font-size="14" font-family="Red Hat Text, Arial, sans-serif">Artemis broker (Red Hat AMQ)</text>
+        <text x="820" y="255" fill="#e0e0e0" font-size="14" font-family="Red Hat Text, Arial, sans-serif">Queue lifecycle fully automated</text>
+    </g>
+
+    <!-- Row 2: 3 cards -->
+
+    <!-- Card 4: Outbox Pattern -->
+    <g>
+        <rect x="60" y="320" width="340" height="170" rx="12" fill="#1a1a2e" stroke="#ef6c00" stroke-width="2"/>
+        <rect x="60" y="320" width="340" height="50" rx="12" fill="#ef6c00"/>
+        <rect x="60" y="358" width="340" height="12" fill="#ef6c00"/>
+        <text x="230" y="355" text-anchor="middle" fill="#ffffff" font-weight="700" font-size="18" font-family="Red Hat Display, Arial, sans-serif">&#10003; Outbox Pattern</text>
+        <text x="80" y="405" fill="#e0e0e0" font-size="14" font-family="Red Hat Text, Arial, sans-serif">Persist first, deliver async to AMQP</text>
+        <text x="80" y="430" fill="#e0e0e0" font-size="14" font-family="Red Hat Text, Arial, sans-serif">Exactly-once delivery guarantee</text>
+        <text x="80" y="455" fill="#e0e0e0" font-size="14" font-family="Red Hat Text, Arial, sans-serif">Survives pod crashes</text>
+    </g>
+
+    <!-- Card 5: Heartbeat Monitoring -->
+    <g>
+        <rect x="430" y="320" width="340" height="170" rx="12" fill="#1a1a2e" stroke="#c62828" stroke-width="2"/>
+        <rect x="430" y="320" width="340" height="50" rx="12" fill="#c62828"/>
+        <rect x="430" y="358" width="340" height="12" fill="#c62828"/>
+        <text x="600" y="355" text-anchor="middle" fill="#ffffff" font-weight="700" font-size="18" font-family="Red Hat Display, Arial, sans-serif">&#10003; Heartbeat Publisher</text>
+        <text x="450" y="405" fill="#e0e0e0" font-size="14" font-family="Red Hat Text, Arial, sans-serif">Sends periodic heartbeat to subscribers</text>
+        <text x="450" y="430" fill="#e0e0e0" font-size="14" font-family="Red Hat Text, Arial, sans-serif">Consumers know the provider is alive</text>
+        <text x="450" y="455" fill="#e0e0e0" font-size="14" font-family="Red Hat Text, Arial, sans-serif">Signals health and availability</text>
+    </g>
+
+    <!-- Card 6: mTLS Security -->
+    <g>
+        <rect x="800" y="320" width="340" height="170" rx="12" fill="#1a1a2e" stroke="#00838f" stroke-width="2"/>
+        <rect x="800" y="320" width="340" height="50" rx="12" fill="#00838f"/>
+        <rect x="800" y="358" width="340" height="12" fill="#00838f"/>
+        <text x="970" y="355" text-anchor="middle" fill="#ffffff" font-weight="700" font-size="18" font-family="Red Hat Display, Arial, sans-serif">&#10003; mTLS + JWT Security</text>
+        <text x="820" y="405" fill="#e0e0e0" font-size="14" font-family="Red Hat Text, Arial, sans-serif">Mutual TLS for all external comms</text>
+        <text x="820" y="430" fill="#e0e0e0" font-size="14" font-family="Red Hat Text, Arial, sans-serif">Keycloak JWT authentication</text>
+        <text x="820" y="455" fill="#e0e0e0" font-size="14" font-family="Red Hat Text, Arial, sans-serif">SWIM-TI Yellow Profile compliant</text>
+    </g>
+
+    <!-- Bottom highlight box -->
+    <rect x="150" y="530" width="900" height="120" rx="16" fill="#0d47a1"/>
+    <text x="600" y="575" text-anchor="middle" fill="#ffffff" font-weight="700" font-size="22" font-family="Red Hat Display, Arial, sans-serif">One Deployment. Complete DNOTAM Subscription Manager.</text>
+    <text x="600" y="610" text-anchor="middle" fill="#bbdefb" font-weight="400" font-size="16" font-family="Red Hat Text, Arial, sans-serif">SWIM Registry APIs &#183; AMQP 1.0 over mTLS &#183; Heartbeat &#183; Kafka + REST API &#183; Operator-managed</text>
+
+</svg>

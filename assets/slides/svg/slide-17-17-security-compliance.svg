@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" font-family="Red Hat Display, sans-serif">
+  <rect width="1280" height="720" fill="#0d1117"/>
+
+  <text x="640" y="48" text-anchor="middle" fill="#f0f6fc" font-size="28" font-weight="bold">SPEC-170 Yellow Profile Compliance</text>
+
+  <!-- Table header -->
+  <rect x="60" y="75" width="1160" height="42" rx="8" fill="#0d419d"/>
+  <text x="280" y="102" text-anchor="middle" fill="#f0f6fc" font-size="14" font-weight="bold">Requirement</text>
+  <text x="680" y="102" text-anchor="middle" fill="#f0f6fc" font-size="14" font-weight="bold">Implementation</text>
+  <text x="1080" y="102" text-anchor="middle" fill="#f0f6fc" font-size="14" font-weight="bold">Status</text>
+
+  <!-- Rows -->
+  <rect x="60" y="122" width="1160" height="40" rx="0" fill="#1c2333"/>
+  <text x="100" y="148" fill="#f0f6fc" font-size="14">mTLS (End-to-End)</text>
+  <text x="520" y="148" fill="#8b949e" font-size="14">X.509 certificates + cert-manager + SWIM Internal CA</text>
+  <circle cx="1080" cy="142" r="10" fill="#3fb950"/><text x="1080" y="147" text-anchor="middle" fill="#0d1117" font-size="12" font-weight="bold">✓</text>
+
+  <rect x="60" y="165" width="1160" height="40" rx="0" fill="#161b22"/>
+  <text x="100" y="191" fill="#f0f6fc" font-size="14">AMQP 1.0 over TLS 1.2</text>
+  <text x="520" y="191" fill="#8b949e" font-size="14">Artemis + Quarkus named TLS configuration</text>
+  <circle cx="1080" cy="185" r="10" fill="#3fb950"/><text x="1080" y="190" text-anchor="middle" fill="#0d1117" font-size="12" font-weight="bold">✓</text>
+
+  <rect x="60" y="208" width="1160" height="40" rx="0" fill="#1c2333"/>
+  <text x="100" y="234" fill="#f0f6fc" font-size="14">JWT/OIDC Authentication</text>
+  <text x="520" y="234" fill="#8b949e" font-size="14">Keycloak (realm: swim, clients per service)</text>
+  <circle cx="1080" cy="228" r="10" fill="#3fb950"/><text x="1080" y="233" text-anchor="middle" fill="#0d1117" font-size="12" font-weight="bold">✓</text>
+
+  <rect x="60" y="251" width="1160" height="40" rx="0" fill="#161b22"/>
+  <text x="100" y="277" fill="#f0f6fc" font-size="14">AMQP JWT Auth (no static passwords)</text>
+  <text x="520" y="277" fill="#8b949e" font-size="14">Keycloak BearerTokenLoginModule on Artemis</text>
+  <circle cx="1080" cy="271" r="10" fill="#3fb950"/><text x="1080" y="276" text-anchor="middle" fill="#0d1117" font-size="12" font-weight="bold">✓</text>
+
+  <rect x="60" y="294" width="1160" height="40" rx="0" fill="#1c2333"/>
+  <text x="100" y="320" fill="#f0f6fc" font-size="14">Per-Queue RBAC</text>
+  <text x="520" y="320" fill="#8b949e" font-size="14">AMQ Operator ACLs — user can only consume their queue</text>
+  <circle cx="1080" cy="314" r="10" fill="#3fb950"/><text x="1080" y="319" text-anchor="middle" fill="#0d1117" font-size="12" font-weight="bold">✓</text>
+
+  <rect x="60" y="337" width="1160" height="40" rx="0" fill="#161b22"/>
+  <text x="100" y="363" fill="#f0f6fc" font-size="14">Audit Logging (CP1)</text>
+  <text x="520" y="363" fill="#8b949e" font-size="14">Custom Artemis ACK plugin (EU 2021/116)</text>
+  <circle cx="1080" cy="357" r="10" fill="#3fb950"/><text x="1080" y="362" text-anchor="middle" fill="#0d1117" font-size="12" font-weight="bold">✓</text>
+
+  <rect x="60" y="380" width="1160" height="40" rx="0" fill="#1c2333"/>
+  <text x="100" y="406" fill="#f0f6fc" font-size="14">XSD Validation</text>
+  <text x="520" y="406" fill="#8b949e" font-size="14">AIXM 5.1.1 + FIXM 4.3 schema validation</text>
+  <circle cx="1080" cy="400" r="10" fill="#3fb950"/><text x="1080" y="405" text-anchor="middle" fill="#0d1117" font-size="12" font-weight="bold">✓</text>
+
+  <rect x="60" y="423" width="1160" height="40" rx="0" fill="#161b22"/>
+  <text x="100" y="449" fill="#f0f6fc" font-size="14">Overload Protection</text>
+  <text x="520" y="449" fill="#8b949e" font-size="14">@Bulkhead(250) + Circuit Breaker</text>
+  <circle cx="1080" cy="443" r="10" fill="#3fb950"/><text x="1080" y="448" text-anchor="middle" fill="#0d1117" font-size="12" font-weight="bold">✓</text>
+
+  <rect x="60" y="466" width="1160" height="40" rx="0" fill="#1c2333"/>
+  <text x="100" y="492" fill="#f0f6fc" font-size="14">Certificate Purpose Separation</text>
+  <text x="520" y="492" fill="#8b949e" font-size="14">serverAuth (HTTPS) ≠ clientAuth (AMQP mTLS)</text>
+  <circle cx="1080" cy="486" r="10" fill="#3fb950"/><text x="1080" y="491" text-anchor="middle" fill="#0d1117" font-size="12" font-weight="bold">✓</text>
+
+  <rect x="60" y="509" width="1160" height="40" rx="8" fill="#161b22"/>
+  <text x="100" y="535" fill="#f0f6fc" font-size="14">Swagger UI over HTTPS</text>
+  <text x="520" y="535" fill="#8b949e" font-size="14">client-auth=request (not required) — browsers work</text>
+  <circle cx="1080" cy="529" r="10" fill="#3fb950"/><text x="1080" y="534" text-anchor="middle" fill="#0d1117" font-size="12" font-weight="bold">✓</text>
+
+  <!-- Bottom callout -->
+  <rect x="60" y="575" width="1160" height="55" rx="10" fill="#1c2333" stroke="#58a6ff" stroke-width="1.5"/>
+  <text x="640" y="600" text-anchor="middle" fill="#58a6ff" font-size="15" font-weight="bold">10/10 SPEC-170 mandatory requirements — production-grade security</text>
+  <text x="640" y="620" text-anchor="middle" fill="#484f58" font-size="12">EUROCONTROL SPEC-170 v2.0 (July 2025) · EU Regulation 2021/116 (CP1)</text>
+</svg>
+

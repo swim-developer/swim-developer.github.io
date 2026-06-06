@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Part 4: Consumer Validator | Create Consumer Tutorial | SWIM Developer</title>
+    <meta name="description" content="Build swim-ffice-consumer-validator: mock Subscription Manager REST API, Artemis-ready configuration, event generator XML samples, and Quarkus build.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@400;500;600;700;900&family=Red+Hat+Text:wght@400;500;600&family=Red+Hat+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="../../styles.css">
+</head>
+<body>
+    <nav class="navbar"></nav>
+
+    <header class="page-header">
+        <div class="container">
+            <div class="page-header-content">
+                <h1><i class="fas fa-graduation-cap"></i> Tutorials</h1>
+                <p class="page-subtitle">Step-by-step guides for deploying, configuring, and validating SWIM services</p>
+            </div>
+        </div>
+    </header>
+
+    <div class="wiki-layout">
+        <aside class="wiki-sidebar">
+            <nav class="wiki-nav">
+                <div class="wiki-nav-group">
+                    <h4 class="wiki-nav-title"><i class="fas fa-rocket"></i> Getting Started</h4>
+                    <ul>
+                        <li><a href="../deploy-gitops.html">GitOps (Argo CD)</a></li>
+                        <li><a href="../deploy-openshift.html">OpenShift</a></li>
+                        <li><a href="../deploy-kubernetes.html">Kubernetes</a></li>
+                        <li><a href="../deploy-openshift-local.html">OpenShift Local</a></li>
+                        <li><a href="../deploy-minikube.html">Minikube</a></li>
+                        <li><a href="../deploy-podman.html">Container Local (Podman)</a></li>
+                        <li><a href="../deploy-java.html">Java / Binary</a></li>
+                    </ul>
+                </div>
+                <div class="wiki-nav-group">
+                    <h4 class="wiki-nav-title"><i class="fas fa-bell"></i> Digital NOTAM</h4>
+                    <ul>
+                        <li><a href="../dnotam-consumer-deploy.html">Deploy Consumer</a></li>
+                        <li><a href="../dnotam-consumer-explore.html">Explore Consumer</a></li>
+                        <li><a href="../dnotam-provider-deploy.html">Deploy Provider</a></li>
+                        <li><a href="../dnotam-provider-explore.html">Explore Provider</a></li>
+                        <li><a href="../consumer-validator-deploy.html">Deploy Consumer Validator</a></li>
+                        <li><a href="../consumer-validator-explore.html">Explore Consumer Validator</a></li>
+                        <li><a href="../provider-validator-deploy.html">Deploy Provider Validator</a></li>
+                        <li><a href="../e2e-test.html">End-to-End Test</a></li>
+                    </ul>
+                </div>
+                <div class="wiki-nav-group">
+                    <h4 class="wiki-nav-title"><i class="fas fa-plane-arrival"></i> ED-254 (AMAN)</h4>
+                    <ul>
+                        <li><a href="../ed254-consumer-deploy.html">Deploy Consumer</a></li>
+                        <li><a href="../ed254-provider-deploy.html">Deploy Provider</a></li>
+                    </ul>
+                </div>
+                <div class="wiki-nav-group">
+                    <h4 class="wiki-nav-title"><i class="fas fa-wand-magic-sparkles"></i> Build Your Own</h4>
+                    <ul>
+                        <li><a href="../create-provider.html">Create Provider</a></li>
+                    </ul>
+                    <h4 class="wiki-nav-title" style="margin-top: 8px;"><i class="fas fa-book"></i> Create Consumer</h4>
+                    <ul class="chapter-list">
+                        <li><a href="index.html">Introduction &amp; Setup</a></li>
+                        <li><a href="data-model.html">Part 1: Data Model</a></li>
+                        <li><a href="outbox-extension.html">Part 2: Outbox Extension</a></li>
+                        <li><a href="consumer.html">Part 3: Consumer Service</a></li>
+                        <li><a href="validator.html" class="chapter-active">Part 4: Consumer Validator</a></li>
+                        <li><a href="infrastructure.html">Part 5: Infrastructure</a></li>
+                        <li><a href="tests.html">Part 6: Tests</a></li>
+                        <li><a href="run.html">Part 7: Run &amp; Verify</a></li>
+                    </ul>
+                </div>
+            </nav>
+        </aside>
+
+        <main class="wiki-content">
+            <div class="tutorial-progress">
+                <span>Step 5 of 8</span>
+                <div class="progress-bar"><div class="progress-fill" style="width: 62.5%"></div></div>
+            </div>
+
+            <section class="wiki-section">
+                <h2>Part 4: Consumer Validator (swim-ffice-consumer-validator)</h2>
+                <p>The consumer-validator is a lightweight Quarkus application that simulates an external SWIM provider. It provides:</p>
+                <ul>
+                    <li>A mock Subscription Manager REST API (<code>/swim/v1/subscriptions</code>, <code>/swim/v1/topics</code>)</li>
+                    <li>An ActiveMQ Artemis AMQP broker for message delivery</li>
+                    <li>An event generator that periodically publishes FF-ICE XML samples to the broker</li>
+                </ul>
+
+                <h3>4.1 Create the project</h3>
+                <p>Create the project directory structure:</p>
+                <pre class="wiki-code"><code>swim-ffice-consumer-validator/
+  pom.xml
+  src/main/docker/Containerfile.jvm
+  src/main/resources/application.properties
+  src/main/resources/events/               (XML samples go here, see 4.3)
+  src/main/java/com/github/swim_developer/validator/ffice/infrastructure/rest/
+    SubscriptionManagerResource.java
+    ValidatorTopicConfig.java</code></pre>
+
+                <h4>pom.xml</h4>
+                <pre class="wiki-code"><code>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"&gt;
+    &lt;modelVersion&gt;4.0.0&lt;/modelVersion&gt;
+
+    &lt;parent&gt;
+        &lt;groupId&gt;com.github.swim-developer&lt;/groupId&gt;
+        &lt;artifactId&gt;swim-validators&lt;/artifactId&gt;
+        &lt;version&gt;1.0.0-SNAPSHOT&lt;/version&gt;
+        &lt;relativePath/&gt;
+    &lt;/parent&gt;
+
+    &lt;artifactId&gt;swim-ffice-consumer-validator&lt;/artifactId&gt;
+    &lt;name&gt;SWIM FF-ICE Consumer Validator&lt;/name&gt;
+    &lt;description&gt;Mock AISP/EAD for FF-ICE consumer development and testing&lt;/description&gt;
+
+    &lt;dependencies&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;com.github.swim-developer&lt;/groupId&gt;
+            &lt;artifactId&gt;swim-validator-consumer&lt;/artifactId&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.projectlombok&lt;/groupId&gt;
+            &lt;artifactId&gt;lombok&lt;/artifactId&gt;
+            &lt;scope&gt;provided&lt;/scope&gt;
+        &lt;/dependency&gt;
+    &lt;/dependencies&gt;
+
+    &lt;build&gt;
+        &lt;plugins&gt;
+            &lt;plugin&gt;
+                &lt;groupId&gt;${quarkus.platform.group-id}&lt;/groupId&gt;
+                &lt;artifactId&gt;quarkus-maven-plugin&lt;/artifactId&gt;
+                &lt;version&gt;${quarkus.platform.version}&lt;/version&gt;
+                &lt;extensions&gt;true&lt;/extensions&gt;
+                &lt;executions&gt;
+                    &lt;execution&gt;
+                        &lt;goals&gt;
+                            &lt;goal&gt;build&lt;/goal&gt;
+                            &lt;goal&gt;generate-code&lt;/goal&gt;
+                            &lt;goal&gt;generate-code-tests&lt;/goal&gt;
+                        &lt;/goals&gt;
+                    &lt;/execution&gt;
+                &lt;/executions&gt;
+            &lt;/plugin&gt;
+            &lt;plugin&gt;
+                &lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt;
+                &lt;artifactId&gt;maven-compiler-plugin&lt;/artifactId&gt;
+                &lt;configuration&gt;
+                    &lt;parameters&gt;true&lt;/parameters&gt;
+                    &lt;annotationProcessorPaths&gt;
+                        &lt;path&gt;
+                            &lt;groupId&gt;org.projectlombok&lt;/groupId&gt;
+                            &lt;artifactId&gt;lombok&lt;/artifactId&gt;
+                            &lt;version&gt;${lombok.version}&lt;/version&gt;
+                        &lt;/path&gt;
+                    &lt;/annotationProcessorPaths&gt;
+                &lt;/configuration&gt;
+            &lt;/plugin&gt;
+        &lt;/plugins&gt;
+    &lt;/build&gt;
+&lt;/project&gt;</code></pre>
+
+                <h4>Containerfile.jvm</h4>
+                <p>This Dockerfile is used by the <code>compose.yml</code> to build the validator image locally:</p>
+                <pre class="wiki-code"><code>FROM registry.access.redhat.com/ubi9/openjdk-21-runtime:1.22
+
+ENV LANGUAGE='en_US:en'
+
+COPY --chown=185 target/quarkus-app/lib/ /deployments/lib/
+COPY --chown=185 target/quarkus-app/*.jar /deployments/
+COPY --chown=185 target/quarkus-app/app/ /deployments/app/
+COPY --chown=185 target/quarkus-app/quarkus/ /deployments/quarkus/
+COPY --chown=185 src/main/resources/events/ /opt/events/
+
+EXPOSE 8080 8443
+
+ENV JAVA_OPTS_APPEND="-Dquarkus.http.host=0.0.0.0 -Djava.util.logging.manager=org.jboss.logmanager.LogManager"
+ENV JAVA_APP_JAR="/deployments/quarkus-run.jar"
+
+ENTRYPOINT [ "/opt/jboss/container/java/run/run-java.sh" ]</code></pre>
+
+                <h3>4.2 Implement the Subscription Manager REST API</h3>
+                <p>The <code>swim-validator-consumer</code> library does <strong>not</strong> ship JAX-RS endpoints. You must create two classes.</p>
+
+                <h4>SubscriptionManagerResource.java</h4>
+                <p>This class exposes the SWIM Subscription Manager API that the consumer expects. It delegates to <code>ManageSubscriptionPort</code> from <code>swim-validator-core</code>.</p>
+                <div class="wiki-note">
+                    <p><strong>Important</strong>: The consumer sends <code>queueName</code> (camelCase) and expects <code>queueName</code> in the response. The validator-core uses <code>queue</code> (snake_case). The <code>toSubscriptionDto</code> method handles this mapping. If the consumer sends an empty <code>queueName</code>, pass <code>null</code> to <code>CreateSubscriptionCommand</code> so the validator generates one automatically.</p>
+                </div>
+                <pre class="wiki-code"><code>package com.github.swim_developer.validator.ffice.infrastructure.rest;
+
+import com.github.swim_developer.validator.consumer.domain.model.CreateSubscriptionCommand;
+import com.github.swim_developer.validator.consumer.domain.port.in.ManageSubscriptionPort;
+import com.github.swim_developer.validator.core.domain.model.QualityOfService;
+import com.github.swim_developer.validator.core.domain.model.SubscriptionResponse;
+import com.github.swim_developer.validator.core.domain.model.SubscriptionStatus;
+import jakarta.inject.Inject;
+import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
+import lombok.extern.slf4j.Slf4j;
+
+import java.time.Instant;
+import java.util.List;
+import java.util.Map;
+
+@Slf4j
+@Path("/swim/v1")
+@Produces(MediaType.APPLICATION_JSON)
+@Consumes(MediaType.APPLICATION_JSON)
+public class SubscriptionManagerResource {
+
+    @Inject
+    ManageSubscriptionPort subscriptionPort;
+
+    @Inject
+    ValidatorTopicConfig topicConfig;
+
+    @POST
+    @Path("/subscriptions")
+    public Response createSubscription(Map&lt;String, Object&gt; request) {
+        String topic = (String) request.getOrDefault("topic", "ffice.v1");
+        String description = (String) request.getOrDefault("description", "");
+
+        String rawQueue = (String) request.get("queueName");
+        String queueName = (rawQueue != null &amp;&amp; !rawQueue.isBlank()) ? rawQueue : null;
+        var command = new CreateSubscriptionCommand(
+                topic, queueName, QualityOfService.AT_LEAST_ONCE, true,
+                List.of(), List.of(), List.of(), null, null, description, null);
+        SubscriptionResponse sub = subscriptionPort.createSubscription(command);
+
+        log.info("Subscription created: id={}, queue={}", sub.subscriptionId(), sub.queue());
+        return Response.status(201).entity(toSubscriptionDto(sub)).build();
+    }
+
+    @GET
+    @Path("/subscriptions")
+    public Response listSubscriptions(
+            @QueryParam("queueName") String queueName,
+            @QueryParam("subscriptionStatus") String status) {
+        SubscriptionStatus subStatus = status != null ? SubscriptionStatus.valueOf(status) : null;
+        List&lt;SubscriptionResponse&gt; subs = subscriptionPort.listSubscriptions(queueName, subStatus);
+        return Response.ok(subs.stream().map(this::toSubscriptionDto).toList()).build();
+    }
+
+    @GET
+    @Path("/subscriptions/{subscriptionId}")
+    public Response getSubscription(@PathParam("subscriptionId") String subscriptionId) {
+        return subscriptionPort.getSubscriptionDetails(subscriptionId)
+                .map(sub -&gt; Response.ok(toSubscriptionDto(sub)).build())
+                .orElse(Response.status(404).build());
+    }
+
+    @PUT
+    @Path("/subscriptions/{subscriptionId}")
+    public Response updateSubscriptionStatus(
+            @PathParam("subscriptionId") String subscriptionId,
+            Map&lt;String, String&gt; body) {
+        String newStatus = body.getOrDefault("subscription_status",
+                body.getOrDefault("subscriptionStatus", "ACTIVE"));
+        SubscriptionStatus status = SubscriptionStatus.valueOf(newStatus);
+        SubscriptionResponse sub = subscriptionPort.updateSubscriptionStatus(subscriptionId, status);
+        return Response.ok(toSubscriptionDto(sub)).build();
+    }
+
+    @DELETE
+    @Path("/subscriptions/{subscriptionId}")
+    public Response deleteSubscription(@PathParam("subscriptionId") String subscriptionId) {
+        subscriptionPort.deleteSubscription(subscriptionId);
+        return Response.noContent().build();
+    }
+
+    @PUT
+    @Path("/subscriptions/{subscriptionId}/renew")
+    public Response renewSubscription(@PathParam("subscriptionId") String subscriptionId) {
+        return subscriptionPort.renewSubscription(subscriptionId)
+                .map(sub -&gt; Response.ok(toSubscriptionDto(sub)).build())
+                .orElse(Response.status(404).build());
+    }
+
+    @GET
+    @Path("/topics")
+    public Response listTopics() {
+        var topics = topicConfig.topicSummaries().stream()
+                .map(t -&gt; Map.of(
+                        "topicId", t.id(),
+                        "title", t.name(),
+                        "description", t.description()))
+                .toList();
+        return Response.ok(Map.of("topics", topics)).build();
+    }
+
+    @GET
+    @Path("/topics/{topicId}")
+    public Response getTopicDetails(@PathParam("topicId") String topicId) {
+        return topicConfig.topicSummaries().stream()
+                .filter(t -&gt; t.id().equals(topicId))
+                .findFirst()
+                .map(t -&gt; Response.ok(Map.of(
+                        "topicId", t.id(),
+                        "topicName", t.name(),
+                        "description", t.description(),
+                        "publisherState", "ACTIVE")).build())
+                .orElse(Response.status(404).build());
+    }
+
+    @GET
+    @Path("/features")
+    @Produces(MediaType.APPLICATION_XML)
+    public Response getFeatures(
+            @QueryParam("typeName") String typeName,
+            @QueryParam("filter") String filter,
+            @QueryParam("validTime") String validTime) {
+        return Response.ok("&lt;FeatureCollection/&gt;").build();
+    }
+
+    private Map&lt;String, Object&gt; toSubscriptionDto(SubscriptionResponse sub) {
+        return Map.of(
+                "subscriptionId", sub.subscriptionId().toString(),
+                "subscriptionStatus", sub.subscriptionStatus().name(),
+                "queueName", sub.queue() != null ? sub.queue() : "",
+                "subscriptionEnd", sub.subscriptionEnd() != null
+                        ? sub.subscriptionEnd().toString()
+                        : Instant.now().plusSeconds(86400).toString());
+    }
+}</code></pre>
+
+                <h4>ValidatorTopicConfig.java</h4>
+                <pre class="wiki-code"><code>package com.github.swim_developer.validator.ffice.infrastructure.rest;
+
+import jakarta.enterprise.context.ApplicationScoped;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
+
+import java.util.List;
+
+@ApplicationScoped
+public class ValidatorTopicConfig {
+
+    private final List&lt;TopicEntry&gt; topics;
+
+    public ValidatorTopicConfig(
+            @ConfigProperty(name = "validator.topic.id", defaultValue = "ffice-v1") String topicId,
+            @ConfigProperty(name = "validator.topic.name", defaultValue = "ffice.v1") String topicName,
+            @ConfigProperty(name = "validator.topic.description", defaultValue = "FF-ICE Flight Information messages (FIXM 4.3)") String topicDescription) {
+        this.topics = List.of(new TopicEntry(topicId, topicName, topicDescription));
+    }
+
+    public List&lt;TopicEntry&gt; topicSummaries() {
+        return topics;
+    }
+
+    public record TopicEntry(String id, String name, String description) {}
+}</code></pre>
+
+                <h3>4.3 Configure the event generator</h3>
+                <p>The validator needs sample FF-ICE messages to publish periodically to the AMQP broker. These are <strong>fictitious XML files</strong> that follow the FIXM 4.3 / FF-ICE 1.1 XSD structure. They exist solely to validate the end-to-end flow: message delivery, JAXB unmarshalling, field extraction, Kafka routing, and MongoDB persistence. They are not real operational data.</p>
+                <p>Create them in <code>src/main/resources/events/</code>. The <code>Containerfile.jvm</code> copies this folder to <code>/opt/events/</code> inside the container, and the <code>event.generator.events.path</code> property points there.</p>
+                <p>Create 7 files, one per FF-ICE message type:</p>
+
+                <p><strong><code>src/main/resources/events/filed-flight-plan.xml</code></strong>:</p>
+                <pre class="wiki-code"><code>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;!--
+  FICTITIOUS DATA - This file contains synthetic data created exclusively for
+  development and testing purposes. It has no relationship whatsoever with any
+  real operational environment, airline, flight, or air navigation service provider.
+
+  Created for the swim-developer project under the Apache License 2.0.
+  https://github.com/swim-developer
+--&gt;
+&lt;ffice:FficeMessage xmlns:ffice="http://www.fixm.aero/app/ffice/1.1"
+                    xmlns:fx="http://www.fixm.aero/flight/4.3"
+                    xmlns:fb="http://www.fixm.aero/base/4.3"&gt;
+    &lt;ffice:flight&gt;
+        &lt;fx:arrival&gt;
+            &lt;fx:destinationAerodrome&gt;
+                &lt;fb:locationIndicator&gt;LFPG&lt;/fb:locationIndicator&gt;
+            &lt;/fx:destinationAerodrome&gt;
+        &lt;/fx:arrival&gt;
+        &lt;fx:departure&gt;
+            &lt;fx:departureAerodrome&gt;
+                &lt;fb:locationIndicator&gt;LPPT&lt;/fb:locationIndicator&gt;
+            &lt;/fx:departureAerodrome&gt;
+        &lt;/fx:departure&gt;
+        &lt;fx:flightIdentification&gt;
+            &lt;fx:aircraftIdentification&gt;TAP123&lt;/fx:aircraftIdentification&gt;
+            &lt;fx:gufi codeSpace="urn:uuid" creationTime="2026-05-06T07:00:00Z" namespaceDomain="FULLY_QUALIFIED_DOMAIN_NAME" namespaceIdentifier="swim-developer.github.io"&gt;f47ac10b-58cc-4372-a567-0e02b2c3d479&lt;/fx:gufi&gt;
+        &lt;/fx:flightIdentification&gt;
+    &lt;/ffice:flight&gt;
+    &lt;ffice:timestamp&gt;2026-05-06T08:00:00.000Z&lt;/ffice:timestamp&gt;
+    &lt;ffice:type&gt;FILED_FLIGHT_PLAN&lt;/ffice:type&gt;
+    &lt;ffice:uniqueMessageIdentifier codeSpace="urn:uuid"&gt;a1b2c3d4-e5f6-4890-abcd-ef1234567890&lt;/ffice:uniqueMessageIdentifier&gt;
+&lt;/ffice:FficeMessage&gt;</code></pre>
+
+                <p><strong><code>src/main/resources/events/flight-plan-update.xml</code></strong>:</p>
+                <pre class="wiki-code"><code>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;!--
+  FICTITIOUS DATA - This file contains synthetic data created exclusively for
+  development and testing purposes. It has no relationship whatsoever with any
+  real operational environment, airline, flight, or air navigation service provider.
+
+  Created for the swim-developer project under the Apache License 2.0.
+  https://github.com/swim-developer
+--&gt;
+&lt;ffice:FficeMessage xmlns:ffice="http://www.fixm.aero/app/ffice/1.1"
+                    xmlns:fx="http://www.fixm.aero/flight/4.3"
+                    xmlns:fb="http://www.fixm.aero/base/4.3"&gt;
+    &lt;ffice:flight&gt;
+        &lt;fx:arrival&gt;
+            &lt;fx:destinationAerodrome&gt;
+                &lt;fb:locationIndicator&gt;EGLL&lt;/fb:locationIndicator&gt;
+            &lt;/fx:destinationAerodrome&gt;
+        &lt;/fx:arrival&gt;
+        &lt;fx:departure&gt;
+            &lt;fx:departureAerodrome&gt;
+                &lt;fb:locationIndicator&gt;EHAM&lt;/fb:locationIndicator&gt;
+            &lt;/fx:departureAerodrome&gt;
+        &lt;/fx:departure&gt;
+        &lt;fx:flightIdentification&gt;
+            &lt;fx:aircraftIdentification&gt;KLM456&lt;/fx:aircraftIdentification&gt;
+            &lt;fx:gufi codeSpace="urn:uuid" creationTime="2026-05-06T08:00:00Z" namespaceDomain="FULLY_QUALIFIED_DOMAIN_NAME" namespaceIdentifier="swim-developer.github.io"&gt;e47bc20c-68dd-4483-b678-1f13c4d5e580&lt;/fx:gufi&gt;
+        &lt;/fx:flightIdentification&gt;
+    &lt;/ffice:flight&gt;
+    &lt;ffice:timestamp&gt;2026-05-06T09:00:00.000Z&lt;/ffice:timestamp&gt;
+    &lt;ffice:type&gt;FLIGHT_PLAN_UPDATE&lt;/ffice:type&gt;
+    &lt;ffice:uniqueMessageIdentifier codeSpace="urn:uuid"&gt;b2c3d4e5-f6a7-4901-bcde-f12345678901&lt;/ffice:uniqueMessageIdentifier&gt;
+&lt;/ffice:FficeMessage&gt;</code></pre>
+
+                <p><strong><code>src/main/resources/events/flight-departure.xml</code></strong>:</p>
+                <pre class="wiki-code"><code>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;!--
+  FICTITIOUS DATA - This file contains synthetic data created exclusively for
+  development and testing purposes. It has no relationship whatsoever with any
+  real operational environment, airline, flight, or air navigation service provider.
+
+  Created for the swim-developer project under the Apache License 2.0.
+  https://github.com/swim-developer
+--&gt;
+&lt;ffice:FficeMessage xmlns:ffice="http://www.fixm.aero/app/ffice/1.1"
+                    xmlns:fx="http://www.fixm.aero/flight/4.3"
+                    xmlns:fb="http://www.fixm.aero/base/4.3"&gt;
+    &lt;ffice:flight&gt;
+        &lt;fx:arrival&gt;
+            &lt;fx:destinationAerodrome&gt;
+                &lt;fb:locationIndicator&gt;EDDF&lt;/fb:locationIndicator&gt;
+            &lt;/fx:destinationAerodrome&gt;
+        &lt;/fx:arrival&gt;
+        &lt;fx:departure&gt;
+            &lt;fx:departureAerodrome&gt;
+                &lt;fb:locationIndicator&gt;LEMD&lt;/fb:locationIndicator&gt;
+            &lt;/fx:departureAerodrome&gt;
+        &lt;/fx:departure&gt;
+        &lt;fx:flightIdentification&gt;
+            &lt;fx:aircraftIdentification&gt;IBE789&lt;/fx:aircraftIdentification&gt;
+            &lt;fx:gufi codeSpace="urn:uuid" creationTime="2026-05-06T09:00:00Z" namespaceDomain="FULLY_QUALIFIED_DOMAIN_NAME" namespaceIdentifier="swim-developer.github.io"&gt;d58cd31d-79ee-4594-a789-2024d5e6f691&lt;/fx:gufi&gt;
+        &lt;/fx:flightIdentification&gt;
+    &lt;/ffice:flight&gt;
+    &lt;ffice:timestamp&gt;2026-05-06T10:00:00.000Z&lt;/ffice:timestamp&gt;
+    &lt;ffice:type&gt;FLIGHT_DEPARTURE&lt;/ffice:type&gt;
+    &lt;ffice:uniqueMessageIdentifier codeSpace="urn:uuid"&gt;c3d4e5f6-a7b8-4012-8def-123456789012&lt;/ffice:uniqueMessageIdentifier&gt;
+&lt;/ffice:FficeMessage&gt;</code></pre>
+
+                <p><strong><code>src/main/resources/events/flight-arrival.xml</code></strong>:</p>
+                <pre class="wiki-code"><code>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;!--
+  FICTITIOUS DATA - This file contains synthetic data created exclusively for
+  development and testing purposes. It has no relationship whatsoever with any
+  real operational environment, airline, flight, or air navigation service provider.
+
+  Created for the swim-developer project under the Apache License 2.0.
+  https://github.com/swim-developer
+--&gt;
+&lt;ffice:FficeMessage xmlns:ffice="http://www.fixm.aero/app/ffice/1.1"
+                    xmlns:fx="http://www.fixm.aero/flight/4.3"
+                    xmlns:fb="http://www.fixm.aero/base/4.3"&gt;
+    &lt;ffice:flight&gt;
+        &lt;fx:arrival&gt;
+            &lt;fx:arrivalAerodrome&gt;
+                &lt;fb:locationIndicator&gt;LIRF&lt;/fb:locationIndicator&gt;
+            &lt;/fx:arrivalAerodrome&gt;
+            &lt;fx:destinationAerodrome&gt;
+                &lt;fb:locationIndicator&gt;LIRF&lt;/fb:locationIndicator&gt;
+            &lt;/fx:destinationAerodrome&gt;
+        &lt;/fx:arrival&gt;
+        &lt;fx:departure&gt;
+            &lt;fx:departureAerodrome&gt;
+                &lt;fb:locationIndicator&gt;LFPG&lt;/fb:locationIndicator&gt;
+            &lt;/fx:departureAerodrome&gt;
+        &lt;/fx:departure&gt;
+        &lt;fx:flightIdentification&gt;
+            &lt;fx:aircraftIdentification&gt;AFR101&lt;/fx:aircraftIdentification&gt;
+            &lt;fx:gufi codeSpace="urn:uuid" creationTime="2026-05-06T10:00:00Z" namespaceDomain="FULLY_QUALIFIED_DOMAIN_NAME" namespaceIdentifier="swim-developer.github.io"&gt;a69de42e-8aff-4605-a890-3035e6f70702&lt;/fx:gufi&gt;
+        &lt;/fx:flightIdentification&gt;
+    &lt;/ffice:flight&gt;
+    &lt;ffice:timestamp&gt;2026-05-06T11:00:00.000Z&lt;/ffice:timestamp&gt;
+    &lt;ffice:type&gt;FLIGHT_ARRIVAL&lt;/ffice:type&gt;
+    &lt;ffice:uniqueMessageIdentifier codeSpace="urn:uuid"&gt;d4e5f6a7-b8c9-4123-9efa-234567890123&lt;/ffice:uniqueMessageIdentifier&gt;
+&lt;/ffice:FficeMessage&gt;</code></pre>
+
+                <p><strong><code>src/main/resources/events/flight-cancellation.xml</code></strong>:</p>
+                <pre class="wiki-code"><code>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;!--
+  FICTITIOUS DATA - This file contains synthetic data created exclusively for
+  development and testing purposes. It has no relationship whatsoever with any
+  real operational environment, airline, flight, or air navigation service provider.
+
+  Created for the swim-developer project under the Apache License 2.0.
+  https://github.com/swim-developer
+--&gt;
+&lt;ffice:FficeMessage xmlns:ffice="http://www.fixm.aero/app/ffice/1.1"
+                    xmlns:fx="http://www.fixm.aero/flight/4.3"
+                    xmlns:fb="http://www.fixm.aero/base/4.3"&gt;
+    &lt;ffice:flight&gt;
+        &lt;fx:arrival&gt;
+            &lt;fx:destinationAerodrome&gt;
+                &lt;fb:locationIndicator&gt;ESSA&lt;/fb:locationIndicator&gt;
+            &lt;/fx:destinationAerodrome&gt;
+        &lt;/fx:arrival&gt;
+        &lt;fx:departure&gt;
+            &lt;fx:departureAerodrome&gt;
+                &lt;fb:locationIndicator&gt;EKCH&lt;/fb:locationIndicator&gt;
+            &lt;/fx:departureAerodrome&gt;
+        &lt;/fx:departure&gt;
+        &lt;fx:flightIdentification&gt;
+            &lt;fx:aircraftIdentification&gt;EZY321&lt;/fx:aircraftIdentification&gt;
+            &lt;fx:gufi codeSpace="urn:uuid" creationTime="2026-05-06T08:30:00Z" namespaceDomain="FULLY_QUALIFIED_DOMAIN_NAME" namespaceIdentifier="swim-developer.github.io"&gt;d92a075b-bd22-4938-a123-606808090035&lt;/fx:gufi&gt;
+        &lt;/fx:flightIdentification&gt;
+    &lt;/ffice:flight&gt;
+    &lt;ffice:timestamp&gt;2026-05-06T09:30:00.000Z&lt;/ffice:timestamp&gt;
+    &lt;ffice:type&gt;FLIGHT_CANCELLATION&lt;/ffice:type&gt;
+    &lt;ffice:uniqueMessageIdentifier codeSpace="urn:uuid"&gt;a7b8c9d0-e1f2-4456-abcd-567890123456&lt;/ffice:uniqueMessageIdentifier&gt;
+&lt;/ffice:FficeMessage&gt;</code></pre>
+
+                <p><strong><code>src/main/resources/events/planning-status.xml</code></strong>:</p>
+                <pre class="wiki-code"><code>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;!--
+  FICTITIOUS DATA - This file contains synthetic data created exclusively for
+  development and testing purposes. It has no relationship whatsoever with any
+  real operational environment, airline, flight, or air navigation service provider.
+
+  Created for the swim-developer project under the Apache License 2.0.
+  https://github.com/swim-developer
+--&gt;
+&lt;ffice:FficeMessage xmlns:ffice="http://www.fixm.aero/app/ffice/1.1"
+                    xmlns:fx="http://www.fixm.aero/flight/4.3"
+                    xmlns:fb="http://www.fixm.aero/base/4.3"&gt;
+    &lt;ffice:flight&gt;
+        &lt;fx:arrival&gt;
+            &lt;fx:destinationAerodrome&gt;
+                &lt;fb:locationIndicator&gt;EBBR&lt;/fb:locationIndicator&gt;
+            &lt;/fx:destinationAerodrome&gt;
+        &lt;/fx:arrival&gt;
+        &lt;fx:departure&gt;
+            &lt;fx:departureAerodrome&gt;
+                &lt;fb:locationIndicator&gt;EGLL&lt;/fb:locationIndicator&gt;
+            &lt;/fx:departureAerodrome&gt;
+        &lt;/fx:departure&gt;
+        &lt;fx:flightIdentification&gt;
+            &lt;fx:aircraftIdentification&gt;BAW202&lt;/fx:aircraftIdentification&gt;
+            &lt;fx:gufi codeSpace="urn:uuid" creationTime="2026-05-06T06:00:00Z" namespaceDomain="FULLY_QUALIFIED_DOMAIN_NAME" namespaceIdentifier="swim-developer.github.io"&gt;b70ef53f-9b00-4716-a901-4046f7080813&lt;/fx:gufi&gt;
+        &lt;/fx:flightIdentification&gt;
+    &lt;/ffice:flight&gt;
+    &lt;ffice:timestamp&gt;2026-05-06T07:00:00.000Z&lt;/ffice:timestamp&gt;
+    &lt;ffice:type&gt;PLANNING_STATUS&lt;/ffice:type&gt;
+    &lt;ffice:uniqueMessageIdentifier codeSpace="urn:uuid"&gt;e5f6a7b8-c9d0-4234-8fab-345678901234&lt;/ffice:uniqueMessageIdentifier&gt;
+&lt;/ffice:FficeMessage&gt;</code></pre>
+
+                <p><strong><code>src/main/resources/events/filing-status.xml</code></strong>:</p>
+                <pre class="wiki-code"><code>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;!--
+  FICTITIOUS DATA - This file contains synthetic data created exclusively for
+  development and testing purposes. It has no relationship whatsoever with any
+  real operational environment, airline, flight, or air navigation service provider.
+
+  Created for the swim-developer project under the Apache License 2.0.
+  https://github.com/swim-developer
+--&gt;
+&lt;ffice:FficeMessage xmlns:ffice="http://www.fixm.aero/app/ffice/1.1"
+                    xmlns:fx="http://www.fixm.aero/flight/4.3"
+                    xmlns:fb="http://www.fixm.aero/base/4.3"&gt;
+    &lt;ffice:flight&gt;
+        &lt;fx:arrival&gt;
+            &lt;fx:destinationAerodrome&gt;
+                &lt;fb:locationIndicator&gt;EDDM&lt;/fb:locationIndicator&gt;
+            &lt;/fx:destinationAerodrome&gt;
+        &lt;/fx:arrival&gt;
+        &lt;fx:departure&gt;
+            &lt;fx:departureAerodrome&gt;
+                &lt;fb:locationIndicator&gt;LSZH&lt;/fb:locationIndicator&gt;
+            &lt;/fx:departureAerodrome&gt;
+        &lt;/fx:departure&gt;
+        &lt;fx:flightIdentification&gt;
+            &lt;fx:aircraftIdentification&gt;SWR303&lt;/fx:aircraftIdentification&gt;
+            &lt;fx:gufi codeSpace="urn:uuid" creationTime="2026-05-06T07:30:00Z" namespaceDomain="FULLY_QUALIFIED_DOMAIN_NAME" namespaceIdentifier="swim-developer.github.io"&gt;c81f064f-ac11-4827-b012-505708090924&lt;/fx:gufi&gt;
+        &lt;/fx:flightIdentification&gt;
+    &lt;/ffice:flight&gt;
+    &lt;ffice:timestamp&gt;2026-05-06T08:30:00.000Z&lt;/ffice:timestamp&gt;
+    &lt;ffice:type&gt;FILING_STATUS&lt;/ffice:type&gt;
+    &lt;ffice:uniqueMessageIdentifier codeSpace="urn:uuid"&gt;f6a7b8c9-d0e1-4345-9abc-456789012345&lt;/ffice:uniqueMessageIdentifier&gt;
+&lt;/ffice:FficeMessage&gt;</code></pre>
+
+                <p>The event generator (scheduled task from <code>swim-validator-consumer</code>) reads these files and publishes them to the Artemis AMQP topic at a configurable interval.</p>
+
+                <h3>4.4 Configure application.properties</h3>
+                <p>Place this file at <code>src/main/resources/application.properties</code>:</p>
+                <pre class="wiki-code"><code># =============================================================================
+# SWIM FF-ICE Consumer Validator
+# =============================================================================
+quarkus.application.name=swim-ffice-consumer-validator
+
+# =============================================================================
+# AMQP Broker Connection (Artemis inside compose network)
+# =============================================================================
+amqp.broker.host=${AMQP_BROKER_HOST:localhost}
+amqp.broker.port=${AMQP_BROKER_PORT:5672}
+amqp.broker.username=${AMQP_BROKER_USERNAME:admin}
+amqp.broker.password=${AMQP_BROKER_PASSWORD:admin}
+amqp.broker.ssl.enabled=${AMQP_BROKER_SSL_ENABLED:false}
+
+# =============================================================================
+# MariaDB Persistence (subscription state)
+# =============================================================================
+quarkus.datasource.db-kind=mariadb
+quarkus.datasource.jdbc.url=jdbc:mariadb://${MARIADB_HOST:localhost}:${MARIADB_PORT:3306}/${MARIADB_DATABASE:swim_ffice_consumer_validator}
+quarkus.datasource.username=${MARIADB_USERNAME:swim}
+quarkus.datasource.password=${MARIADB_PASSWORD:swim}
+quarkus.hibernate-orm.database.generation=update
+
+# =============================================================================
+# Event Generator
+# =============================================================================
+event.generator.enabled=${EVENT_GENERATOR_ENABLED:true}
+event.generator.schedule=${EVENT_GENERATOR_SCHEDULE:0 */1 * * * ?}
+event.generator.events.path=${EVENT_GENERATOR_EVENTS_PATH:/opt/events}
+event.generator.randomize-dates=true
+
+# =============================================================================
+# Heartbeat Publisher
+# =============================================================================
+heartbeat.publisher.enabled=${HEARTBEAT_PUBLISHER_ENABLED:true}
+heartbeat.publisher.interval=${HEARTBEAT_PUBLISHER_INTERVAL:15s}
+
+# =============================================================================
+# Topics (FF-ICE service)
+# =============================================================================
+validator.topic.id=ffice-v1
+validator.topic.name=ffice.v1
+validator.topic.description=FF-ICE Flight Information messages (FIXM 4.3)
+validator.service.default-topic=ffice.v1
+validator.queue.prefix=FFICE.v1
+swim.provider.name=SWIM-FFICE-Validator
+
+# =============================================================================
+# HTTP
+# =============================================================================
+quarkus.http.port=8080
+quarkus.http.insecure-requests=${QUARKUS_HTTP_INSECURE_REQUESTS:enabled}
+
+# =============================================================================
+# TLS (HTTPS for SM REST API)
+# =============================================================================
+quarkus.http.ssl.certificate.files=/certs/server/tls.crt
+quarkus.http.ssl.certificate.key-files=/certs/server/tls.key
+quarkus.tls.trust-all=${QUARKUS_TLS_TRUST_ALL:false}
+
+# =============================================================================
+# Jandex Index
+# =============================================================================
+quarkus.index-dependency.swim-validator-consumer.group-id=com.github.swim-developer
+quarkus.index-dependency.swim-validator-consumer.artifact-id=swim-validator-consumer
+quarkus.index-dependency.swim-validator-core.group-id=com.github.swim-developer
+quarkus.index-dependency.swim-validator-core.artifact-id=swim-validator-core
+
+# =============================================================================
+# OpenAPI
+# =============================================================================
+quarkus.smallrye-openapi.path=/openapi
+quarkus.swagger-ui.path=/swagger-ui
+quarkus.swagger-ui.always-include=true
+mp.openapi.extensions.smallrye.info.title=SWIM FF-ICE Consumer Validator API
+mp.openapi.extensions.smallrye.info.version=1.0.0
+
+# =============================================================================
+# Logging
+# =============================================================================
+quarkus.log.level=INFO
+quarkus.log.category."com.github.swim_developer".level=INFO
+quarkus.log.console.format=%d{yyyy-MM-dd HH:mm:ss.SSS} %-5p [%c] (%t) %s%e%n</code></pre>
+
+                <h3>4.5 Build</h3>
+                <p>From the <code>swim-ffice-consumer-validator</code> directory:</p>
+                <pre class="wiki-code"><code>./mvnw clean package -DskipTests        # Linux / macOS
+mvnw.cmd clean package -DskipTests      # Windows</code></pre>
+            </section>
+
+            <div class="tutorial-nav-footer">
+                <a href="consumer.html" class="nav-prev">
+                    <span class="nav-label"><i class="fas fa-arrow-left"></i> Previous</span>
+                    <span class="nav-title">Part 3: Consumer Service</span>
+                </a>
+                <a href="infrastructure.html" class="nav-next">
+                    <span class="nav-label">Next <i class="fas fa-arrow-right"></i></span>
+                    <span class="nav-title">Part 5: Infrastructure</span>
+                </a>
+            </div>
+        </main>
+    </div>
+
+    <footer class="footer"></footer>
+    <script src="../../script.js"></script>
+</body>
+</html>

@@ -1,0 +1,90 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" font-family="Red Hat Display, sans-serif">
+  <rect width="1280" height="720" fill="#0d1117"/>
+
+  <text x="640" y="45" text-anchor="middle" fill="#f0f6fc" font-size="28" font-weight="bold">Same Framework — Different Domains</text>
+
+  <!-- DNOTAM Column -->
+  <rect x="40" y="70" width="580" height="590" rx="12" fill="#1c2333" stroke="#f85149" stroke-width="2"/>
+  <rect x="40" y="70" width="580" height="45" rx="12" fill="#f85149"/>
+  <rect x="40" y="100" width="580" height="15" fill="#f85149"/>
+  <text x="330" y="100" text-anchor="middle" fill="#ffffff" font-size="18" font-weight="bold">DNOTAM (Digital NOTAM)</text>
+
+  <!-- DNOTAM EventExtractor -->
+  <rect x="70" y="135" width="520" height="200" rx="8" fill="#0d1117"/>
+  <text x="90" y="162" fill="#58a6ff" font-size="14" font-weight="bold" font-family="JetBrains Mono, monospace">DnotamEventExtractor</text>
+  <line x1="70" y1="175" x2="590" y2="175" stroke="#30363d" stroke-width="1"/>
+  <text x="90" y="200" fill="#8b949e" font-size="13" font-family="JetBrains Mono, monospace">extractScenario()</text>
+  <text x="340" y="200" fill="#3fb950" font-size="13" font-family="JetBrains Mono, monospace">→ "RWY.CLS"</text>
+  <text x="90" y="228" fill="#8b949e" font-size="13" font-family="JetBrains Mono, monospace">extractAirport()</text>
+  <text x="340" y="228" fill="#3fb950" font-size="13" font-family="JetBrains Mono, monospace">→ "LPPT"</text>
+  <text x="90" y="256" fill="#8b949e" font-size="13" font-family="JetBrains Mono, monospace">extractPayloadType()</text>
+  <text x="340" y="256" fill="#3fb950" font-size="13" font-family="JetBrains Mono, monospace">→ AIXM 5.1.1</text>
+  <text x="90" y="284" fill="#8b949e" font-size="13" font-family="JetBrains Mono, monospace">extractTimestamp()</text>
+  <text x="340" y="284" fill="#3fb950" font-size="13" font-family="JetBrains Mono, monospace">→ 2026-04-15T10:00:00Z</text>
+  <text x="90" y="312" fill="#8b949e" font-size="13" font-family="JetBrains Mono, monospace">extractEventId()</text>
+  <text x="340" y="312" fill="#3fb950" font-size="13" font-family="JetBrains Mono, monospace">→ "EVT-DNOTAM-001"</text>
+
+  <!-- DNOTAM OutboxRouter -->
+  <rect x="70" y="350" width="520" height="180" rx="8" fill="#0d1117"/>
+  <text x="90" y="377" fill="#f85149" font-size="14" font-weight="bold" font-family="JetBrains Mono, monospace">DnotamKafkaOutboxRouter</text>
+  <line x1="70" y1="390" x2="590" y2="390" stroke="#30363d" stroke-width="1"/>
+  <text x="90" y="415" fill="#8b949e" font-size="13" font-family="JetBrains Mono, monospace">route(event) →</text>
+  <text x="110" y="440" fill="#484f58" font-size="12" font-family="JetBrains Mono, monospace">RWY.CLS</text>
+  <text x="240" y="440" fill="#f85149" font-size="12" font-family="JetBrains Mono, monospace">→ closure-topic</text>
+  <text x="110" y="462" fill="#484f58" font-size="12" font-family="JetBrains Mono, monospace">SFC.CON</text>
+  <text x="240" y="462" fill="#f85149" font-size="12" font-family="JetBrains Mono, monospace">→ surface-topic</text>
+  <text x="110" y="484" fill="#484f58" font-size="12" font-family="JetBrains Mono, monospace">SAA.ACT</text>
+  <text x="240" y="484" fill="#f85149" font-size="12" font-family="JetBrains Mono, monospace">→ airspace-topic</text>
+  <text x="110" y="506" fill="#484f58" font-size="12" font-family="JetBrains Mono, monospace">NAV.UNS</text>
+  <text x="240" y="506" fill="#f85149" font-size="12" font-family="JetBrains Mono, monospace">→ hazards-topic</text>
+
+  <!-- DNOTAM data format badge -->
+  <rect x="70" y="545" width="520" height="45" rx="6" fill="#21262d"/>
+  <text x="330" y="573" text-anchor="middle" fill="#8b949e" font-size="13">Data: AIXM 5.1.1 · 7 event scenarios · 6 Kafka topics</text>
+
+  <!-- Equals sign in center -->
+  <text x="640" y="380" text-anchor="middle" fill="#58a6ff" font-size="48" font-weight="bold">=</text>
+  <text x="640" y="415" text-anchor="middle" fill="#58a6ff" font-size="12">same framework</text>
+
+  <!-- ED-254 Column -->
+  <rect x="660" y="70" width="580" height="590" rx="12" fill="#1c2333" stroke="#d29922" stroke-width="2"/>
+  <rect x="660" y="70" width="580" height="45" rx="12" fill="#d29922"/>
+  <rect x="660" y="100" width="580" height="15" fill="#d29922"/>
+  <text x="950" y="100" text-anchor="middle" fill="#0d1117" font-size="18" font-weight="bold">ED-254 (Arrival Sequence)</text>
+
+  <!-- ED-254 EventExtractor -->
+  <rect x="690" y="135" width="520" height="200" rx="8" fill="#0d1117"/>
+  <text x="710" y="162" fill="#58a6ff" font-size="14" font-weight="bold" font-family="JetBrains Mono, monospace">Ed254ArrivalSequenceExtractor</text>
+  <line x1="690" y1="175" x2="1210" y2="175" stroke="#30363d" stroke-width="1"/>
+  <text x="710" y="200" fill="#8b949e" font-size="13" font-family="JetBrains Mono, monospace">extractScenario()</text>
+  <text x="960" y="200" fill="#3fb950" font-size="13" font-family="JetBrains Mono, monospace">→ "AMAN_SEQUENCE"</text>
+  <text x="710" y="228" fill="#8b949e" font-size="13" font-family="JetBrains Mono, monospace">extractAirport()</text>
+  <text x="960" y="228" fill="#3fb950" font-size="13" font-family="JetBrains Mono, monospace">→ "LPPT"</text>
+  <text x="710" y="256" fill="#8b949e" font-size="13" font-family="JetBrains Mono, monospace">extractPayloadType()</text>
+  <text x="960" y="256" fill="#3fb950" font-size="13" font-family="JetBrains Mono, monospace">→ FIXM 4.3</text>
+  <text x="710" y="284" fill="#8b949e" font-size="13" font-family="JetBrains Mono, monospace">extractTimestamp()</text>
+  <text x="960" y="284" fill="#3fb950" font-size="13" font-family="JetBrains Mono, monospace">→ 2026-04-15T10:00:00Z</text>
+  <text x="710" y="312" fill="#8b949e" font-size="13" font-family="JetBrains Mono, monospace">extractEventId()</text>
+  <text x="960" y="312" fill="#3fb950" font-size="13" font-family="JetBrains Mono, monospace">→ "EVT-ED254-001"</text>
+
+  <!-- ED-254 OutboxRouter -->
+  <rect x="690" y="350" width="520" height="180" rx="8" fill="#0d1117"/>
+  <text x="710" y="377" fill="#d29922" font-size="14" font-weight="bold" font-family="JetBrains Mono, monospace">Ed254KafkaOutboxRouter</text>
+  <line x1="690" y1="390" x2="1210" y2="390" stroke="#30363d" stroke-width="1"/>
+  <text x="710" y="415" fill="#8b949e" font-size="13" font-family="JetBrains Mono, monospace">route(event) →</text>
+  <text x="730" y="440" fill="#484f58" font-size="12" font-family="JetBrains Mono, monospace">SEQUENCE</text>
+  <text x="870" y="440" fill="#d29922" font-size="12" font-family="JetBrains Mono, monospace">→ arrivals-topic</text>
+  <text x="730" y="462" fill="#484f58" font-size="12" font-family="JetBrains Mono, monospace">ADVISORY</text>
+  <text x="870" y="462" fill="#d29922" font-size="12" font-family="JetBrains Mono, monospace">→ advisories-topic</text>
+  <text x="730" y="484" fill="#484f58" font-size="12" font-family="JetBrains Mono, monospace">CONSTRAINT</text>
+  <text x="870" y="484" fill="#d29922" font-size="12" font-family="JetBrains Mono, monospace">→ constraints-topic</text>
+
+  <!-- ED-254 data format badge -->
+  <rect x="690" y="545" width="520" height="45" rx="6" fill="#21262d"/>
+  <text x="950" y="573" text-anchor="middle" fill="#8b949e" font-size="13">Data: FIXM 4.3 · Speed advisories · 3 Kafka topics</text>
+
+  <!-- Bottom message -->
+  <rect x="40" y="675" width="1200" height="35" rx="6" fill="#0d419d"/>
+  <text x="640" y="698" text-anchor="middle" fill="#f0f6fc" font-size="15" font-weight="bold">MET (IWXXM), Flight Data, AIFS — same pattern, different SPI implementations</text>
+</svg>
+

@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" font-family="Red Hat Display, sans-serif">
+  <rect width="1280" height="720" fill="#0d1117"/>
+
+  <!-- Big statement -->
+  <text x="640" y="110" text-anchor="middle" fill="#f85149" font-size="96" font-weight="900">14 YEARS</text>
+  <text x="640" y="155" text-anchor="middle" fill="#8b949e" font-size="24">since SWIM was defined.</text>
+  <text x="640" y="195" text-anchor="middle" fill="#f0f6fc" font-size="28" font-weight="600">Most ANSPs still don't have a working implementation.</text>
+  <text x="640" y="250" text-anchor="middle" fill="#58a6ff" font-size="36" font-weight="bold">Why?</text>
+
+  <!-- Card 1: Complex Specs -->
+  <rect x="60" y="300" width="360" height="340" rx="14" fill="#1c2333" stroke="#f85149" stroke-width="2"/>
+  <!-- Icon: document stack -->
+  <rect x="195" y="335" width="50" height="60" rx="4" fill="none" stroke="#f85149" stroke-width="2"/>
+  <rect x="205" y="325" width="50" height="60" rx="4" fill="none" stroke="#f85149" stroke-width="1.5" stroke-opacity="0.5"/>
+  <rect x="215" y="315" width="50" height="60" rx="4" fill="none" stroke="#f85149" stroke-width="1" stroke-opacity="0.3"/>
+  <line x1="210" y1="355" x2="235" y2="355" stroke="#f85149" stroke-width="1.5"/>
+  <line x1="210" y1="365" x2="230" y2="365" stroke="#f85149" stroke-width="1.5"/>
+  <line x1="210" y1="375" x2="225" y2="375" stroke="#f85149" stroke-width="1.5"/>
+
+  <text x="240" y="430" text-anchor="middle" fill="#f85149" font-size="22" font-weight="bold">Complex Specs</text>
+  <text x="240" y="470" text-anchor="middle" fill="#f0f6fc" font-size="42" font-weight="900">1,600+</text>
+  <text x="240" y="500" text-anchor="middle" fill="#8b949e" font-size="16">pages of specifications</text>
+  <text x="240" y="535" text-anchor="middle" fill="#484f58" font-size="14">SPEC-170 · EUR Registry</text>
+  <text x="240" y="558" text-anchor="middle" fill="#484f58" font-size="14">AIXM 5.1.1 · FIXM 4.3</text>
+  <text x="240" y="581" text-anchor="middle" fill="#484f58" font-size="14">IWXXM · ED-254</text>
+
+  <!-- Card 2: Limited Teams -->
+  <rect x="460" y="300" width="360" height="340" rx="14" fill="#1c2333" stroke="#d29922" stroke-width="2"/>
+  <!-- Icon: people -->
+  <circle cx="620" cy="345" r="15" fill="none" stroke="#d29922" stroke-width="2"/>
+  <line x1="620" y1="360" x2="620" y2="390" stroke="#d29922" stroke-width="2"/>
+  <line x1="600" y1="375" x2="640" y2="375" stroke="#d29922" stroke-width="2"/>
+  <circle cx="660" cy="345" r="15" fill="none" stroke="#d29922" stroke-width="1.2" stroke-opacity="0.4"/>
+  <line x1="660" y1="360" x2="660" y2="390" stroke="#d29922" stroke-width="1.2" stroke-opacity="0.4"/>
+
+  <text x="640" y="430" text-anchor="middle" fill="#d29922" font-size="22" font-weight="bold">Limited IT Teams</text>
+  <text x="640" y="475" text-anchor="middle" fill="#f0f6fc" font-size="18">Aviation experts</text>
+  <text x="640" y="505" text-anchor="middle" fill="#f0f6fc" font-size="18">not cloud-native engineers</text>
+  <text x="640" y="550" text-anchor="middle" fill="#484f58" font-size="14">AMQP, mTLS, Kubernetes,</text>
+  <text x="640" y="573" text-anchor="middle" fill="#484f58" font-size="14">Kafka, Operators —</text>
+  <text x="640" y="596" text-anchor="middle" fill="#484f58" font-size="14">not their core expertise</text>
+
+  <!-- Card 3: Reinventing -->
+  <rect x="860" y="300" width="360" height="340" rx="14" fill="#1c2333" stroke="#a371f7" stroke-width="2"/>
+  <!-- Icon: circular arrows (reinvent) -->
+  <path d="M 1020 340 A 20 20 0 1 1 1060 360" fill="none" stroke="#a371f7" stroke-width="2"/>
+  <polygon points="1058,352 1068,360 1058,368" fill="#a371f7"/>
+  <path d="M 1060 380 A 20 20 0 1 1 1020 360" fill="none" stroke="#a371f7" stroke-width="2" stroke-opacity="0.5"/>
+
+  <text x="1040" y="430" text-anchor="middle" fill="#a371f7" font-size="22" font-weight="bold">Reinventing the Wheel</text>
+  <text x="1040" y="475" text-anchor="middle" fill="#f0f6fc" font-size="18">Each ANSP rebuilds</text>
+  <text x="1040" y="505" text-anchor="middle" fill="#f0f6fc" font-size="18">the same infrastructure</text>
+  <text x="1040" y="550" text-anchor="middle" fill="#484f58" font-size="14">AMQP connections, mTLS,</text>
+  <text x="1040" y="573" text-anchor="middle" fill="#484f58" font-size="14">subscriptions, heartbeats,</text>
+  <text x="1040" y="596" text-anchor="middle" fill="#484f58" font-size="14">reconciliation — from scratch</text>
+</svg>
+

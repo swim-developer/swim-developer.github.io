@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 450" font-family="Red Hat Text, sans-serif">
+  <rect width="1100" height="450" fill="#0d1117"/>
+
+  <!-- Title -->
+  <text x="550" y="35" text-anchor="middle" fill="#f0f6fc" font-size="22" font-weight="bold">Self-Healing: Zero Manual Intervention</text>
+
+  <!-- Phase 1: Normal -->
+  <rect x="30" y="70" width="320" height="150" rx="10" fill="#0a2e0a" stroke="#3fb950" stroke-width="2"/>
+  <text x="190" y="100" text-anchor="middle" fill="#3fb950" font-size="16" font-weight="bold">1. Normal Operation</text>
+  <text x="190" y="130" text-anchor="middle" fill="#f0f6fc" font-size="13">Heartbeat every 15s ✓</text>
+  <text x="190" y="155" text-anchor="middle" fill="#f0f6fc" font-size="13">Events flowing ✓</text>
+  <text x="190" y="180" text-anchor="middle" fill="#f0f6fc" font-size="13">Subscription ACTIVE ✓</text>
+  <text x="190" y="205" text-anchor="middle" fill="#8b949e" font-size="11">sequence: 1, 2, 3, 4...</text>
+
+  <!-- Arrow -->
+  <text x="380" y="150" fill="#f85149" font-size="30">⚡</text>
+  <text x="372" y="175" fill="#f85149" font-size="11">Provider</text>
+  <text x="380" y="190" fill="#f85149" font-size="11">crash</text>
+
+  <!-- Phase 2: Detection -->
+  <rect x="420" y="70" width="280" height="150" rx="10" fill="#2a1a00" stroke="#d29922" stroke-width="2"/>
+  <text x="560" y="100" text-anchor="middle" fill="#d29922" font-size="16" font-weight="bold">2. Detection (30s)</text>
+  <text x="560" y="130" text-anchor="middle" fill="#f0f6fc" font-size="13">Heartbeat timeout ⚠</text>
+  <text x="560" y="155" text-anchor="middle" fill="#f0f6fc" font-size="13">GET /subscriptions/{id}</text>
+  <text x="560" y="180" text-anchor="middle" fill="#f0f6fc" font-size="13">→ 404 Not Found</text>
+  <text x="560" y="205" text-anchor="middle" fill="#8b949e" font-size="11">HeartbeatTimeoutHandler</text>
+
+  <!-- Arrow -->
+  <text x="725" y="150" fill="#58a6ff" font-size="30">→</text>
+
+  <!-- Phase 3: Recovery -->
+  <rect x="770" y="70" width="300" height="150" rx="10" fill="#0a2e0a" stroke="#3fb950" stroke-width="2"/>
+  <text x="920" y="100" text-anchor="middle" fill="#3fb950" font-size="16" font-weight="bold">3. Recovery (auto)</text>
+  <text x="920" y="130" text-anchor="middle" fill="#f0f6fc" font-size="13">Recreate subscription ✓</text>
+  <text x="920" y="155" text-anchor="middle" fill="#f0f6fc" font-size="13">Register AMQP consumer ✓</text>
+  <text x="920" y="180" text-anchor="middle" fill="#f0f6fc" font-size="13">Heartbeat resumes ✓</text>
+  <text x="920" y="205" text-anchor="middle" fill="#8b949e" font-size="11">sequence: 1, 2, 3...</text>
+
+  <!-- Recovery logic table -->
+  <rect x="30" y="260" width="1040" height="160" rx="8" fill="#1c2333" stroke="#30363d" stroke-width="1"/>
+  <text x="550" y="290" text-anchor="middle" fill="#58a6ff" font-size="15" font-weight="bold">Status-Based Recovery Logic</text>
+
+  <text x="60" y="320" fill="#f0f6fc" font-size="13">Provider responds 404 / 410</text>
+  <text x="500" y="320" fill="#3fb950" font-size="13">→ Recreate subscription from scratch</text>
+
+  <text x="60" y="348" fill="#f0f6fc" font-size="13">Provider responds TERMINATED / DELETED</text>
+  <text x="500" y="348" fill="#3fb950" font-size="13">→ Recreate subscription from scratch</text>
+
+  <text x="60" y="376" fill="#f0f6fc" font-size="13">Provider responds ACTIVE but no heartbeat</text>
+  <text x="500" y="376" fill="#d29922" font-size="13">→ Log warning (possible broker issue)</text>
+
+  <text x="60" y="404" fill="#f0f6fc" font-size="13">Provider unreachable (connection refused)</text>
+  <text x="500" y="404" fill="#d29922" font-size="13">→ Retry with backoff, log alert</text>
+</svg>
+

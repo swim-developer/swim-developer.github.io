@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deploy on Minikube | Tutorials | SWIM Developer</title>
+    <meta name="description" content="Run SWIM services locally with Minikube using the automated Ansible playbook.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@400;500;600;700;900&family=Red+Hat+Text:wght@400;500;600&family=Red+Hat+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+    <nav class="navbar"></nav>
+
+    <header class="page-header">
+        <div class="container">
+            <div class="page-header-content">
+                <h1><i class="fas fa-graduation-cap"></i> Tutorials</h1>
+                <p class="page-subtitle">Step-by-step guides for deploying, configuring, and validating SWIM services</p>
+            </div>
+        </div>
+    </header>
+
+    <div class="wiki-layout">
+        <aside class="wiki-sidebar">
+            <nav class="wiki-nav">
+                <div class="wiki-nav-group">
+                    <h4 class="wiki-nav-title"><i class="fas fa-rocket"></i> Getting Started</h4>
+                    <ul>
+                        <li><a href="deploy-gitops.html">GitOps (Argo CD)</a></li>
+                        <li><a href="deploy-openshift.html">OpenShift</a></li>
+                        <li><a href="deploy-kubernetes.html">Kubernetes</a></li>
+                        <li><a href="deploy-openshift-local.html">OpenShift Local</a></li>
+                        <li><a href="deploy-minikube.html" class="active">Minikube</a></li>
+                        <li><a href="deploy-podman.html">Container Local (Podman)</a></li>
+                        <li><a href="deploy-java.html">Java / Binary</a></li>
+                    </ul>
+                </div>
+                <div class="wiki-nav-group">
+                    <h4 class="wiki-nav-title"><i class="fas fa-bell"></i> Digital NOTAM</h4>
+                    <ul>
+                        <li><a href="dnotam-consumer-deploy.html">Deploy Consumer</a></li>
+                        <li><a href="dnotam-consumer-explore.html">Explore Consumer</a></li>
+                        <li><a href="dnotam-provider-deploy.html">Deploy Provider</a></li>
+                        <li><a href="dnotam-provider-explore.html">Explore Provider</a></li>
+                        <li><a href="consumer-validator-deploy.html">Deploy Consumer Validator</a></li>
+                        <li><a href="consumer-validator-explore.html">Explore Consumer Validator</a></li>
+                        <li><a href="provider-validator-deploy.html">Deploy Provider Validator</a></li>
+                        <li><a href="e2e-test.html">End-to-End Test</a></li>
+                    </ul>
+                </div>
+                <div class="wiki-nav-group">
+                    <h4 class="wiki-nav-title"><i class="fas fa-plane-arrival"></i> ED-254 (AMAN)</h4>
+                    <ul>
+                        <li><a href="ed254-consumer-deploy.html">Deploy Consumer</a></li>
+                        <li><a href="ed254-provider-deploy.html">Deploy Provider</a></li>
+                    </ul>
+                </div>
+                <div class="wiki-nav-group">
+                    <h4 class="wiki-nav-title"><i class="fas fa-wand-magic-sparkles"></i> Build Your Own</h4>
+                    <ul>
+                        <li><a href="create-consumer.html">Create Consumer</a></li>
+                        <li><a href="create-provider.html">Create Provider</a></li>
+                    </ul>
+                </div>
+            </nav>
+        </aside>
+
+        <main class="wiki-content">
+            <section class="wiki-section">
+                <h2>Deploy on Minikube</h2>
+                <p>
+                    The <a href="https://github.com/swim-developer/swim-deploy-minikube" target="_blank">swim-deploy-minikube</a>
+                    project provides an Ansible playbook that automates the entire setup:
+                    cluster creation, operator installation, certificate generation, and
+                    SWIM service deployment.
+                </p>
+
+                <h3>Prerequisites</h3>
+                <div class="wiki-requirements">
+                    <div class="wiki-req-item">
+                        <i class="fas fa-ship"></i>
+                        <div>
+                            <strong>Minikube</strong>
+                            <span>latest version</span>
+                        </div>
+                    </div>
+                    <div class="wiki-req-item">
+                        <i class="fas fa-cube"></i>
+                        <div>
+                            <strong>Podman or Docker</strong>
+                            <span>container runtime for Minikube</span>
+                        </div>
+                    </div>
+                    <div class="wiki-req-item">
+                        <i class="fas fa-cog"></i>
+                        <div>
+                            <strong>Ansible</strong>
+                            <span>for playbook execution</span>
+                        </div>
+                    </div>
+                    <div class="wiki-req-item">
+                        <i class="fas fa-microchip"></i>
+                        <div>
+                            <strong>6 CPUs / 16 GB RAM</strong>
+                            <span>recommended minimums</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="wiki-note">
+                    <i class="fa-brands fa-windows"></i>
+                    <p>
+                        <strong>Windows:</strong> The commands below use GNU Make. Install it via
+                        <code>choco install make</code> (Chocolatey) or <code>scoop install make</code>.
+                    </p>
+                </div>
+
+                <h3>1. Clone and Run</h3>
+                <pre class="wiki-code"><code>git clone https://github.com/swim-developer/swim-deploy-minikube.git
+cd swim-deploy-minikube
+
+# Infrastructure only (no SWIM services)
+make setup
+
+# Full setup with sample services deployed
+make setup-samples</code></pre>
+
+                <h3>2. What Gets Installed</h3>
+                <ul class="wiki-list">
+                    <li>cert-manager with a self-signed SWIM CA (ClusterIssuer)</li>
+                    <li>Strimzi Kafka Operator and a Kafka cluster</li>
+                    <li>ArtemisCloud Operator for AMQP brokers</li>
+                    <li>Keycloak for OAuth 2.0 / OIDC</li>
+                    <li>SWIM Kubernetes Operator</li>
+                    <li>DNOTAM Consumer, Provider, and Consumer Validator (with <code>deploy_samples=true</code>)</li>
+                </ul>
+
+                <h3>3. Network Access</h3>
+                <p>On macOS with Apple Silicon (Podman driver), run the tunnel:</p>
+                <div class="wiki-code-tabs">
+                    <div class="wiki-tab-header" role="tablist">
+                        <button class="wiki-tab-btn active" data-tab="unix" role="tab" aria-selected="true">
+                            <i class="fa-brands fa-apple"></i>
+                            <i class="fa-brands fa-linux"></i>
+                            macOS / Linux
+                        </button>
+                        <button class="wiki-tab-btn" data-tab="windows" role="tab" aria-selected="false">
+                            <i class="fa-brands fa-windows"></i>
+                            Windows
+                        </button>
+                    </div>
+                    <pre class="wiki-code wiki-tab-panel active" data-tab="unix" role="tabpanel"><code>sudo minikube tunnel --profile=swim</code></pre>
+                    <pre class="wiki-code wiki-tab-panel" data-tab="windows" role="tabpanel"><code># Run PowerShell as Administrator
+minikube tunnel --profile=swim</code></pre>
+                </div>
+                <p>
+                    Access services at <code>https://&lt;service&gt;.127.0.0.1.nip.io</code>.
+                    On other platforms, use <code>minikube ip --profile=swim</code> to get the cluster IP.
+                </p>
+
+                <h3>4. Import the CA Certificate</h3>
+                <p>
+                    The playbook exports <code>swim-ca.crt</code>, <code>swim-client.crt</code>,
+                    and <code>swim-client.key</code>. Import the CA into your browser or system
+                    trust store to access SWIM endpoints over HTTPS without warnings.
+                </p>
+
+                <h3>5. Tear Down</h3>
+                <pre class="wiki-code"><code>make destroy</code></pre>
+            </section>
+        </main>
+    </div>
+
+    <button class="wiki-sidebar-toggle" aria-label="Toggle tutorial navigation">
+        <i class="fas fa-list"></i>
+    </button>
+
+    <footer class="footer"></footer>
+
+    <script src="../script.js"></script>
+</body>
+</html>

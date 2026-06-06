@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Part 6: Tests | Create Provider Tutorial | SWIM Developer</title>
+    <meta name="description" content="Unit tests, REST API integration tests, mTLS connectivity tests, and per-queue access control tests for the swim-ffice-provider.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@400;500;600;700;900&family=Red+Hat+Text:wght@400;500;600&family=Red+Hat+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="../../styles.css">
+</head>
+<body>
+    <nav class="navbar"></nav>
+
+    <header class="page-header">
+        <div class="container">
+            <div class="page-header-content">
+                <h1><i class="fas fa-graduation-cap"></i> Tutorials</h1>
+                <p class="page-subtitle">Step-by-step guides for deploying, configuring, and validating SWIM services</p>
+            </div>
+        </div>
+    </header>
+
+    <div class="wiki-layout">
+        <aside class="wiki-sidebar">
+            <nav class="wiki-nav">
+                <div class="wiki-nav-group">
+                    <h4 class="wiki-nav-title"><i class="fas fa-rocket"></i> Getting Started</h4>
+                    <ul>
+                        <li><a href="../deploy-gitops.html">GitOps (Argo CD)</a></li>
+                        <li><a href="../deploy-openshift.html">OpenShift</a></li>
+                        <li><a href="../deploy-kubernetes.html">Kubernetes</a></li>
+                        <li><a href="../deploy-openshift-local.html">OpenShift Local</a></li>
+                        <li><a href="../deploy-minikube.html">Minikube</a></li>
+                        <li><a href="../deploy-podman.html">Container Local (Podman)</a></li>
+                        <li><a href="../deploy-java.html">Java / Binary</a></li>
+                    </ul>
+                </div>
+                <div class="wiki-nav-group">
+                    <h4 class="wiki-nav-title"><i class="fas fa-bell"></i> Digital NOTAM</h4>
+                    <ul>
+                        <li><a href="../dnotam-consumer-deploy.html">Deploy Consumer</a></li>
+                        <li><a href="../dnotam-consumer-explore.html">Explore Consumer</a></li>
+                        <li><a href="../dnotam-provider-deploy.html">Deploy Provider</a></li>
+                        <li><a href="../dnotam-provider-explore.html">Explore Provider</a></li>
+                        <li><a href="../consumer-validator-deploy.html">Deploy Consumer Validator</a></li>
+                        <li><a href="../consumer-validator-explore.html">Explore Consumer Validator</a></li>
+                        <li><a href="../provider-validator-deploy.html">Deploy Provider Validator</a></li>
+                        <li><a href="../e2e-test.html">End-to-End Test</a></li>
+                    </ul>
+                </div>
+                <div class="wiki-nav-group">
+                    <h4 class="wiki-nav-title"><i class="fas fa-plane-arrival"></i> ED-254 (AMAN)</h4>
+                    <ul>
+                        <li><a href="../ed254-consumer-deploy.html">Deploy Consumer</a></li>
+                        <li><a href="../ed254-provider-deploy.html">Deploy Provider</a></li>
+                    </ul>
+                </div>
+                <div class="wiki-nav-group">
+                    <h4 class="wiki-nav-title"><i class="fas fa-wand-magic-sparkles"></i> Build Your Own</h4>
+                    <h4 class="wiki-nav-title" style="margin-top: 8px;"><i class="fas fa-upload"></i> Create Provider</h4>
+                    <ul class="chapter-list">
+                        <li><a href="index.html">Introduction &amp; Setup</a></li>
+                        <li><a href="data-model.html">Part 1: Data Model</a></li>
+                        <li><a href="provider.html">Part 2: Provider Service</a></li>
+                        <li><a href="validator.html">Part 3: Provider Validator</a></li>
+                        <li><a href="infrastructure.html">Part 4: Infrastructure</a></li>
+                        <li><a href="run.html">Part 5: Run &amp; Verify</a></li>
+                        <li><a href="tests.html" class="chapter-active">Part 6: Tests</a></li>
+                    </ul>
+                    <h4 class="wiki-nav-title" style="margin-top: 16px;"><i class="fas fa-book"></i> Create Consumer</h4>
+                    <ul>
+                        <li><a href="../create-consumer/index.html">Introduction &amp; Setup</a></li>
+                    </ul>
+                </div>
+            </nav>
+        </aside>
+
+        <main class="wiki-content">
+            <div class="tutorial-progress">
+                <span>Step 7 of 7</span>
+                <div class="progress-bar"><div class="progress-fill" style="width: 100%"></div></div>
+            </div>
+
+            <section class="wiki-section">
+                <h2>Part 6: Tests</h2>
+
+                <p>The test suite for the FF-ICE provider is organized in four layers:</p>
+                <table>
+                    <thead>
+                        <tr><th>Class</th><th>Tests</th><th>What it validates</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><code>EventExtractorTest</code></td><td>6</td><td>JAXB extraction — <code>messageType</code>, <code>gufi</code>, null safety</td></tr>
+                        <tr><td><code>FficeEventDeliveryServiceTest</code></td><td>7</td><td>Delivery engine — filter matching, fan-out, failure handling, metrics</td></tr>
+                        <tr><td><code>FficeEventProcessorTest</code></td><td>7</td><td>Ingress handler — validation, extraction, persistence, duplicate handling</td></tr>
+                        <tr><td><code>FficeProviderIT</code></td><td>20</td><td>Subscription Manager REST API — full lifecycle, access control, topics</td></tr>
+                        <tr><td><code>FficeMtlsConnectionIT</code></td><td>3</td><td>AMQPS / mTLS connectivity — SWIM-TIYP-0037, SWIM-TIYP-0033</td></tr>
+                        <tr><td><code>FficeQueueSecurityIT</code></td><td>4</td><td>Per-queue access control — SWIM-TIYP-0030 (Mandatory Access Control)</td></tr>
+                    </tbody>
+                </table>
+
+                <h3>6.1 Unit tests</h3>
+
+                <h4>Test dependencies</h4>
+                <p>Add the following dependencies to <code>pom.xml</code> before running these tests. They are needed for the mTLS and broker security integration tests in sections 6.3 and 6.4:</p>
+                <pre class="wiki-code"><code>&lt;dependency&gt;
+    &lt;groupId&gt;com.github.swim-developer&lt;/groupId&gt;
+    &lt;artifactId&gt;swim-framework-core&lt;/artifactId&gt;
+    &lt;version&gt;${project.version}&lt;/version&gt;
+    &lt;type&gt;test-jar&lt;/type&gt;
+    &lt;scope&gt;test&lt;/scope&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;org.testcontainers&lt;/groupId&gt;
+    &lt;artifactId&gt;testcontainers&lt;/artifactId&gt;
+    &lt;scope&gt;test&lt;/scope&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;org.testcontainers&lt;/groupId&gt;
+    &lt;artifactId&gt;testcontainers-junit-jupiter&lt;/artifactId&gt;
+    &lt;scope&gt;test&lt;/scope&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;org.awaitility&lt;/groupId&gt;
+    &lt;artifactId&gt;awaitility&lt;/artifactId&gt;
+    &lt;scope&gt;test&lt;/scope&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;org.bouncycastle&lt;/groupId&gt;
+    &lt;artifactId&gt;bcprov-jdk18on&lt;/artifactId&gt;
+    &lt;version&gt;1.84&lt;/version&gt;
+    &lt;scope&gt;test&lt;/scope&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;org.bouncycastle&lt;/groupId&gt;
+    &lt;artifactId&gt;bcpkix-jdk18on&lt;/artifactId&gt;
+    &lt;version&gt;1.84&lt;/version&gt;
+    &lt;scope&gt;test&lt;/scope&gt;
+&lt;/dependency&gt;</code></pre>
+
+                <h4>EventExtractorTest</h4>
+                <p>The <code>EventExtractor</code> reads from a parsed <code>FficeMessageType</code> JAXB object. Tests verify that the extractor returns the expected identifiers for each FF-ICE message type without starting a Quarkus context.</p>
+                <p>Create <code>src/test/java/com/github/swim_developer/unit/EventExtractorTest.java</code>:</p>
+                <pre class="wiki-code"><code>class EventExtractorTest {
+
+    private static FficeUnmarshallerPool pool;
+    private EventExtractor extractor;
+
+    @BeforeAll static void initPool() { pool = new FficeUnmarshallerPool(); }
+    @BeforeEach void setUp() { extractor = new EventExtractor(); }
+
+    private FilterableEvent extractFirst(String xml) throws Exception {
+        FficeMessageType parsed = (FficeMessageType) pool.unmarshalAndValidate(xml);
+        List&lt;Optional&lt;FilterableEvent&gt;&gt; results = extractor.extract(parsed);
+        assertThat(results.getFirst()).isPresent();
+        return results.getFirst().get();
+    }
+
+    @Test void extractsMessageTypeFromFiledFlightPlan() throws Exception {
+        assertThat(extractFirst(loadXml("filed-flight-plan.xml")).messageType())
+            .isEqualTo("FILED_FLIGHT_PLAN");
+    }
+
+    @Test void extractsGufiFromFiledFlightPlan() throws Exception {
+        assertThat(extractFirst(loadXml("filed-flight-plan.xml")).gufi())
+            .isEqualTo("f47ac10b-58cc-4372-a567-0e02b2c3d479");
+    }
+
+    @Test void extractsMessageTypeFromFlightDeparture() throws Exception {
+        assertThat(extractFirst(loadXml("flight-departure.xml")).messageType())
+            .isEqualTo("FLIGHT_DEPARTURE");
+    }
+
+    @Test void extractsMessageTypeFromFlightArrival() throws Exception {
+        assertThat(extractFirst(loadXml("flight-arrival.xml")).messageType())
+            .isEqualTo("FLIGHT_ARRIVAL");
+    }
+
+    @Test void returnsEmptyOptionalForNullMessage() {
+        assertThat(extractor.extract(null).getFirst()).isEmpty();
+    }
+}</code></pre>
+
+                <h4>FficeEventDeliveryServiceTest</h4>
+                <p>Tests the delivery engine in isolation. Verifies that <code>messageType</code> filters match, non-matching subscriptions are skipped, multiple subscribers each receive the event, and broker failures are handled gracefully without crashing the delivery loop.</p>
+                <p>Key assertions:</p>
+                <ul>
+                    <li>Subscription with <code>messageType=["FILED_FLIGHT_PLAN"]</code> receives an event of type <code>FILED_FLIGHT_PLAN</code> — <code>matched=1, delivered=1</code></li>
+                    <li>Same subscription does NOT receive an event of type <code>FLIGHT_ARRIVAL</code> — <code>matched=0</code>, no interaction with the AMQP publisher</li>
+                    <li>Subscription with empty filter receives any event</li>
+                    <li>Two subscriptions each receive the same event — <code>matched=2, delivered=2</code></li>
+                    <li>When the broker throws, <code>failed=1</code> with no exception propagation</li>
+                    <li>The <code>ffice_events_delivered_total</code> counter increments on success</li>
+                </ul>
+
+                <h4>FficeEventProcessorTest</h4>
+                <p>Tests the ingress handler in isolation. Verifies every branch of <code>IngressMessageHandler.processEvent()</code>:</p>
+                <ul>
+                    <li>JAXB validation failure → <code>ffice_events_failed_total{reason="jaxb_validation_failed"}=1</code>, no database calls</li>
+                    <li>Extraction returns empty → <code>ffice_events_failed_total{reason="extraction_failed"}=1</code>, no database calls</li>
+                    <li>New event → <code>persist()</code> is called, <code>txSyncRegistry.registerInterposedSynchronization()</code> dispatches for async delivery</li>
+                    <li>Duplicate event → <code>update()</code> is called, NOT <code>persist()</code></li>
+                    <li>Database failure → <code>ffice_events_failed_total{reason="persistence_failed"}=1</code>, no dispatch</li>
+                    <li>All 7 FF-ICE message types each increment their own <code>ffice_events_received_total{type=...}</code> counter</li>
+                </ul>
+
+                <p>Run the unit tests:</p>
+                <pre class="wiki-code"><code>./mvnw test        # Linux / macOS
+mvnw.cmd test      # Windows</code></pre>
+                <p>All 20 unit tests must pass.</p>
+
+                <h3>6.2 Integration tests — REST API (FficeProviderIT)</h3>
+                <p>Integration tests verify the provider's Subscription Manager REST API end-to-end. Quarkus DevServices starts a PostgreSQL container automatically. The Kafka and AMQP connectors are disabled in the test profile, so no external broker is needed.</p>
+
+                <p>Two infrastructure dependencies are mocked to isolate the REST layer:</p>
+                <ul>
+                    <li><code>JwtRoleValidator</code> — validates JWT roles against the Artemis broker; mocked to return a test username and skip AMQ role checks</li>
+                    <li><code>QueueProvisioningStrategy</code> — creates queues and security roles in Artemis; mocked with <code>doNothing()</code></li>
+                </ul>
+
+                <p>Create <code>src/test/java/com/github/swim_developer/integration/FficeProviderIT.java</code>. The class is annotated with <code>@QuarkusTest @TestMethodOrder @TestSecurity(user = "it-test-user", roles = "user")</code>. A <code>@BeforeEach</code> method deletes all subscriptions, resets mocks, and stubs the expected interactions:</p>
+                <pre class="wiki-code"><code>@BeforeEach
+void setUp() {
+    QuarkusTransaction.requiringNew().run(() -> subscriptionStore.deleteAll());
+    reset(jwtRoleValidator, queueProvisioner);
+    when(jwtRoleValidator.getUsername()).thenReturn(TEST_USER);
+    doNothing().when(jwtRoleValidator).validateAmqRole(anyString());
+    doNothing().when(queueProvisioner).createQueue(anyString());
+    doNothing().when(queueProvisioner).addSecurityRole(anyString(), anyString(), anyString());
+    doNothing().when(queueProvisioner).removeQueue(anyString());
+    doNothing().when(queueProvisioner).removeSecurityRole(anyString());
+}</code></pre>
+
+                <p>The 20 tests cover:</p>
+                <ul>
+                    <li><code>@Order(1)</code> — <code>POST /swim/v1/subscriptions</code> returns 201, status <code>PAUSED</code>, queue name starts with <code>FFICE-</code>, verifies queue provisioner calls</li>
+                    <li><code>@Order(2)</code> — subscription with <code>message_type</code> filter persists and is returned in the response</li>
+                    <li><code>@Order(3)</code> — invalid topic returns 400</li>
+                    <li><code>@Order(5)</code> — idempotency: same request returns the same <code>subscription_id</code> and queue</li>
+                    <li><code>@Order(6)</code> — <code>GET /swim/v1/subscriptions/{id}</code> returns details</li>
+                    <li><code>@Order(7)</code> — unknown id returns 404</li>
+                    <li><code>@Order(8)</code> — list returns only current user's subscriptions</li>
+                    <li><code>@Order(9)</code> — <code>PUT</code> with <code>ACTIVE</code> transitions subscription and persists the new status</li>
+                    <li><code>@Order(10)</code> — <code>PUT</code> with <code>PAUSED</code> transitions back to paused</li>
+                    <li><code>@Order(11)</code> — <code>DELETE</code> soft-deletes (status becomes <code>DELETED</code>, row still present)</li>
+                    <li><code>@Order(12)</code> — any update on a deleted subscription returns 400</li>
+                    <li><code>@Order(13)</code> — <code>PUT /{id}/renew</code> extends the <code>subscription_end</code> date</li>
+                    <li><code>@Order(14)</code> — renew on deleted subscription returns 400</li>
+                    <li><code>@Order(15)</code> — delete non-existent returns 404</li>
+                    <li><code>@Order(16)</code> — reading another user's subscription returns 403</li>
+                    <li><code>@Order(17)</code> — deleting another user's subscription returns 403 and does not change its status</li>
+                    <li><code>@Order(20)</code> — <code>GET /swim/v1/topics</code> returns configured topics including <code>FficeService</code></li>
+                    <li><code>@Order(21)</code> — <code>GET /swim/v1/topics/{id}</code> returns 200 for existing topic</li>
+                    <li><code>@Order(22)</code> — unknown topic returns 404</li>
+                    <li><code>@Order(30)</code> — <code>GET /swim/v1/subscriptions/ping</code> returns 200</li>
+                </ul>
+
+                <h3>6.3 Integration tests — mTLS connectivity (FficeMtlsConnectionIT)</h3>
+
+                <p>This test validates AMQP over mTLS (AMQPS) as mandated by EUROCONTROL SPEC-170 (SWIM-TIYP-0037 — AMQP Transport Security Authentication). It uses <code>ArtemisTlsContainer</code> and <code>TlsTestCertificateGenerator</code> from the <code>swim-framework-core</code> test-jar to spin up a real TLS-enabled Artemis container.</p>
+
+                <div class="info-box">
+                    <i class="fas fa-shield-alt"></i>
+                    <strong>Yellow Profile compliance: SWIM-TIYP-0037</strong>
+                    <p>All SWIM AMQP interfaces must use TLS mutual authentication. This test proves the provider's Artemis broker enforces <code>needClientAuth=true</code> — connections without a valid X.509 client certificate are rejected.</p>
+                </div>
+
+                <p>Create <code>src/test/java/com/github/swim_developer/integration/FficeMtlsConnectionIT.java</code>:</p>
+                <pre class="wiki-code"><code>@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@ExtendWith(TestNameLoggerExtension.class)
+@Slf4j
+class FficeMtlsConnectionIT {
+
+    private static TlsTestCertificateGenerator certs;
+    private static ArtemisTlsContainer artemis;
+    private static Vertx vertx;
+
+    @BeforeAll
+    static void setup() throws Exception {
+        certs = TlsTestCertificateGenerator.generateAll();
+        artemis = new ArtemisTlsContainer(certs);
+        artemis.start();
+        vertx = Vertx.vertx();
+    }
+
+    @AfterAll
+    static void teardown() {
+        if (artemis != null) artemis.close();
+        if (vertx != null) vertx.close();
+    }
+
+    @Test @Order(1)
+    void fficeProviderConnectsWithValidMtlsCertificate() throws Exception {
+        // Simulates the provider connecting with its EACP certificate
+        CompletableFuture&lt;Void&gt; connected = new CompletableFuture&lt;&gt;();
+        AmqpClient.create(vertx, buildTlsOptions(true)).connect().onComplete(conn -&gt; {
+            if (conn.failed()) connected.completeExceptionally(conn.cause());
+            else { connected.complete(null); conn.result().close(); }
+        });
+        connected.get(15, TimeUnit.SECONDS); // throws if connection fails
+    }
+
+    @Test @Order(2)
+    void connectionIsRejectedWithoutClientCertificate() {
+        // No client cert = rejected. needClientAuth=true enforced.
+        CompletableFuture&lt;Void&gt; attempt = new CompletableFuture&lt;&gt;();
+        AmqpClient.create(vertx, buildTlsOptions(false)).connect().onComplete(conn -&gt; {
+            if (conn.failed()) attempt.completeExceptionally(conn.cause());
+            else attempt.complete(null);
+        });
+        assertThatThrownBy(() -&gt; attempt.get(10, TimeUnit.SECONDS))
+                .isInstanceOf(ExecutionException.class)
+                .hasCauseInstanceOf(Exception.class);
+    }
+
+    @Test @Order(3)
+    void fficeEventDeliveredOverMtlsChannel() throws Exception {
+        String fficeQueue = "FFICE-ansp1-sub999";
+        CompletableFuture&lt;String&gt; received = new CompletableFuture&lt;&gt;();
+
+        AmqpClient.create(vertx, buildTlsOptions(true)).connect().onComplete(conn -&gt; {
+            var connection = conn.result();
+            connection.createReceiver(fficeQueue).onComplete(recv -&gt; {
+                recv.result().handler(msg -&gt; {
+                    received.complete(msg.bodyAsString());
+                    connection.close();
+                });
+                connection.createSender(fficeQueue).onComplete(send -&gt;
+                    send.result().send(AmqpMessage.create()
+                            .withBody("FFICE-FILED-FLIGHT-PLAN").build()));
+            });
+        });
+
+        assertThat(received.get(15, TimeUnit.SECONDS))
+                .isEqualTo("FFICE-FILED-FLIGHT-PLAN");
+    }
+
+    private AmqpClientOptions buildTlsOptions(boolean includeClientCert) {
+        AmqpClientOptions opts = new AmqpClientOptions()
+                .setHost(artemis.getHost()).setPort(artemis.getAmqpsPort())
+                .setSsl(true).setUsername("admin").setPassword("admin")
+                .setHostnameVerificationAlgorithm("")
+                .setTrustOptions(new PfxOptions()
+                        .setPath(certs.getTruststorePath().toString())
+                        .setPassword(certs.getKeystorePassword()));
+        if (includeClientCert) {
+            opts.setKeyCertOptions(new PfxOptions()
+                    .setPath(certs.getClientKeystorePath().toString())
+                    .setPassword(certs.getKeystorePassword()));
+        }
+        return opts;
+    }
+}</code></pre>
+
+                <h3>6.4 Integration tests — per-queue access control (FficeQueueSecurityIT)</h3>
+
+                <p>This is the most important security test for a SWIM provider. It proves that even though ANSP2 holds a valid AMQP credential (simulating a valid JWT Bearer token in production), they cannot consume messages from a queue that belongs exclusively to ANSP1.</p>
+
+                <div class="info-box">
+                    <i class="fas fa-lock"></i>
+                    <strong>Yellow Profile compliance: SWIM-TIYP-0030</strong>
+                    <p>Mandatory access control must be enforced at every resource. The provider assigns each subscription an exclusive Artemis address (<code>FFICE.&lt;username&gt;.&lt;subscriptionId&gt;</code>) with a per-address security setting. Only the owner's role can consume. This test proves the enforcement is airtight — a valid token for the wrong user is rejected with <code>amqp:unauthorized-access</code>.</p>
+                </div>
+
+                <p>The test spins up a custom Artemis container built with an embedded <code>broker.xml</code> and pre-configured user/role properties that mirror exactly what <code>AmqpQueueProvisioner</code> applies at runtime via Jolokia when a subscriber creates a subscription.</p>
+
+                <p>Create <code>src/test/java/com/github/swim_developer/integration/FficeQueueSecurityIT.java</code>. Key design points:</p>
+                <ul>
+                    <li><code>buildBrokerXml()</code> sets <code>&lt;security-enabled&gt;true&lt;/security-enabled&gt;</code> and <code>&lt;security-invalidation-interval&gt;0&lt;/security-invalidation-interval&gt;</code>, plus per-address <code>&lt;security-setting&gt;</code> rules for <code>FFICE-ansp1-sub001</code> and <code>FFICE-ansp2-sub002</code></li>
+                    <li><code>buildEntrypoint()</code> writes <code>artemis-users.properties</code> and <code>artemis-roles.properties</code> with role <code>ansp1-swim-ffice-v1-amq-role</code> for user <code>ansp1</code> and <code>ansp2-swim-ffice-v1-amq-role</code> for user <code>ansp2</code></li>
+                    <li>Each receive helper closes the AMQP connection after the first message to prevent lingering receivers from consuming messages intended for subsequent tests</li>
+                    <li>The rejected test uses <code>.hasCauseInstanceOf(Throwable.class)</code> because the Vert.x AMQP client wraps the AMQP error as <code>NoStackTraceThrowable</code>, which extends <code>Throwable</code> but not <code>Exception</code></li>
+                </ul>
+
+                <p>The four tests prove:</p>
+
+                <table>
+                    <thead>
+                        <tr><th>Order</th><th>Test</th><th>What it proves</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>@Order(1)</code></td>
+                            <td><code>subscriberReceivesEventsFromOwnDedicatedQueue</code></td>
+                            <td>ANSP1 receives a message published by admin to <code>FFICE-ansp1-sub001</code></td>
+                        </tr>
+                        <tr>
+                            <td><code>@Order(2)</code></td>
+                            <td><code>unauthorizedSubscriberIsRejectedWithAmqpError</code></td>
+                            <td>ANSP2 tries to receive from <code>FFICE-ansp1-sub001</code> — Artemis replies with <code>amqp:unauthorized-access</code></td>
+                        </tr>
+                        <tr>
+                            <td><code>@Order(3)</code></td>
+                            <td><code>eachSubscriberAccessesOnlyTheirOwnQueue</code></td>
+                            <td>ANSP2 receives from their own <code>FFICE-ansp2-sub002</code> without issue</td>
+                        </tr>
+                        <tr>
+                            <td><code>@Order(4)</code></td>
+                            <td><code>providerRoutesEventsToMatchingQueuesOnly</code></td>
+                            <td>After a new publish to ANSP1's queue, ANSP1 receives; ANSP2 is still rejected (consistent enforcement)</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>Run the full test suite</h3>
+
+                <p>Run all integration tests together:</p>
+                <pre class="wiki-code"><code>./mvnw verify -DskipITs=false        # Linux / macOS
+mvnw.cmd verify -DskipITs=false      # Windows</code></pre>
+
+                <p>Expected output:</p>
+                <pre class="wiki-code"><code>[INFO] Tests run: 20, Failures: 0, Errors: 0, Skipped: 0   (FficeProviderIT)
+[INFO] Tests run:  3, Failures: 0, Errors: 0, Skipped: 0   (FficeMtlsConnectionIT)
+[INFO] Tests run:  4, Failures: 0, Errors: 0, Skipped: 0   (FficeQueueSecurityIT)
+[INFO]
+[INFO] BUILD SUCCESS</code></pre>
+
+                <p>All <strong>47 tests</strong> must pass: 20 unit tests + 27 integration tests (20 REST API + 3 mTLS + 4 queue security).</p>
+
+                <h3>What you built</h3>
+                <p>In this tutorial you created a complete SWIM provider for FF-ICE messages. The framework handled the majority of the work — you only wrote three service-specific classes:</p>
+                <table>
+                    <thead>
+                        <tr><th>File</th><th>Lines of code</th><th>What it does</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><code>JaxbUnmarshallerPool</code></td><td>~30</td><td>Delegates XML unmarshalling to <code>swim-fixm-ffice-model</code></td></tr>
+                        <tr><td><code>EventExtractor</code></td><td>~60</td><td>Reads <code>messageId</code>, <code>gufi</code>, <code>messageType</code> from a parsed JAXB object</td></tr>
+                        <tr><td><code>IngressMessageHandler</code></td><td>~80</td><td>Orchestrates validate → extract → persist → dispatch</td></tr>
+                    </tbody>
+                </table>
+                <p>Everything else — the Subscription Manager REST API, AMQP outbox delivery loop, heartbeat publisher, subscription expiry scheduler, JWT validation, queue provisioning, OpenTelemetry tracing, Prometheus metrics, health checks, and the per-queue security enforcement in Artemis — is provided by <code>swim-framework-provider</code>.</p>
+
+                <p>The test suite proves three compliance guarantees required by EUROCONTROL SPEC-170:</p>
+                <ul>
+                    <li><strong>SWIM-TIYP-0037</strong> — AMQP Transport Security Authentication (mTLS enforced)</li>
+                    <li><strong>SWIM-TIYP-0033</strong> — TLS Server Authentication (connections without client cert rejected)</li>
+                    <li><strong>SWIM-TIYP-0030</strong> — Mandatory Access Control (per-queue role enforcement blocks unauthorized consumers)</li>
+                </ul>
+            </section>
+
+            <div class="tutorial-nav-footer">
+                <a href="run.html" class="nav-prev">
+                    <span class="nav-label"><i class="fas fa-arrow-left"></i> Previous</span>
+                    <span class="nav-title">Part 5: Run &amp; Verify</span>
+                </a>
+            </div>
+        </main>
+    </div>
+
+    <footer class="footer"></footer>
+    <script src="../../script.js"></script>
+</body>
+</html>

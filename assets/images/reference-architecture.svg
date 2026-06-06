@@ -1,0 +1,297 @@
+<svg viewBox="0 0 1100 875" xmlns="http://www.w3.org/2000/svg" class="architecture-svg-diagram">
+    <defs>
+        <style type="text/css">
+            @font-face {
+                font-family: 'Red Hat Display';
+                font-style: normal;
+                font-weight: 400;
+                src: url(https://fonts.gstatic.com/s/redhatdisplay/v19/8vIf7wUr0m80wwYf0QCXZzYzUoTK8RZQvRd-D1NYbjKWckg5-Xecg3w.woff2) format('woff2');
+            }
+            @font-face {
+                font-family: 'Red Hat Display';
+                font-style: normal;
+                font-weight: 600;
+                src: url(https://fonts.gstatic.com/s/redhatdisplay/v19/8vIf7wUr0m80wwYf0QCXZzYzUoTK8RZQvRd-D1NYbjKWckg5-Xecg3w.woff2) format('woff2');
+            }
+            @font-face {
+                font-family: 'Red Hat Display';
+                font-style: normal;
+                font-weight: 700;
+                src: url(https://fonts.gstatic.com/s/redhatdisplay/v19/8vIf7wUr0m80wwYf0QCXZzYzUoTK8RZQvRd-D1NYbjKWckg5-Xecg3w.woff2) format('woff2');
+            }
+            @font-face {
+                font-family: 'Red Hat Text';
+                font-style: normal;
+                font-weight: 400;
+                src: url(https://fonts.gstatic.com/s/redhattext/v14/RrQCbohi_ic6B3yVSzGBrMx6ZI_cy1A6Ok2ML7hwZrM.woff2) format('woff2');
+            }
+            @font-face {
+                font-family: 'Red Hat Text';
+                font-style: normal;
+                font-weight: 500;
+                src: url(https://fonts.gstatic.com/s/redhattext/v14/RrQCbohi_ic6B3yVSzGBrMx6ZI_cy1A6Ok2ML7hwZrM.woff2) format('woff2');
+            }
+            @font-face {
+                font-family: 'Red Hat Text';
+                font-style: normal;
+                font-weight: 600;
+                src: url(https://fonts.gstatic.com/s/redhattext/v14/RrQCbohi_ic6B3yVSzGBrMx6ZI_cy1A6Ok2ML7hwZrM.woff2) format('woff2');
+            }
+            text {
+                font-family: 'Red Hat Text', 'Red Hat Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            }
+        </style>
+        <marker id="arrow-down" markerWidth="10" markerHeight="7" refX="5" refY="3.5" orient="auto">
+            <polygon points="0 0, 10 3.5, 0 7" fill="#666"/>
+        </marker>
+        <marker id="arrow-up" markerWidth="10" markerHeight="7" refX="5" refY="3.5" orient="auto-start-reverse">
+            <polygon points="0 0, 10 3.5, 0 7" fill="#666"/>
+        </marker>
+        <linearGradient id="grad-consumer" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#004085;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#0056b3;stop-opacity:1" />
+        </linearGradient>
+        <linearGradient id="grad-provider" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#28a745;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#20c997;stop-opacity:1" />
+        </linearGradient>
+        <linearGradient id="grad-mockserver" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#f57c00;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#ff9800;stop-opacity:1" />
+        </linearGradient>
+        <linearGradient id="grad-mockclient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#c62828;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#e53935;stop-opacity:1" />
+        </linearGradient>
+        <linearGradient id="grad-infra" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#37474f;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#546e7a;stop-opacity:1" />
+        </linearGradient>
+        <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+            <feDropShadow dx="0" dy="4" stdDeviation="4" flood-opacity="0.15"/>
+        </filter>
+    </defs>
+
+    <!-- Title -->
+    <text x="550" y="28" text-anchor="middle" fill="#1a1a1a" font-weight="700" font-size="18" font-family="Red Hat Display, sans-serif">SWIM DNOTAM Reference Architecture — Independent Modules</text>
+
+    <!-- ==================== LEFT COLUMN: CONSUMER SIDE ==================== -->
+    
+    <!-- Role 1 Label -->
+    <text x="30" y="58" fill="#004085" font-weight="700" font-size="14" font-family="Red Hat Display, sans-serif">ROLE 1: Your Organization as a CONSUMER</text>
+    
+    <!-- Consumer Box -->
+    <g class="consumer-section">
+        <rect x="30" y="70" width="510" height="230" rx="12" fill="#e3f2fd" stroke="#004085" stroke-width="2" filter="url(#shadow)"/>
+        <rect x="30" y="70" width="510" height="38" rx="12" fill="url(#grad-consumer)"/>
+        <rect x="30" y="96" width="510" height="12" fill="url(#grad-consumer)"/>
+        <text x="285" y="97" text-anchor="middle" fill="#fff" font-weight="700" font-size="15" font-family="Red Hat Display, sans-serif">CONSUMER</text>
+        <text x="285" y="130" text-anchor="middle" fill="#004085" font-size="11" font-style="italic">(Independent production module)</text>
+
+        <!-- Consumer: INPUT -->
+        <text x="50" y="155" fill="#004085" font-weight="600" font-size="11">INPUT (from any AISP/EAD)</text>
+        <text x="50" y="172" fill="#1a1a1a" font-size="10">• REST client for subscriptions</text>
+        <text x="50" y="187" fill="#1a1a1a" font-size="10">• AMQP consumer for events</text>
+
+        <!-- Consumer: OUTPUT -->
+        <text x="285" y="155" fill="#004085" font-weight="600" font-size="11">OUTPUT (to internal systems)</text>
+        <text x="285" y="172" fill="#1a1a1a" font-size="10">• Kafka topics by business intent</text>
+        <text x="285" y="187" fill="#1a1a1a" font-size="10">• GraphQL API for queries</text>
+        <text x="285" y="202" fill="#1a1a1a" font-size="10">• REST API for management</text>
+
+        <!-- Consumer: PROCESSING -->
+        <text x="50" y="222" fill="#004085" font-weight="600" font-size="11">PROCESSING</text>
+        <text x="50" y="239" fill="#1a1a1a" font-size="10">• Inbox pattern (AMQP → MongoDB)</text>
+        <text x="50" y="254" fill="#1a1a1a" font-size="10">• XSD validation</text>
+        <text x="50" y="269" fill="#1a1a1a" font-size="10">• Fault tolerance (retry, DLQ)</text>
+
+        <!-- Consumer: PERSISTENCE -->
+        <text x="285" y="222" fill="#004085" font-weight="600" font-size="11">PERSISTENCE</text>
+        <text x="285" y="239" fill="#1a1a1a" font-size="10">• MongoDB (subscriptions, events)</text>
+        <text x="285" y="254" fill="#1a1a1a" font-size="10">• Outbox pattern (MongoDB → Kafka)</text>
+    </g>
+
+    <!-- Arrow from Consumer to AISP (bidirectional - connects & consumes) -->
+    <line x1="285" y1="305" x2="285" y2="325" stroke="#666" stroke-width="2" marker-end="url(#arrow-down)"/>
+    <text x="295" y="312" fill="#666" font-size="9" font-style="italic">Connects to &amp;</text>
+    <text x="295" y="322" fill="#666" font-size="9" font-style="italic">consumes from</text>
+
+    <!-- External AISP/EAD Box -->
+    <g class="aisp-section">
+        <rect x="30" y="335" width="510" height="60" rx="8" fill="#f8f9fa" stroke="#adb5bd" stroke-width="2"/>
+        <text x="285" y="360" text-anchor="middle" fill="#495057" font-weight="600" font-size="12">EXTERNAL AISP / EAD</text>
+        <text x="285" y="378" text-anchor="middle" fill="#6c757d" font-size="10">Production: EUROCONTROL EAD, National AIS, or other certified AISP</text>
+    </g>
+
+    <!-- Arrow from AISP to MockServer -->
+    <line x1="285" y1="400" x2="285" y2="420" stroke="#f57c00" stroke-width="2" stroke-dasharray="5,3" marker-end="url(#arrow-down)"/>
+    <text x="295" y="413" fill="#f57c00" font-size="9" font-style="italic">or simulate with</text>
+
+    <!-- MockServer Box (simulates AISP) -->
+    <g class="mockserver-section">
+        <rect x="30" y="430" width="510" height="150" rx="12" fill="#fff8e1" stroke="#f57c00" stroke-width="2" stroke-dasharray="8,4" filter="url(#shadow)"/>
+        <rect x="30" y="430" width="510" height="38" rx="12" fill="url(#grad-mockserver)"/>
+        <rect x="30" y="456" width="510" height="12" fill="url(#grad-mockserver)"/>
+        <text x="285" y="457" text-anchor="middle" fill="#fff" font-weight="700" font-size="14" font-family="Red Hat Display, sans-serif">MOCKSERVER</text>
+        <text x="285" y="490" text-anchor="middle" fill="#e65100" font-size="11" font-style="italic">(Simulates an AISP/EAD for dev/testing)</text>
+
+        <!-- MockServer Features - Left -->
+        <text x="50" y="515" fill="#1a1a1a" font-size="10">• Subscription Manager API (REST)</text>
+        <text x="50" y="532" fill="#1a1a1a" font-size="10">• Integrated Artemis AMQP broker</text>
+        <text x="50" y="549" fill="#1a1a1a" font-size="10">• Event generator (configurable)</text>
+
+        <!-- MockServer Features - Right -->
+        <text x="285" y="515" fill="#1a1a1a" font-size="10">• 82 sample AIXM events included</text>
+        <text x="285" y="532" fill="#1a1a1a" font-size="10">• Scenario simulator</text>
+        <text x="285" y="549" fill="#1a1a1a" font-size="10">• Lightweight container (~50MB)</text>
+
+        <!-- Optional badge -->
+        <rect x="455" y="440" width="70" height="18" rx="9" fill="#fff3cd" stroke="#ffc107" stroke-width="1"/>
+        <text x="490" y="453" text-anchor="middle" fill="#856404" font-size="9" font-weight="600">Optional</text>
+    </g>
+
+    <!-- ==================== RIGHT COLUMN: PROVIDER SIDE ==================== -->
+    
+    <!-- Role 2 Label -->
+    <text x="560" y="58" fill="#28a745" font-weight="700" font-size="14" font-family="Red Hat Display, sans-serif">ROLE 2: Your Organization as a PROVIDER</text>
+    
+    <!-- Provider Box -->
+    <g class="provider-section">
+        <rect x="560" y="70" width="510" height="280" rx="12" fill="#d4edda" stroke="#28a745" stroke-width="2" filter="url(#shadow)"/>
+        <rect x="560" y="70" width="510" height="38" rx="12" fill="url(#grad-provider)"/>
+        <rect x="560" y="96" width="510" height="12" fill="url(#grad-provider)"/>
+        <text x="815" y="97" text-anchor="middle" fill="#fff" font-weight="700" font-size="15" font-family="Red Hat Display, sans-serif">PROVIDER</text>
+        <text x="815" y="130" text-anchor="middle" fill="#155724" font-size="11" font-style="italic">(Independent production module)</text>
+
+        <!-- Provider: EXTERNAL API -->
+        <text x="580" y="155" fill="#155724" font-weight="600" font-size="11">EXTERNAL API (SWIM Compliant)</text>
+        <text x="580" y="172" fill="#1a1a1a" font-size="10">• Subscription Manager API</text>
+        <text x="580" y="187" fill="#1a1a1a" font-size="10">• WFS GetFeature (OGC)</text>
+        <text x="580" y="202" fill="#1a1a1a" font-size="10">• HTTPS + mTLS + OIDC/JWT</text>
+
+        <!-- Provider: INTERNAL INPUT -->
+        <text x="815" y="155" fill="#155724" font-weight="600" font-size="11">INTERNAL INPUT</text>
+        <text x="815" y="172" fill="#1a1a1a" font-size="10">• Kafka consumer (internal topics)</text>
+        <text x="815" y="187" fill="#1a1a1a" font-size="10">• REST API (direct publish)</text>
+
+        <!-- Provider: QUEUE MANAGEMENT -->
+        <text x="580" y="225" fill="#155724" font-weight="600" font-size="11">QUEUE MANAGEMENT</text>
+        <text x="580" y="242" fill="#1a1a1a" font-size="10">• Auto queue creation via AMQ Operator</text>
+        <text x="580" y="257" fill="#1a1a1a" font-size="10">• Security roles per subscriber</text>
+        <text x="580" y="272" fill="#1a1a1a" font-size="10">• Durable/non-durable support</text>
+
+        <!-- Provider: SECURITY -->
+        <text x="815" y="225" fill="#155724" font-weight="600" font-size="11">SECURITY</text>
+        <text x="815" y="242" fill="#1a1a1a" font-size="10">• mTLS (client certificates)</text>
+        <text x="815" y="257" fill="#1a1a1a" font-size="10">• OIDC/JWT (any OIDC provider)</text>
+        <text x="815" y="272" fill="#1a1a1a" font-size="10">• Role-based queue access</text>
+
+        <!-- Provider: PERSISTENCE -->
+        <text x="580" y="302" fill="#155724" font-weight="600" font-size="11">PERSISTENCE</text>
+        <text x="580" y="319" fill="#1a1a1a" font-size="10">• PostgreSQL (subscriptions)</text>
+        <text x="580" y="334" fill="#1a1a1a" font-size="10">• Subscription state machine</text>
+
+        <!-- Provider: DISTRIBUTION -->
+        <text x="815" y="302" fill="#155724" font-weight="600" font-size="11">DISTRIBUTION</text>
+        <text x="815" y="319" fill="#1a1a1a" font-size="10">• AMQP 1.0 via AMQ Broker</text>
+        <text x="815" y="334" fill="#1a1a1a" font-size="10">• Per-subscriber queues</text>
+    </g>
+
+    <!-- Arrow from Provider to External Consumers -->
+    <line x1="815" y1="355" x2="815" y2="375" stroke="#666" stroke-width="2" marker-end="url(#arrow-down)"/>
+    <text x="825" y="368" fill="#666" font-size="9" font-style="italic">Distributes events to</text>
+
+    <!-- External Consumers Box -->
+    <g class="consumers-section">
+        <rect x="560" y="385" width="510" height="60" rx="8" fill="#f8f9fa" stroke="#adb5bd" stroke-width="2"/>
+        <text x="815" y="410" text-anchor="middle" fill="#495057" font-weight="600" font-size="12">EXTERNAL CONSUMERS</text>
+        <text x="815" y="428" text-anchor="middle" fill="#6c757d" font-size="10">ANSPs, Airport Operators, Airlines, or any authorized subscriber</text>
+    </g>
+
+    <!-- Arrow from MockClient UP to Provider (MockClient connects to Provider) -->
+    <line x1="815" y1="470" x2="815" y2="450" stroke="#c62828" stroke-width="2" stroke-dasharray="5,3" marker-end="url(#arrow-up)"/>
+    <text x="825" y="463" fill="#c62828" font-size="9" font-style="italic">or test with</text>
+
+    <!-- MockClient Box (connects to Provider as a test consumer) -->
+    <g class="mockclient-section">
+        <rect x="560" y="480" width="510" height="100" rx="12" fill="#ffebee" stroke="#c62828" stroke-width="2" stroke-dasharray="8,4" filter="url(#shadow)"/>
+        <rect x="560" y="480" width="510" height="38" rx="12" fill="url(#grad-mockclient)"/>
+        <rect x="560" y="506" width="510" height="12" fill="url(#grad-mockclient)"/>
+        <text x="815" y="507" text-anchor="middle" fill="#fff" font-weight="700" font-size="14" font-family="Red Hat Display, sans-serif">MOCKCLIENT</text>
+        <text x="815" y="540" text-anchor="middle" fill="#b71c1c" font-size="11" font-style="italic">(Simulates an External Consumer connecting to Provider)</text>
+
+        <!-- MockClient Features - Left -->
+        <text x="580" y="560" fill="#1a1a1a" font-size="10">• Subscription CRUD operations</text>
+        <text x="580" y="575" fill="#1a1a1a" font-size="10">• Real-time event streaming (SSE)</text>
+
+        <!-- MockClient Features - Right -->
+        <text x="815" y="560" fill="#1a1a1a" font-size="10">• Interactive web UI + mTLS proxy</text>
+        <text x="815" y="575" fill="#1a1a1a" font-size="10">• Load and contract testing</text>
+
+        <!-- Optional badge -->
+        <rect x="985" y="490" width="70" height="18" rx="9" fill="#fff3cd" stroke="#ffc107" stroke-width="1"/>
+        <text x="1020" y="503" text-anchor="middle" fill="#856404" font-size="9" font-weight="600">Optional</text>
+    </g>
+
+    <!-- ==================== INFO: INDEPENDENCE & INTEGRATION ==================== -->
+    <g class="info-section">
+        <rect x="30" y="610" width="1040" height="55" rx="8" fill="#e3f2fd" stroke="#1976d2" stroke-width="2"/>
+        <text x="55" y="635" fill="#1565c0" font-size="16">ℹ️</text>
+        <text x="85" y="630" fill="#1565c0" font-weight="600" font-size="12">Consumer and Provider are independent modules with no direct coupling.</text>
+        <text x="85" y="645" fill="#1565c0" font-size="10">Integration happens through Kafka topics: Consumer publishes to business topics, Provider reads from delivery-ready topics. Configure Provider</text>
+        <text x="85" y="658" fill="#1565c0" font-size="10">to read from Consumer's topics for end-to-end integration without intermediaries. Deploy Consumer only, Provider only, or both.</text>
+    </g>
+
+    <!-- ==================== INFRASTRUCTURE (SPANNING BOTH COLUMNS) ==================== -->
+    <g class="infrastructure-section">
+        <!-- Section Background -->
+        <rect x="30" y="685" width="1040" height="180" rx="12" fill="#eceff1" stroke="#607d8b" stroke-width="2" filter="url(#shadow)"/>
+        <rect x="30" y="685" width="1040" height="40" rx="12" fill="url(#grad-infra)"/>
+        <rect x="30" y="713" width="1040" height="12" fill="url(#grad-infra)"/>
+        <text x="550" y="712" text-anchor="middle" fill="#fff" font-weight="700" font-size="14" font-family="Red Hat Display, sans-serif">INFRASTRUCTURE (Shared across all modules)</text>
+
+        <!-- Cert-Manager Box -->
+        <rect x="55" y="740" width="320" height="105" rx="10" fill="#ffffff" stroke="#90a4ae" stroke-width="1.5"/>
+        <rect x="55" y="740" width="320" height="28" rx="10" fill="#78909c"/>
+        <rect x="55" y="758" width="320" height="10" fill="#78909c"/>
+        <text x="215" y="760" text-anchor="middle" fill="#fff" font-weight="600" font-size="12">Cert-Manager</text>
+        <text x="215" y="785" text-anchor="middle" fill="#546e7a" font-size="10" font-style="italic">(Automated PKI for all components)</text>
+        <text x="75" y="808" fill="#37474f" font-size="10">• Auto-generation of certificates</text>
+        <text x="75" y="823" fill="#37474f" font-size="10">• Auto-renewal before expiration</text>
+        <text x="245" y="808" fill="#37474f" font-size="10">• mTLS everywhere</text>
+        <text x="245" y="823" fill="#37474f" font-size="10">• EACP-ready PKI</text>
+
+        <!-- Observability Stack Box -->
+        <rect x="400" y="740" width="645" height="105" rx="10" fill="#ffffff" stroke="#90a4ae" stroke-width="1.5"/>
+        <rect x="400" y="740" width="645" height="28" rx="10" fill="#78909c"/>
+        <rect x="400" y="758" width="645" height="10" fill="#78909c"/>
+        <text x="722" y="760" text-anchor="middle" fill="#fff" font-weight="600" font-size="12">Observability Stack</text>
+        
+        <!-- Observability components in a row -->
+        <rect x="420" y="785" width="85" height="28" rx="6" fill="#e3f2fd" stroke="#1976d2" stroke-width="1.5"/>
+        <text x="462" y="803" text-anchor="middle" fill="#1565c0" font-size="10" font-weight="500">Prometheus</text>
+        
+        <rect x="520" y="785" width="65" height="28" rx="6" fill="#fff3e0" stroke="#f57c00" stroke-width="1.5"/>
+        <text x="552" y="803" text-anchor="middle" fill="#e65100" font-size="10" font-weight="500">Tempo</text>
+        
+        <rect x="600" y="785" width="55" height="28" rx="6" fill="#e8f5e9" stroke="#388e3c" stroke-width="1.5"/>
+        <text x="627" y="803" text-anchor="middle" fill="#2e7d32" font-size="10" font-weight="500">Loki</text>
+        
+        <!-- Arrows pointing to Grafana (from bottom of P/T/L to bottom of Grafana) -->
+        <path d="M 462 813 L 462 835 L 742 835 L 742 813" fill="none" stroke="#78909c" stroke-width="1.5" marker-end="url(#arrow-up)"/>
+        <path d="M 552 813 L 552 835" fill="none" stroke="#78909c" stroke-width="1.5"/>
+        <path d="M 627 813 L 627 835" fill="none" stroke="#78909c" stroke-width="1.5"/>
+        
+        <rect x="700" y="785" width="85" height="28" rx="6" fill="#fce4ec" stroke="#c2185b" stroke-width="1.5"/>
+        <text x="742" y="803" text-anchor="middle" fill="#ad1457" font-size="10" font-weight="600">Grafana</text>
+
+        <!-- OpenTelemetry -->
+        <rect x="810" y="785" width="100" height="28" rx="6" fill="#e8eaf6" stroke="#3f51b5" stroke-width="1.5"/>
+        <text x="860" y="803" text-anchor="middle" fill="#303f9f" font-size="10" font-weight="500">OpenTelemetry</text>
+
+        <!-- Kubernetes/OpenShift -->
+        <rect x="925" y="785" width="100" height="28" rx="6" fill="#ffebee" stroke="#d32f2f" stroke-width="1.5"/>
+        <text x="975" y="803" text-anchor="middle" fill="#c62828" font-size="10" font-weight="500">OpenShift</text>
+    </g>
+</svg>
+

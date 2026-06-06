@@ -1,0 +1,1139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Part 6: Tests | Create Consumer Tutorial | SWIM Developer</title>
+    <meta name="description" content="Unit and integration tests for the FF-ICE consumer: test resources, WireMock, Failsafe, and FficeConsumerIT.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@400;500;600;700;900&family=Red+Hat+Text:wght@400;500;600&family=Red+Hat+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="../../styles.css">
+</head>
+<body>
+    <nav class="navbar"></nav>
+
+    <header class="page-header">
+        <div class="container">
+            <div class="page-header-content">
+                <h1><i class="fas fa-graduation-cap"></i> Tutorials</h1>
+                <p class="page-subtitle">Step-by-step guides for deploying, configuring, and validating SWIM services</p>
+            </div>
+        </div>
+    </header>
+
+    <div class="wiki-layout">
+        <aside class="wiki-sidebar">
+            <nav class="wiki-nav">
+                <div class="wiki-nav-group">
+                    <h4 class="wiki-nav-title"><i class="fas fa-rocket"></i> Getting Started</h4>
+                    <ul>
+                        <li><a href="../deploy-gitops.html">GitOps (Argo CD)</a></li>
+                        <li><a href="../deploy-openshift.html">OpenShift</a></li>
+                        <li><a href="../deploy-kubernetes.html">Kubernetes</a></li>
+                        <li><a href="../deploy-openshift-local.html">OpenShift Local</a></li>
+                        <li><a href="../deploy-minikube.html">Minikube</a></li>
+                        <li><a href="../deploy-podman.html">Container Local (Podman)</a></li>
+                        <li><a href="../deploy-java.html">Java / Binary</a></li>
+                    </ul>
+                </div>
+                <div class="wiki-nav-group">
+                    <h4 class="wiki-nav-title"><i class="fas fa-bell"></i> Digital NOTAM</h4>
+                    <ul>
+                        <li><a href="../dnotam-consumer-deploy.html">Deploy Consumer</a></li>
+                        <li><a href="../dnotam-consumer-explore.html">Explore Consumer</a></li>
+                        <li><a href="../dnotam-provider-deploy.html">Deploy Provider</a></li>
+                        <li><a href="../dnotam-provider-explore.html">Explore Provider</a></li>
+                        <li><a href="../consumer-validator-deploy.html">Deploy Consumer Validator</a></li>
+                        <li><a href="../consumer-validator-explore.html">Explore Consumer Validator</a></li>
+                        <li><a href="../provider-validator-deploy.html">Deploy Provider Validator</a></li>
+                        <li><a href="../e2e-test.html">End-to-End Test</a></li>
+                    </ul>
+                </div>
+                <div class="wiki-nav-group">
+                    <h4 class="wiki-nav-title"><i class="fas fa-plane-arrival"></i> ED-254 (AMAN)</h4>
+                    <ul>
+                        <li><a href="../ed254-consumer-deploy.html">Deploy Consumer</a></li>
+                        <li><a href="../ed254-provider-deploy.html">Deploy Provider</a></li>
+                    </ul>
+                </div>
+                <div class="wiki-nav-group">
+                    <h4 class="wiki-nav-title"><i class="fas fa-wand-magic-sparkles"></i> Build Your Own</h4>
+                    <ul>
+                        <li><a href="../create-provider.html">Create Provider</a></li>
+                    </ul>
+                    <h4 class="wiki-nav-title" style="margin-top: 8px;"><i class="fas fa-book"></i> Create Consumer</h4>
+                    <ul class="chapter-list">
+                        <li><a href="index.html">Introduction &amp; Setup</a></li>
+                        <li><a href="data-model.html">Part 1: Data Model</a></li>
+                        <li><a href="outbox-extension.html">Part 2: Outbox Extension</a></li>
+                        <li><a href="consumer.html">Part 3: Consumer Service</a></li>
+                        <li><a href="validator.html">Part 4: Consumer Validator</a></li>
+                        <li><a href="infrastructure.html">Part 5: Infrastructure</a></li>
+                        <li><a href="tests.html" class="chapter-active">Part 6: Tests</a></li>
+                        <li><a href="run.html">Part 7: Run &amp; Verify</a></li>
+                    </ul>
+                </div>
+            </nav>
+        </aside>
+
+        <main class="wiki-content">
+            <div class="tutorial-progress">
+                <span>Step 7 of 8</span>
+                <div class="progress-bar"><div class="progress-fill" style="width: 87.5%"></div></div>
+            </div>
+
+            <section class="wiki-section">
+                <h2>Part 6: Tests</h2>
+
+                <h3>Step 7.1: Unit tests</h3>
+                <p>Unit tests validate the domain-specific FF-ICE logic without requiring Quarkus DevServices or Testcontainers.</p>
+
+                <h4>Test resources</h4>
+                <p>Create 7 FF-ICE XML samples in <code>src/test/resources/events/</code> (same content as the validator&apos;s <code>events/</code> folder from Step 4.3):</p>
+                <ul>
+                    <li><code>filed-flight-plan.xml</code></li>
+                    <li><code>flight-plan-update.xml</code></li>
+                    <li><code>flight-departure.xml</code></li>
+                    <li><code>flight-arrival.xml</code></li>
+                    <li><code>flight-cancellation.xml</code></li>
+                    <li><code>planning-status.xml</code></li>
+                    <li><code>filing-status.xml</code></li>
+                </ul>
+
+                <h4>EventExtractorTest</h4>
+                <p>Create <code>src/test/java/com/github/swim_developer/unit/EventExtractorTest.java</code>:</p>
+                <pre class="wiki-code"><code>package com.github.swim_developer.unit;
+
+import aero.fixm.ffice.FficeMessageType;
+import aero.fixm.ffice.validation.FficeUnmarshallerPool;
+import com.github.swim_developer.domain.model.Event;
+import com.github.swim_developer.infrastructure.out.xml.EventExtractor;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
+import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+class EventExtractorTest {
+
+    private static final FficeUnmarshallerPool unmarshallerPool = new FficeUnmarshallerPool();
+    private final EventExtractor extractor = new EventExtractor();
+
+    private static String filedFlightPlanXml;
+    private static String flightDepartureXml;
+    private static String flightArrivalXml;
+
+    @BeforeAll
+    static void loadXmlSamples() throws IOException {
+        filedFlightPlanXml = loadResource(&quot;events/filed-flight-plan.xml&quot;);
+        flightDepartureXml = loadResource(&quot;events/flight-departure.xml&quot;);
+        flightArrivalXml = loadResource(&quot;events/flight-arrival.xml&quot;);
+    }
+
+    @Test
+    void extractFiledFlightPlan() throws Exception {
+        FficeMessageType msg = (FficeMessageType) unmarshallerPool.unmarshalAndValidate(filedFlightPlanXml);
+
+        List&lt;Optional&lt;Event&gt;&gt; results = extractor.extract(msg);
+
+        assertThat(results).hasSize(1);
+        assertThat(results.get(0)).isPresent();
+
+        Event event = results.get(0).get();
+        assertThat(event.getFficeMessageType()).isEqualTo(&quot;FILED_FLIGHT_PLAN&quot;);
+        assertThat(event.getAircraftIdentification()).isEqualTo(&quot;TAP123&quot;);
+        assertThat(event.getDepartureAerodrome()).isEqualTo(&quot;LPPT&quot;);
+        assertThat(event.getArrivalAerodrome()).isEqualTo(&quot;LFPG&quot;);
+        assertThat(event.getGufi()).isNotBlank();
+        assertThat(event.getUniqueMessageIdentifier()).isNotBlank();
+        assertThat(event.getMessageTimestamp()).isNotBlank();
+    }
+
+    @Test
+    void extractFlightDeparture() throws Exception {
+        FficeMessageType msg = (FficeMessageType) unmarshallerPool.unmarshalAndValidate(flightDepartureXml);
+
+        List&lt;Optional&lt;Event&gt;&gt; results = extractor.extract(msg);
+
+        assertThat(results).hasSize(1);
+        Event event = results.get(0).orElseThrow();
+        assertThat(event.getFficeMessageType()).isEqualTo(&quot;FLIGHT_DEPARTURE&quot;);
+        assertThat(event.getAircraftIdentification()).isEqualTo(&quot;IBE789&quot;);
+        assertThat(event.getDepartureAerodrome()).isEqualTo(&quot;LEMD&quot;);
+        assertThat(event.getArrivalAerodrome()).isEqualTo(&quot;EDDF&quot;);
+    }
+
+    @Test
+    void extractFlightArrival() throws Exception {
+        FficeMessageType msg = (FficeMessageType) unmarshallerPool.unmarshalAndValidate(flightArrivalXml);
+
+        List&lt;Optional&lt;Event&gt;&gt; results = extractor.extract(msg);
+
+        assertThat(results).hasSize(1);
+        Event event = results.get(0).orElseThrow();
+        assertThat(event.getFficeMessageType()).isEqualTo(&quot;FLIGHT_ARRIVAL&quot;);
+        assertThat(event.getAircraftIdentification()).isEqualTo(&quot;AFR101&quot;);
+        assertThat(event.getDepartureAerodrome()).isEqualTo(&quot;LFPG&quot;);
+        assertThat(event.getArrivalAerodrome()).isEqualTo(&quot;LIRF&quot;);
+    }
+
+    @Test
+    void extractNullReturnsEmpty() {
+        List&lt;Optional&lt;Event&gt;&gt; results = extractor.extract(null);
+
+        assertThat(results).hasSize(1);
+        assertThat(results.get(0)).isEmpty();
+    }
+
+    @Test
+    void getTypeLabelReturnsMessageType() {
+        Event event = new Event();
+        event.setFficeMessageType(&quot;FILED_FLIGHT_PLAN&quot;);
+
+        assertThat(extractor.getTypeLabel(event)).isEqualTo(&quot;FILED_FLIGHT_PLAN&quot;);
+    }
+
+    @Test
+    void getTypeLabelReturnsUnknownWhenNull() {
+        Event event = new Event();
+
+        assertThat(extractor.getTypeLabel(event)).isEqualTo(&quot;unknown&quot;);
+    }
+
+    private static String loadResource(String path) throws IOException {
+        try (InputStream is = EventExtractorTest.class.getClassLoader().getResourceAsStream(path)) {
+            assertThat(is).as(&quot;Resource %s not found&quot;, path).isNotNull();
+            return new String(is.readAllBytes(), StandardCharsets.UTF_8);
+        }
+    }
+}</code></pre>
+
+                <h4>FficeMessageClassifierTest</h4>
+                <p>Create <code>src/test/java/com/github/swim_developer/unit/FficeMessageClassifierTest.java</code>:</p>
+                <pre class="wiki-code"><code>package com.github.swim_developer.unit;
+
+import com.github.swim_developer.extension.outbox.kafka.ffice.FficeEventCategory;
+import com.github.swim_developer.extension.outbox.kafka.ffice.FficeMessageClassifier;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+class FficeMessageClassifierTest {
+
+    @ParameterizedTest
+    @CsvSource({
+            &quot;events/filed-flight-plan.xml, FLIGHT_PLAN&quot;,
+            &quot;events/flight-plan-update.xml, FLIGHT_UPDATE&quot;,
+            &quot;events/flight-departure.xml, OPERATIONS&quot;,
+            &quot;events/flight-arrival.xml, OPERATIONS&quot;,
+            &quot;events/flight-cancellation.xml, OPERATIONS&quot;,
+            &quot;events/planning-status.xml, FLIGHT_UPDATE&quot;,
+            &quot;events/filing-status.xml, FLIGHT_UPDATE&quot;
+    })
+    void classifyRealXmlSamples(String resourcePath, String expectedCategory) throws IOException {
+        String xml = loadResource(resourcePath);
+
+        FficeEventCategory category = FficeMessageClassifier.classify(xml);
+
+        assertThat(category).isEqualTo(FficeEventCategory.valueOf(expectedCategory));
+    }
+
+    @Test
+    void classifyUnknownMessage() {
+        String xml = &quot;&lt;ffice:FficeMessage&gt;&lt;ffice:type&gt;SOMETHING_NEW&lt;/ffice:type&gt;&lt;/ffice:FficeMessage&gt;&quot;;
+
+        assertThat(FficeMessageClassifier.classify(xml)).isEqualTo(FficeEventCategory.UNKNOWN);
+    }
+
+    @Test
+    void extractGufiFromInlineElement() {
+        String xml = &quot;&lt;FficeMessage&gt;&lt;globallyUniqueFlightIdentifier&gt;abc-123&lt;/globallyUniqueFlightIdentifier&gt;&lt;/FficeMessage&gt;&quot;;
+
+        String gufi = FficeMessageClassifier.extractGufi(xml);
+
+        assertThat(gufi).isEqualTo(&quot;abc-123&quot;);
+    }
+
+    @Test
+    void extractGufiFromNamespacedElement() {
+        String xml = &quot;&lt;ffice:FficeMessage&gt;&lt;fx:gufi codeSpace=\&quot;urn:uuid\&quot;&gt;f47ac10b-58cc&lt;/fx:gufi&gt;&lt;/ffice:FficeMessage&gt;&quot;;
+
+        assertThat(FficeMessageClassifier.extractGufi(xml)).isEqualTo(&quot;unknown&quot;);
+    }
+
+    @Test
+    void extractGufiReturnsUnknownWhenMissing() {
+        String xml = &quot;&lt;ffice:FficeMessage&gt;&lt;ffice:type&gt;FILED_FLIGHT_PLAN&lt;/ffice:type&gt;&lt;/ffice:FficeMessage&gt;&quot;;
+
+        assertThat(FficeMessageClassifier.extractGufi(xml)).isEqualTo(&quot;unknown&quot;);
+    }
+
+    private static String loadResource(String path) throws IOException {
+        try (InputStream is = FficeMessageClassifierTest.class.getClassLoader().getResourceAsStream(path)) {
+            assertThat(is).as(&quot;Resource %s not found&quot;, path).isNotNull();
+            return new String(is.readAllBytes(), StandardCharsets.UTF_8);
+        }
+    }
+}</code></pre>
+            </section>
+
+            <section class="wiki-section">
+                <h3>Step 7.2: Integration test prerequisites</h3>
+                <p>The integration test requires two additions to <code>pom.xml</code>:</p>
+                <ol>
+                    <li>Add the <code>quarkus-wiremock</code> dependency (provided scope) alongside the existing <code>quarkus-wiremock-test</code>:</li>
+                </ol>
+                <pre class="wiki-code"><code>&lt;dependency&gt;
+    &lt;groupId&gt;io.quarkiverse.wiremock&lt;/groupId&gt;
+    &lt;artifactId&gt;quarkus-wiremock&lt;/artifactId&gt;
+    &lt;version&gt;${wiremock.version}&lt;/version&gt;
+    &lt;scope&gt;provided&lt;/scope&gt;
+&lt;/dependency&gt;</code></pre>
+                <ol start="2">
+                    <li>Configure the <code>maven-failsafe-plugin</code> with execution goals (replace the existing bare declaration):</li>
+                </ol>
+                <pre class="wiki-code"><code>&lt;plugin&gt;
+    &lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt;
+    &lt;artifactId&gt;maven-failsafe-plugin&lt;/artifactId&gt;
+    &lt;executions&gt;
+        &lt;execution&gt;
+            &lt;goals&gt;
+                &lt;goal&gt;integration-test&lt;/goal&gt;
+                &lt;goal&gt;verify&lt;/goal&gt;
+            &lt;/goals&gt;
+        &lt;/execution&gt;
+    &lt;/executions&gt;
+    &lt;configuration&gt;
+        &lt;argLine&gt;@{argLine} --add-opens java.base/java.lang=ALL-UNNAMED -javaagent:${settings.localRepository}/org/mockito/mockito-core/${mockito.version}/mockito-core-${mockito.version}.jar -Xshare:off&lt;/argLine&gt;
+        &lt;systemPropertyVariables&gt;
+            &lt;native.image.path&gt;${project.build.directory}/${project.build.finalName}-runner&lt;/native.image.path&gt;
+            &lt;java.util.logging.manager&gt;org.jboss.logmanager.LogManager&lt;/java.util.logging.manager&gt;
+            &lt;maven.home&gt;${maven.home}&lt;/maven.home&gt;
+        &lt;/systemPropertyVariables&gt;
+    &lt;/configuration&gt;
+&lt;/plugin&gt;</code></pre>
+            </section>
+
+            <section class="wiki-section">
+                <h3>Step 7.3: Test profile (<code>application-test.properties</code>)</h3>
+                <p>Create <code>src/main/resources/application-test.properties</code>:</p>
+                <pre class="wiki-code"><code># =============================================================================
+# SWIM FF-ICE Consumer - Test Profile
+# =============================================================================
+swim.subscription.renewal.enabled=false
+ffice.subscriptions=[]
+ffice.subscriptions.delete-and-recreate=false
+swim.subscriptions.delete-and-recreate=false
+
+# =============================================================================
+# MongoDB DevServices (Testcontainers)
+# =============================================================================
+quarkus.mongodb.devservices.image-name=mongo:8.2.7
+quarkus.mongodb.server-selection-timeout=5000
+
+# =============================================================================
+# SWIM Providers (Test - WireMock SM + DevServices AMQP)
+# =============================================================================
+swim.providers=[{&quot;providerId&quot;:&quot;test-provider&quot;,&quot;subscriptionManager&quot;:{&quot;url&quot;:&quot;http://localhost:${quarkus.wiremock.devservices.port}&quot;,&quot;tls&quot;:null,&quot;resilience&quot;:{&quot;connectTimeoutMs&quot;:5000,&quot;readTimeoutMs&quot;:10000,&quot;retryMaxAttempts&quot;:4,&quot;retryDelayMs&quot;:500}},&quot;amqpBroker&quot;:{&quot;host&quot;:&quot;${amqp-host:localhost}&quot;,&quot;port&quot;:${amqp-port:5672},&quot;sslEnabled&quot;:false,&quot;username&quot;:&quot;${amqp-user:guest}&quot;,&quot;password&quot;:&quot;${amqp-password:guest}&quot;,&quot;tls&quot;:null}}]
+
+# =============================================================================
+# Schedulers - DISABLED (999d delay prevents execution during tests)
+# =============================================================================
+swim.scheduler.initial-delay=999d
+reconciliation.retry.interval=999d
+reconciliation.retry.initial-delay=999d
+swim.inbox.recovery.interval=999d
+swim.outbox.recovery.interval=999d
+swim.outbox.cleanup.interval=999d
+swim.tls.reload-period=off
+
+# =============================================================================
+# OpenTelemetry - DISABLED
+# =============================================================================
+quarkus.otel.enabled=false
+quarkus.otel.sdk.disabled=true
+
+# =============================================================================
+# OIDC/Keycloak - DISABLED
+# =============================================================================
+quarkus.oidc.enabled=false
+quarkus.oidc.tenant-enabled=false
+
+# =============================================================================
+# Kubernetes Client DevServices - DISABLED
+# =============================================================================
+quarkus.kubernetes-client.devservices.enabled=false
+
+# =============================================================================
+# Management Endpoint - DISABLED
+# =============================================================================
+quarkus.management.enabled=false
+
+# =============================================================================
+# Fault Tolerance (Test-specific)
+# =============================================================================
+swim.subscription.api.timeout=10000
+swim.subscription.api.max-retries=3
+mp.fault.tolerance.interceptor.priority=5
+smallrye.faulttolerance.global.retry.enabled=true
+smallrye.faulttolerance.enabled=true
+quarkus.smallrye-fault-tolerance.interceptor.enabled=true
+
+# =============================================================================
+# Per-Subscription Heartbeat Monitor (fast intervals for tests)
+# =============================================================================
+swim.heartbeat.monitor.enabled=true
+swim.heartbeat.monitor.tolerance=4s
+swim.heartbeat.monitor.check-interval=1s
+
+# =============================================================================
+# Logging
+# =============================================================================
+quarkus.log.file.enabled=true
+quarkus.log.file.path=target/app.log
+quarkus.log.category.&quot;com.github.swim_developer&quot;.level=DEBUG</code></pre>
+            </section>
+
+            <section class="wiki-section">
+                <h3>Step 7.4: Integration test class</h3>
+                <p>The integration test validates the full consumer lifecycle with real infrastructure. Each test has Javadoc explaining what it proves and why it matters for the SFG/CP1.</p>
+                <p><strong>What these 19 tests demonstrate:</strong></p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Group</th>
+                            <th>Tests</th>
+                            <th>Framework capability proved</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Subscription lifecycle</td>
+                            <td>7</td>
+                            <td>Full CRUD with SM, configHash deduplication, input validation</td>
+                        </tr>
+                        <tr>
+                            <td>Event pipeline</td>
+                            <td>5</td>
+                            <td>JAXB extraction, DLQ routing, CP1 audit immutability, L1+L2 idempotency</td>
+                        </tr>
+                        <tr>
+                            <td>Event routing</td>
+                            <td>2</td>
+                            <td>FF-ICE message classification to Kafka topics</td>
+                        </tr>
+                        <tr>
+                            <td>Subscription guard</td>
+                            <td>1</td>
+                            <td>PAUSED subscriptions discard events before parsing</td>
+                        </tr>
+                        <tr>
+                            <td>Observability</td>
+                            <td>3</td>
+                            <td>Stats, DLQ query, Kubernetes liveness probe</td>
+                        </tr>
+                        <tr>
+                            <td>Self-healing</td>
+                            <td>1</td>
+                            <td>Automatic re-subscription when provider loses state (404)</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p>Create <code>src/test/java/com/github/swim_developer/integration/FficeConsumerIT.java</code>:</p>
+                <pre class="wiki-code"><code>package com.github.swim_developer.integration;
+
+import com.github.swim_developer.extension.outbox.kafka.ffice.FficeEventCategory;
+import com.github.swim_developer.extension.outbox.kafka.ffice.FficeMessageClassifier;
+import com.github.swim_developer.framework.application.model.OutboxDeliveryStatus;
+import com.github.swim_developer.framework.application.model.ProcessingOutcome;
+import com.github.swim_developer.framework.consumer.infrastructure.out.dlq.DeadLetterMessage;
+import com.github.swim_developer.framework.infrastructure.util.HashUtil;
+import com.github.swim_developer.domain.model.Event;
+import com.github.swim_developer.domain.model.Subscription;
+import com.github.swim_developer.framework.persistence.mongodb.MongoDeadLetterStore;
+import com.github.swim_developer.infrastructure.out.persistence.MongoEventStore;
+import com.github.swim_developer.infrastructure.out.persistence.MongoSubscriptionStore;
+import com.github.swim_developer.application.usecase.EventProcessingUseCase;
+import com.github.swim_developer.application.usecase.SubscriptionUseCase;
+import com.github.swim_developer.framework.consumer.infrastructure.out.idempotency.AbstractIdempotencyCache;
+import com.github.tomakehurst.wiremock.client.WireMock;
+import io.quarkiverse.wiremock.devservice.ConnectWireMock;
+import io.quarkus.cache.Cache;
+import io.quarkus.cache.CacheName;
+import io.quarkus.test.junit.QuarkusTest;
+import io.restassured.http.ContentType;
+import jakarta.inject.Inject;
+
+import org.junit.jupiter.api.*;
+
+import java.util.List;
+import java.util.Map;
+
+import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import static io.restassured.RestAssured.given;
+import static org.assertj.core.api.Assertions.assertThat;
+
+/**
+ * Integration tests for the FF-ICE consumer with real infrastructure.
+ *
+ * &lt;p&gt;Uses Quarkus Dev Services (Testcontainers) to spin up:&lt;/p&gt;
+ * &lt;ul&gt;
+ *   &lt;li&gt;&lt;b&gt;MongoDB&lt;/b&gt; - event and subscription persistence&lt;/li&gt;
+ *   &lt;li&gt;&lt;b&gt;Kafka (Redpanda)&lt;/b&gt; - inbox/outbox event streaming&lt;/li&gt;
+ *   &lt;li&gt;&lt;b&gt;WireMock&lt;/b&gt; - simulates the SWIM Subscription Manager REST API&lt;/li&gt;
+ *   &lt;li&gt;&lt;b&gt;Artemis&lt;/b&gt; - AMQP 1.0 broker&lt;/li&gt;
+ * &lt;/ul&gt;
+ *
+ * &lt;h2&gt;What These Tests Prove to the SFG&lt;/h2&gt;
+ * &lt;ol&gt;
+ *   &lt;li&gt;The framework delivers a fully operational SWIM consumer from just 10 domain classes&lt;/li&gt;
+ *   &lt;li&gt;Self-healing: consumer recovers automatically when the provider loses subscription state&lt;/li&gt;
+ *   &lt;li&gt;Fault tolerance: retries with backoff handle transient network failures&lt;/li&gt;
+ *   &lt;li&gt;CP1 audit compliance: persisted payloads are immutable after persistence&lt;/li&gt;
+ *   &lt;li&gt;Idempotency: duplicate AMQP messages are detected via content hash (L1 + L2 cache)&lt;/li&gt;
+ *   &lt;li&gt;Event routing: FF-ICE messages are classified and dispatched to the correct Kafka topic&lt;/li&gt;
+ * &lt;/ol&gt;
+ */
+@QuarkusTest
+@ConnectWireMock
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+class FficeConsumerIT {
+
+    private static final String VALID_FFICE_XML = &quot;&quot;&quot;
+            &lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+            &lt;ffice:FficeMessage xmlns:ffice=&quot;http://www.fixm.aero/app/ffice/1.1&quot;
+                                xmlns:fx=&quot;http://www.fixm.aero/flight/4.3&quot;
+                                xmlns:fb=&quot;http://www.fixm.aero/base/4.3&quot;&gt;
+                &lt;ffice:flight&gt;
+                    &lt;fx:arrival&gt;
+                        &lt;fx:destinationAerodrome&gt;
+                            &lt;fb:locationIndicator&gt;LFPG&lt;/fb:locationIndicator&gt;
+                        &lt;/fx:destinationAerodrome&gt;
+                    &lt;/fx:arrival&gt;
+                    &lt;fx:departure&gt;
+                        &lt;fx:departureAerodrome&gt;
+                            &lt;fb:locationIndicator&gt;LPPT&lt;/fb:locationIndicator&gt;
+                        &lt;/fx:departureAerodrome&gt;
+                    &lt;/fx:departure&gt;
+                    &lt;fx:flightIdentification&gt;
+                        &lt;fx:aircraftIdentification&gt;TAP123&lt;/fx:aircraftIdentification&gt;
+                        &lt;fx:gufi codeSpace=&quot;urn:uuid&quot; creationTime=&quot;2026-05-06T07:00:00Z&quot; namespaceDomain=&quot;FULLY_QUALIFIED_DOMAIN_NAME&quot; namespaceIdentifier=&quot;swim-developer.github.io&quot;&gt;f47ac10b-58cc-4372-a567-0e02b2c3d479&lt;/fx:gufi&gt;
+                    &lt;/fx:flightIdentification&gt;
+                &lt;/ffice:flight&gt;
+                &lt;ffice:timestamp&gt;2026-05-06T08:00:00.000Z&lt;/ffice:timestamp&gt;
+                &lt;ffice:type&gt;FILED_FLIGHT_PLAN&lt;/ffice:type&gt;
+                &lt;ffice:uniqueMessageIdentifier codeSpace=&quot;urn:uuid&quot;&gt;a1b2c3d4-e5f6-4890-abcd-ef1234567890&lt;/ffice:uniqueMessageIdentifier&gt;
+            &lt;/ffice:FficeMessage&gt;
+            &quot;&quot;&quot;;
+
+    private static final String INVALID_XML = &quot;&lt;not-valid-fixm&gt;broken&lt;/not-valid-fixm&gt;&quot;;
+
+    WireMock wiremock;
+
+    @Inject
+    EventProcessingUseCase eventProcessor;
+
+    @Inject
+    MongoEventStore eventRepository;
+
+    @Inject
+    MongoDeadLetterStore dlqRepository;
+
+    @Inject
+    MongoSubscriptionStore subscriptionRepository;
+
+    @Inject
+    AbstractIdempotencyCache idempotencyCache;
+
+    @Inject
+    SubscriptionUseCase subscriptionService;
+
+    @Inject
+    @CacheName(&quot;processed-messages&quot;)
+    Cache l1Cache;
+
+    @BeforeEach
+    void cleanDatabase(TestInfo testInfo) {
+        System.out.printf(&quot;%n== &gt; %s.%s%n&quot;, getClass().getSimpleName(), testInfo.getDisplayName());
+        eventRepository.deleteAll();
+        dlqRepository.deleteAll();
+        subscriptionRepository.deleteAllSubscriptions();
+        l1Cache.invalidateAll().await().indefinitely();
+        wiremock.removeMappings();
+        wiremock.resetAllScenarios();
+        wiremock.resetRequests();
+    }
+
+    // ─── Group 1: Subscription Lifecycle ─────────────────────────────────
+
+    /**
+     * Full subscription creation: REST API call, WireMock SM interaction, MongoDB persistence.
+     *
+     * &lt;p&gt;&lt;b&gt;Framework capability:&lt;/b&gt; The entire subscription lifecycle (POST to SM, receive PAUSED
+     * response, PUT to activate, persist locally) is handled by the framework. The developer
+     * writes zero subscription management code.&lt;/p&gt;
+     */
+    @Test
+    @Order(1)
+    void createSubscriptionEndToEnd() {
+        stubSubscriptionManagerCreate(&quot;sub-IT-001&quot;, &quot;FFICE-client-sub-IT-001&quot;);
+
+        var body = Map.of(&quot;topic&quot;, &quot;ffice.v1&quot;, &quot;description&quot;, &quot;Integration test&quot;);
+
+        given()
+                .contentType(ContentType.JSON)
+                .body(body)
+                .when()
+                .post(&quot;/api/v1/subscriptions&quot;)
+                .then()
+                .statusCode(201);
+
+        var persisted = subscriptionRepository.findBySubscriptionId(&quot;sub-IT-001&quot;);
+        assertThat(persisted).isPresent();
+        assertThat(persisted.get().getQueueName()).isEqualTo(&quot;FFICE-client-sub-IT-001&quot;);
+
+        wiremock.verifyThat(postRequestedFor(urlPathEqualTo(&quot;/swim/v1/subscriptions&quot;)));
+        wiremock.verifyThat(putRequestedFor(urlPathEqualTo(&quot;/swim/v1/subscriptions/sub-IT-001&quot;)));
+    }
+
+    /**
+     * Duplicate configHash detection: identical subscription request returns existing
+     * subscription WITHOUT calling the Subscription Manager again.
+     *
+     * &lt;p&gt;&lt;b&gt;Framework capability:&lt;/b&gt; Content-hash deduplication prevents redundant SM calls,
+     * protecting against operator mistakes and automated retries.&lt;/p&gt;
+     */
+    @Test
+    @Order(2)
+    void duplicateConfigHashReturnsExistingWithoutCallingSm() {
+        stubSubscriptionManagerCreate(&quot;sub-dup-cfg-1&quot;, &quot;FFICE-client-sub-dup-cfg-1&quot;);
+
+        var body = Map.of(&quot;topic&quot;, &quot;ffice.v1&quot;, &quot;description&quot;, &quot;First call&quot;);
+
+        given().contentType(ContentType.JSON).body(body)
+                .when().post(&quot;/api/v1/subscriptions&quot;)
+                .then().statusCode(201);
+
+        wiremock.resetRequests();
+
+        var secondResponse = given().contentType(ContentType.JSON).body(body)
+                .when().post(&quot;/api/v1/subscriptions&quot;)
+                .then().statusCode(201)
+                .extract().jsonPath();
+
+        assertThat(secondResponse.getString(&quot;subscriptionId&quot;)).isEqualTo(&quot;sub-dup-cfg-1&quot;);
+        wiremock.verifyThat(0, postRequestedFor(urlPathEqualTo(&quot;/swim/v1/subscriptions&quot;)));
+    }
+
+    /**
+     * List all subscriptions from MongoDB.
+     *
+     * &lt;p&gt;&lt;b&gt;Framework capability:&lt;/b&gt; REST API for subscription querying is fully generated
+     * by the archetype and backed by MongoDB via the framework persistence layer.&lt;/p&gt;
+     */
+    @Test
+    @Order(3)
+    void listSubscriptionsFromMongoDB() {
+        seedSubscription(&quot;sub-list-1&quot;, &quot;ACTIVE&quot;);
+        seedSubscription(&quot;sub-list-2&quot;, &quot;PAUSED&quot;);
+
+        var response = given()
+                .when().get(&quot;/api/v1/subscriptions&quot;)
+                .then().statusCode(200)
+                .extract().body().jsonPath();
+
+        assertThat(response.getList(&quot;$&quot;)).hasSize(2);
+    }
+
+    /**
+     * Pause subscription: consumer REST API forwards to SM via WireMock, persists new status.
+     *
+     * &lt;p&gt;&lt;b&gt;SWIM compliance:&lt;/b&gt; Pause/resume follows the SWIM Registry pattern
+     * (PUT /swim/v1/subscriptions/{id} with subscription_status field).&lt;/p&gt;
+     */
+    @Test
+    @Order(4)
+    void pauseSubscriptionViaApi() {
+        seedSubscription(&quot;sub-pause-1&quot;, &quot;ACTIVE&quot;);
+        stubSubscriptionManagerUpdate(&quot;sub-pause-1&quot;, &quot;PAUSED&quot;);
+
+        given()
+                .contentType(ContentType.JSON)
+                .body(Map.of(&quot;subscription_status&quot;, &quot;PAUSED&quot;))
+                .when().put(&quot;/api/v1/subscriptions/sub-pause-1&quot;)
+                .then().statusCode(200);
+
+        var updated = subscriptionRepository.findBySubscriptionId(&quot;sub-pause-1&quot;);
+        assertThat(updated).isPresent();
+        assertThat(updated.get().getSubscriptionStatus()).isEqualTo(&quot;PAUSED&quot;);
+    }
+
+    /**
+     * Resume subscription: transitions from PAUSED to ACTIVE.
+     */
+    @Test
+    @Order(5)
+    void resumeSubscriptionViaApi() {
+        seedSubscription(&quot;sub-resume-1&quot;, &quot;PAUSED&quot;);
+        stubSubscriptionManagerUpdate(&quot;sub-resume-1&quot;, &quot;ACTIVE&quot;);
+
+        given()
+                .contentType(ContentType.JSON)
+                .body(Map.of(&quot;subscription_status&quot;, &quot;ACTIVE&quot;))
+                .when().put(&quot;/api/v1/subscriptions/sub-resume-1&quot;)
+                .then().statusCode(200);
+
+        var updated = subscriptionRepository.findBySubscriptionId(&quot;sub-resume-1&quot;);
+        assertThat(updated).isPresent();
+        assertThat(updated.get().getSubscriptionStatus()).isEqualTo(&quot;ACTIVE&quot;);
+    }
+
+    /**
+     * Delete subscription: consumer REST API forwards DELETE to SM, removes local record.
+     */
+    @Test
+    @Order(6)
+    void deleteSubscriptionCleanup() {
+        seedSubscription(&quot;sub-del-1&quot;, &quot;ACTIVE&quot;);
+
+        wiremock.register(delete(urlPathEqualTo(&quot;/swim/v1/subscriptions/sub-del-1&quot;))
+                .willReturn(aResponse().withStatus(204)));
+
+        given()
+                .when().delete(&quot;/api/v1/subscriptions/sub-del-1&quot;)
+                .then().statusCode(204);
+
+        assertThat(subscriptionRepository.findBySubscriptionId(&quot;sub-del-1&quot;)).isEmpty();
+        wiremock.verifyThat(deleteRequestedFor(urlPathEqualTo(&quot;/swim/v1/subscriptions/sub-del-1&quot;)));
+    }
+
+    /**
+     * API contract validation: POST without required &quot;topic&quot; field is rejected.
+     *
+     * &lt;p&gt;&lt;b&gt;Framework capability:&lt;/b&gt; Input validation is enforced by the framework
+     * before any SM call is made.&lt;/p&gt;
+     */
+    @Test
+    @Order(7)
+    void createSubscriptionWithoutTopicRejects() {
+        given()
+                .contentType(ContentType.JSON)
+                .body(Map.of(&quot;description&quot;, &quot;no topic&quot;))
+                .when().post(&quot;/api/v1/subscriptions&quot;)
+                .then().statusCode(400);
+    }
+
+    // ─── Group 2: Event Processing Pipeline ──────────────────────────────
+
+    /**
+     * Full pipeline: valid FF-ICE XML is parsed, domain fields extracted, persisted to MongoDB.
+     *
+     * &lt;p&gt;&lt;b&gt;What this proves:&lt;/b&gt; The 10 domain classes (EventExtractor, JaxbUnmarshallerPool,
+     * XmlEnvelopeParser, EventDataValidator, EventFilterService, EventPersistenceService,
+     * ProcessorCallbacks, FficeSubscriptionRenewalStrategy, InboxMessageHandler,
+     * OutboxMessageHandler) integrate correctly with the framework orchestrator. GUFI,
+     * aircraft identification, departure/arrival aerodromes, and message type are all
+     * extracted from the FIXM 4.3 / FF-ICE 1.1 XML and persisted as first-class fields.&lt;/p&gt;
+     */
+    @Test
+    @Order(10)
+    void validFficePersistedWithFullMetadata() {
+        eventProcessor.processAndPersistSingleMessage(
+                &quot;sub-pipe-1&quot;, &quot;queue-1&quot;, &quot;AMQP-MSG-001&quot;, VALID_FFICE_XML, 0);
+
+        List&lt;Event&gt; events = eventRepository.listAllDomain();
+        assertThat(events).hasSize(1);
+
+        Event event = events.get(0);
+        assertThat(event.getSubscriptionId()).isEqualTo(&quot;sub-pipe-1&quot;);
+        assertThat(event.getContentHash()).isNotEmpty();
+        assertThat(event.getDeliveryStatus()).isIn(OutboxDeliveryStatus.PENDING, OutboxDeliveryStatus.SENT);
+        assertThat(event.getRawPayload()).isEqualTo(VALID_FFICE_XML);
+        assertThat(event.getFficeMessageType()).isEqualTo(&quot;FILED_FLIGHT_PLAN&quot;);
+        assertThat(event.getGufi()).contains(&quot;f47ac10b&quot;);
+        assertThat(event.getAircraftIdentification()).isEqualTo(&quot;TAP123&quot;);
+        assertThat(event.getDepartureAerodrome()).isEqualTo(&quot;LPPT&quot;);
+        assertThat(event.getArrivalAerodrome()).isEqualTo(&quot;LFPG&quot;);
+    }
+
+    /**
+     * Invalid XML (not FIXM) is rejected and routed to the Dead Letter Queue.
+     *
+     * &lt;p&gt;&lt;b&gt;CP1 compliance:&lt;/b&gt; Non-conformant payloads must never reach business logic.
+     * The framework validates all XML against the FIXM schema before extraction.
+     * Rejected messages are preserved in the DLQ with error metadata for audit.&lt;/p&gt;
+     */
+    @Test
+    @Order(11)
+    void invalidXmlRoutedToDlq() {
+        try {
+            eventProcessor.processAndPersistSingleMessage(
+                    &quot;sub-dlq-1&quot;, &quot;queue-1&quot;, &quot;AMQP-INVALID-001&quot;, INVALID_XML, 0);
+        } catch (RuntimeException e) {
+            // expected
+        }
+
+        assertThat(eventRepository.listAll()).isEmpty();
+
+        List&lt;DeadLetterMessage&gt; dlqMessages = dlqRepository.listAllDomain();
+        assertThat(dlqMessages).hasSize(1);
+        assertThat(dlqMessages.get(0).getErrorType()).isEqualTo(&quot;VALIDATION_ERROR&quot;);
+        assertThat(dlqMessages.get(0).getRawPayload()).isEqualTo(INVALID_XML);
+    }
+
+    /**
+     * CP1 Audit Rule: once an event is persisted, audit-critical fields must remain immutable.
+     * The outbox scheduler may update deliveryStatus, but rawPayload, contentHash,
+     * subscriptionId, and messageId must never change.
+     *
+     * &lt;p&gt;&lt;b&gt;Regulatory requirement:&lt;/b&gt; EU Regulation 2021/116 (CP1) mandates a complete
+     * audit trail. This test proves the framework preserves payload integrity across
+     * lifecycle transitions (PENDING to SENT).&lt;/p&gt;
+     */
+    @Test
+    @Order(12)
+    void auditFieldsRemainImmutableAfterPersistence() {
+        eventProcessor.processAndPersistSingleMessage(
+                &quot;sub-audit-1&quot;, &quot;queue-1&quot;, &quot;AMQP-AUDIT-001&quot;, VALID_FFICE_XML, 0);
+
+        Event original = eventRepository.listAllDomain().get(0);
+        String originalPayload = original.getRawPayload();
+        String originalHash = original.getContentHash();
+        String originalSubId = original.getSubscriptionId();
+        String originalMsgId = original.getMessageId();
+
+        original.setDeliveryStatus(OutboxDeliveryStatus.SENT);
+        eventRepository.update(original);
+
+        Event reloaded = eventRepository.listAllDomain().get(0);
+        assertThat(reloaded.getRawPayload()).isEqualTo(originalPayload);
+        assertThat(reloaded.getContentHash()).isEqualTo(originalHash);
+        assertThat(reloaded.getSubscriptionId()).isEqualTo(originalSubId);
+        assertThat(reloaded.getMessageId()).isEqualTo(originalMsgId);
+        assertThat(reloaded.getDeliveryStatus()).isEqualTo(OutboxDeliveryStatus.SENT);
+    }
+
+    /**
+     * Duplicate content (same SHA-256 hash) is silently discarded. Only 1 event persisted.
+     *
+     * &lt;p&gt;&lt;b&gt;Framework capability:&lt;/b&gt; At-least-once AMQP delivery means duplicates are
+     * inevitable. The framework uses a two-tier idempotency cache (L1 Caffeine + L2 MongoDB)
+     * to guarantee exactly-once processing without developer intervention.&lt;/p&gt;
+     */
+    @Test
+    @Order(13)
+    void duplicateContentDiscardedByIdempotency() {
+        eventProcessor.processAndPersistSingleMessage(
+                &quot;sub-dup-1&quot;, &quot;queue-1&quot;, &quot;AMQP-DUP-001&quot;, VALID_FFICE_XML, 0);
+
+        eventProcessor.processAndPersistSingleMessage(
+                &quot;sub-dup-1&quot;, &quot;queue-1&quot;, &quot;AMQP-DUP-002&quot;, VALID_FFICE_XML, 0);
+
+        assertThat(eventRepository.listAll()).hasSize(1);
+    }
+
+    /**
+     * Idempotency persists to MongoDB (L2 cache). After processing, the cache reports
+     * the content hash as already processed, proving deduplication survives application
+     * restarts and L1 cache eviction.
+     *
+     * &lt;p&gt;&lt;b&gt;Production resilience:&lt;/b&gt; When a pod restarts, the L1 Caffeine cache is lost.
+     * The L2 MongoDB cache ensures duplicates are still detected. This test proves
+     * the full chain: hash computation, L1 insert, L2 persistence, and lookup.&lt;/p&gt;
+     */
+    @Test
+    @Order(14)
+    void idempotencyPersistsToMongoDbL2Cache() {
+        String hash = HashUtil.sha256(VALID_FFICE_XML);
+
+        eventProcessor.processAndPersistSingleMessage(
+                &quot;sub-idem-1&quot;, &quot;queue-1&quot;, &quot;AMQP-IDEM-001&quot;, VALID_FFICE_XML, 0);
+
+        assertThat(eventRepository.listAll()).hasSize(1);
+        assertThat(idempotencyCache.isAlreadyProcessed(&quot;sub-idem-1&quot;, hash)).isTrue();
+    }
+
+    // ─── Group 3: Event Routing ──────────────────────────────────────────
+
+    /**
+     * FILED_FLIGHT_PLAN is classified as FLIGHT_PLAN category for Kafka routing.
+     *
+     * &lt;p&gt;&lt;b&gt;Framework capability:&lt;/b&gt; The outbox extension (swim-outbox-kafka-ffice) uses
+     * FficeMessageClassifier to determine the target Kafka topic. Each FF-ICE message type
+     * maps to a specific category, enabling downstream systems to subscribe only to
+     * the events they care about.&lt;/p&gt;
+     */
+    @Test
+    @Order(15)
+    void routingClassifiesFiledFlightPlanCorrectly() {
+        eventProcessor.processAndPersistSingleMessage(
+                &quot;sub-route-1&quot;, &quot;queue-1&quot;, &quot;AMQP-ROUTE-001&quot;, VALID_FFICE_XML, 0);
+
+        Event persisted = eventRepository.listAllDomain().get(0);
+        assertThat(FficeMessageClassifier.classify(persisted.getRawPayload()))
+                .isEqualTo(FficeEventCategory.FLIGHT_PLAN);
+    }
+
+    /**
+     * FLIGHT_DEPARTURE is classified as OPERATIONS category, distinct from FLIGHT_PLAN.
+     *
+     * &lt;p&gt;&lt;b&gt;Domain significance:&lt;/b&gt; Flight departures are operational events consumed by
+     * ATC systems in real time, while flight plans are planning artifacts. Correct routing
+     * ensures the right system gets the right data.&lt;/p&gt;
+     */
+    @Test
+    @Order(16)
+    void routingClassifiesFlightDepartureCorrectly() {
+        String departureXml = VALID_FFICE_XML.replace(&quot;FILED_FLIGHT_PLAN&quot;, &quot;FLIGHT_DEPARTURE&quot;);
+        eventProcessor.processAndPersistSingleMessage(
+                &quot;sub-route-dep&quot;, &quot;queue-1&quot;, &quot;AMQP-ROUTE-DEP&quot;, departureXml, 0);
+
+        Event persisted = eventRepository.listAllDomain().get(0);
+        assertThat(FficeMessageClassifier.classify(persisted.getRawPayload()))
+                .isEqualTo(FficeEventCategory.OPERATIONS);
+    }
+
+    // ─── Group 4: Subscription Guard ─────────────────────────────────────
+
+    /**
+     * Events arriving for a PAUSED subscription are silently discarded.
+     *
+     * &lt;p&gt;&lt;b&gt;Framework capability:&lt;/b&gt; The preProcess guard checks subscription status
+     * in MongoDB before any XML parsing. This is a business rule: paused means
+     * &quot;stop processing&quot;, not just &quot;stop receiving&quot;. No CPU wasted on JAXB parsing
+     * for a subscription the operator has intentionally paused.&lt;/p&gt;
+     */
+    @Test
+    @Order(17)
+    void pausedSubscriptionDiscardsEvents() {
+        seedSubscription(&quot;sub-paused-discard&quot;, &quot;PAUSED&quot;);
+
+        var outcome = eventProcessor.processAndPersistSingleMessage(
+                &quot;sub-paused-discard&quot;, &quot;queue-1&quot;, &quot;AMQP-PAUSED-001&quot;, VALID_FFICE_XML, 0);
+
+        assertThat(outcome).isEqualTo(ProcessingOutcome.SKIPPED);
+        assertThat(eventRepository.listAllDomain()).isEmpty();
+        assertThat(dlqRepository.listAllDomain()).isEmpty();
+    }
+
+    // ─── Group 5: Observability ──────────────────────────────────────────
+
+    /**
+     * Aggregate statistics reflect the real consumer state after mixed operations.
+     *
+     * &lt;p&gt;&lt;b&gt;Operational value:&lt;/b&gt; ANSPs need real-time visibility into consumer health.
+     * This endpoint powers dashboards that show processed events, DLQ depth, and
+     * active subscriptions at a glance.&lt;/p&gt;
+     */
+    @Test
+    @Order(20)
+    void statsReflectRealState() {
+        seedSubscription(&quot;sub-stats-1&quot;, &quot;ACTIVE&quot;);
+
+        eventProcessor.processAndPersistSingleMessage(
+                &quot;sub-stats-1&quot;, &quot;queue-1&quot;, &quot;AMQP-STATS-001&quot;, VALID_FFICE_XML, 0);
+        try {
+            eventProcessor.processAndPersistSingleMessage(
+                    &quot;sub-stats-1&quot;, &quot;queue-1&quot;, &quot;AMQP-STATS-002&quot;, INVALID_XML, 0);
+        } catch (RuntimeException e) {
+            // expected
+        }
+
+        var response = given()
+                .when().get(&quot;/swim/v1/operational/stats&quot;)
+                .then().statusCode(200)
+                .extract().body().jsonPath();
+
+        assertThat(response.getLong(&quot;totalEvents&quot;)).isEqualTo(1);
+        assertThat(response.getLong(&quot;totalDlq&quot;)).isEqualTo(1);
+        assertThat(response.getInt(&quot;activeSubscriptions&quot;)).isEqualTo(1);
+    }
+
+    /**
+     * DLQ query returns rejected messages with pagination.
+     *
+     * &lt;p&gt;&lt;b&gt;Audit capability:&lt;/b&gt; Operators and regulators can inspect every rejected
+     * message, including the original raw payload and the validation error reason.&lt;/p&gt;
+     */
+    @Test
+    @Order(21)
+    void queryDlqAfterRejection() {
+        try {
+            eventProcessor.processAndPersistSingleMessage(
+                    &quot;sub-dlq-q&quot;, &quot;queue-1&quot;, &quot;AMQP-DLQ-Q-001&quot;, INVALID_XML, 0);
+        } catch (RuntimeException e) {
+            // expected
+        }
+
+        var response = given()
+                .when().get(&quot;/swim/v1/operational/dlq?page=0&amp;size=10&quot;)
+                .then().statusCode(200)
+                .extract().body().jsonPath();
+
+        assertThat(response.getList(&quot;content&quot;)).hasSize(1);
+    }
+
+    /**
+     * Liveness probe returns UP when the application is running.
+     *
+     * &lt;p&gt;&lt;b&gt;Kubernetes integration:&lt;/b&gt; OpenShift uses this probe to determine if the
+     * pod needs restarting. The framework registers health checks for MongoDB,
+     * AMQP connections, and heartbeat monitoring automatically.&lt;/p&gt;
+     */
+    @Test
+    @Order(22)
+    void livenessProbeUp() {
+        given()
+                .when().get(&quot;/q/health/live&quot;)
+                .then().statusCode(200);
+    }
+
+    // ─── Group 6: Self-Healing ───────────────────────────────────────────
+
+    /**
+     * Provider returns 404 during resume: framework deletes the stale local subscription
+     * and triggers a full re-subscription cycle (POST, PAUSED, ACTIVE).
+     *
+     * &lt;p&gt;&lt;b&gt;This is the gold standard for the SFG.&lt;/b&gt; In production, SWIM providers
+     * (EUROCONTROL, Austrocontrol, LFV) may lose subscription state after upgrades,
+     * disaster recovery, or database migrations. Without self-healing, an ANSP would
+     * need manual intervention to restore data flow. The framework detects the 404,
+     * cleans up the orphan, and recreates the subscription automatically.&lt;/p&gt;
+     */
+    @Test
+    @Order(40)
+    void automaticResubscriptionOnProviderStateLoss() {
+        seedSubscription(&quot;sub-lost-1&quot;, &quot;ACTIVE&quot;);
+
+        wiremock.register(put(urlPathEqualTo(&quot;/swim/v1/subscriptions/sub-lost-1&quot;))
+                .willReturn(aResponse().withStatus(404)));
+
+        stubSubscriptionManagerCreate(&quot;sub-recovered-1&quot;, &quot;FFICE-client-sub-recovered-1&quot;);
+
+        try {
+            subscriptionService.resumeSubscription(&quot;sub-lost-1&quot;);
+        } catch (Exception e) {
+            // expected: provider returns 404 for lost subscription
+        }
+
+        assertThat(subscriptionRepository.findBySubscriptionId(&quot;sub-lost-1&quot;))
+                .as(&quot;Old subscription must be deleted after provider 404&quot;)
+                .isEmpty();
+
+        assertThat(subscriptionRepository.findBySubscriptionId(&quot;sub-recovered-1&quot;))
+                .as(&quot;New subscription must be created after provider state loss recovery&quot;)
+                .isPresent()
+                .get()
+                .satisfies(s -&gt; assertThat(s.getSubscriptionStatus()).isEqualTo(&quot;ACTIVE&quot;));
+
+        wiremock.verifyThat(postRequestedFor(urlPathEqualTo(&quot;/swim/v1/subscriptions&quot;)));
+    }
+
+    // ── Helpers ──────────────────────────────────────────────────────────
+
+    private void stubSubscriptionManagerCreate(String subscriptionId, String queueName) {
+        String responseJson = &quot;&quot;&quot;
+                {
+                    &quot;subscriptionId&quot;: &quot;%s&quot;,
+                    &quot;subscriptionStatus&quot;: &quot;PAUSED&quot;,
+                    &quot;queueName&quot;: &quot;%s&quot;,
+                    &quot;topic&quot;: &quot;ffice.v1&quot;,
+                    &quot;description&quot;: &quot;Integration test&quot;
+                }
+                &quot;&quot;&quot;.formatted(subscriptionId, queueName);
+
+        wiremock.register(post(urlPathEqualTo(&quot;/swim/v1/subscriptions&quot;))
+                .willReturn(aResponse()
+                        .withStatus(201)
+                        .withHeader(&quot;Content-Type&quot;, &quot;application/json&quot;)
+                        .withBody(responseJson)));
+
+        stubSubscriptionManagerUpdate(subscriptionId, &quot;ACTIVE&quot;);
+    }
+
+    private void stubSubscriptionManagerUpdate(String subscriptionId, String newStatus) {
+        String responseJson = &quot;&quot;&quot;
+                {
+                    &quot;subscriptionId&quot;: &quot;%s&quot;,
+                    &quot;subscriptionStatus&quot;: &quot;%s&quot;,
+                    &quot;queueName&quot;: &quot;FFICE-client-%s&quot;,
+                    &quot;topic&quot;: &quot;ffice.v1&quot;
+                }
+                &quot;&quot;&quot;.formatted(subscriptionId, newStatus, subscriptionId);
+
+        wiremock.register(put(urlPathEqualTo(&quot;/swim/v1/subscriptions/&quot; + subscriptionId))
+                .willReturn(aResponse()
+                        .withStatus(200)
+                        .withHeader(&quot;Content-Type&quot;, &quot;application/json&quot;)
+                        .withBody(responseJson)));
+    }
+
+    private void seedSubscription(String subscriptionId, String status) {
+        Subscription sub = new Subscription();
+        sub.setSubscriptionId(subscriptionId);
+        sub.setQueueName(&quot;FFICE-client-&quot; + subscriptionId);
+        sub.setSubscriptionStatus(status);
+        sub.setTopic(&quot;ffice.v1&quot;);
+        sub.setDescription(&quot;Seeded for test&quot;);
+        sub.setType(com.github.swim_developer.framework.domain.model.SubscriptionType.DECLARED.name());
+        sub.setConfigHash(&quot;test-hash-&quot; + subscriptionId);
+        sub.setProviderId(&quot;test-provider&quot;);
+        subscriptionRepository.persistSubscription(sub);
+    }
+}</code></pre>
+            </section>
+
+            <section class="wiki-section">
+                <h3>Step 7.5: Run tests</h3>
+                <p>From the <code>swim-ffice-consumer</code> directory:</p>
+                <pre class="wiki-code"><code># Unit tests only
+./mvnw test
+
+# Unit + integration tests
+./mvnw verify -DskipITs=false
+
+# Integration tests only (skip unit tests)
+./mvnw verify -DskipITs=false -Dsurefire.skip=true</code></pre>
+                <p>Expected output: <strong>17 unit tests + 19 integration tests = 36 tests, 0 failures.</strong></p>
+                <p>The integration tests cover 6 critical areas:</p>
+                <ol>
+                    <li><strong>Subscription lifecycle</strong> (7 tests): create, list, pause, resume, delete, duplicate detection, input validation</li>
+                    <li><strong>Event pipeline</strong> (5 tests): full metadata extraction, DLQ routing, CP1 audit immutability, L1+L2 idempotency</li>
+                    <li><strong>Event routing</strong> (2 tests): FF-ICE message classification (FILED_FLIGHT_PLAN, FLIGHT_DEPARTURE)</li>
+                    <li><strong>Subscription guard</strong> (1 test): PAUSED subscriptions discard events before JAXB parsing</li>
+                    <li><strong>Observability</strong> (3 tests): aggregate stats, DLQ query with pagination, Kubernetes liveness probe</li>
+                    <li><strong>Self-healing</strong> (1 test): automatic re-subscription when provider loses state (404 recovery)</li>
+                </ol>
+            </section>
+
+            <div class="tutorial-nav-footer">
+                <a href="infrastructure.html" class="nav-prev">
+                    <span class="nav-label"><i class="fas fa-arrow-left"></i> Previous</span>
+                    <span class="nav-title">Part 5: Infrastructure</span>
+                </a>
+                <a href="run.html" class="nav-next">
+                    <span class="nav-label">Next <i class="fas fa-arrow-right"></i></span>
+                    <span class="nav-title">Part 7: Run &amp; Verify</span>
+                </a>
+            </div>
+
+        </main>
+    </div>
+
+    <footer class="footer"></footer>
+    <script src="../../script.js"></script>
+</body>
+</html>

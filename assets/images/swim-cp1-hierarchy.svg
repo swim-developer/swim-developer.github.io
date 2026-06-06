@@ -1,0 +1,107 @@
+<svg viewBox="0 0 900 550" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+        <linearGradient id="grad-icao" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#1565c0;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#42a5f5;stop-opacity:1" />
+        </linearGradient>
+        <linearGradient id="grad-swim" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#7b1fa2;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#ab47bc;stop-opacity:1" />
+        </linearGradient>
+        <linearGradient id="grad-eu" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#f9a825;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#ffca28;stop-opacity:1" />
+        </linearGradient>
+        <linearGradient id="grad-cp1" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#2e7d32;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#66bb6a;stop-opacity:1" />
+        </linearGradient>
+        <linearGradient id="grad-af5" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#c62828;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#ef5350;stop-opacity:1" />
+        </linearGradient>
+        <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+            <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+            <feMerge>
+                <feMergeNode in="coloredBlur"/>
+                <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+        </filter>
+    </defs>
+
+    <!-- Background (transparent for dark bg) -->
+    <rect width="900" height="550" fill="transparent"/>
+
+    <!-- ICAO (Global) -->
+    <g filter="url(#glow)">
+        <rect x="300" y="20" width="300" height="60" rx="12" fill="url(#grad-icao)"/>
+        <text x="450" y="45" text-anchor="middle" fill="#ffffff" font-weight="700" font-size="18" font-family="Red Hat Display, Arial, sans-serif">ICAO</text>
+        <text x="450" y="65" text-anchor="middle" fill="#bbdefb" font-weight="400" font-size="12" font-family="Red Hat Text, Arial, sans-serif">Global Mandate (2026)</text>
+    </g>
+
+    <!-- Connector ICAO to SWIM -->
+    <line x1="450" y1="80" x2="450" y2="110" stroke="#90caf9" stroke-width="3"/>
+    <polygon points="450,120 443,108 457,108" fill="#90caf9"/>
+
+    <!-- SWIM (Global Standard) -->
+    <g filter="url(#glow)">
+        <rect x="250" y="125" width="400" height="70" rx="12" fill="url(#grad-swim)"/>
+        <text x="450" y="155" text-anchor="middle" fill="#ffffff" font-weight="700" font-size="20" font-family="Red Hat Display, Arial, sans-serif">SWIM</text>
+        <text x="450" y="180" text-anchor="middle" fill="#e1bee7" font-weight="400" font-size="13" font-family="Red Hat Text, Arial, sans-serif">System Wide Information Management</text>
+    </g>
+
+    <!-- Connector SWIM to EU -->
+    <line x1="450" y1="195" x2="450" y2="225" stroke="#ce93d8" stroke-width="3"/>
+    <polygon points="450,235 443,223 457,223" fill="#ce93d8"/>
+
+    <!-- EU Regulation -->
+    <g filter="url(#glow)">
+        <rect x="275" y="240" width="350" height="55" rx="10" fill="url(#grad-eu)"/>
+        <text x="450" y="265" text-anchor="middle" fill="#1a1a1a" font-weight="700" font-size="16" font-family="Red Hat Display, Arial, sans-serif">EU Regulation 2021/116</text>
+        <text x="450" y="285" text-anchor="middle" fill="#5d4037" font-weight="400" font-size="12" font-family="Red Hat Text, Arial, sans-serif">European Implementation</text>
+    </g>
+
+    <!-- Connector EU to CP1 -->
+    <line x1="450" y1="295" x2="450" y2="320" stroke="#ffd54f" stroke-width="3"/>
+    <polygon points="450,330 443,318 457,318" fill="#ffd54f"/>
+
+    <!-- CP1 Header -->
+    <g filter="url(#glow)">
+        <rect x="200" y="335" width="500" height="45" rx="10" fill="url(#grad-cp1)"/>
+        <text x="450" y="365" text-anchor="middle" fill="#ffffff" font-weight="700" font-size="18" font-family="Red Hat Display, Arial, sans-serif">CP1 — Common Project 1</text>
+    </g>
+
+    <!-- AF Items Container -->
+    <rect x="200" y="380" width="500" height="150" rx="0 0 10 10" fill="rgba(46, 125, 50, 0.15)" stroke="#66bb6a" stroke-width="1"/>
+
+    <!-- AF1 -->
+    <rect x="220" y="395" width="145" height="35" rx="6" fill="rgba(255,255,255,0.1)" stroke="#81c784" stroke-width="1"/>
+    <text x="292" y="418" text-anchor="middle" fill="#a5d6a7" font-weight="600" font-size="12" font-family="Red Hat Text, Arial, sans-serif">AF1: Extended AMAN</text>
+
+    <!-- AF2 -->
+    <rect x="377" y="395" width="145" height="35" rx="6" fill="rgba(255,255,255,0.1)" stroke="#81c784" stroke-width="1"/>
+    <text x="449" y="418" text-anchor="middle" fill="#a5d6a7" font-weight="600" font-size="12" font-family="Red Hat Text, Arial, sans-serif">AF2: Airport Integration</text>
+
+    <!-- AF3 -->
+    <rect x="535" y="395" width="145" height="35" rx="6" fill="rgba(255,255,255,0.1)" stroke="#81c784" stroke-width="1"/>
+    <text x="607" y="418" text-anchor="middle" fill="#a5d6a7" font-weight="600" font-size="12" font-family="Red Hat Text, Arial, sans-serif">AF3: Flexible Airspace</text>
+
+    <!-- AF4 -->
+    <rect x="220" y="440" width="145" height="35" rx="6" fill="rgba(255,255,255,0.1)" stroke="#81c784" stroke-width="1"/>
+    <text x="292" y="463" text-anchor="middle" fill="#a5d6a7" font-weight="600" font-size="12" font-family="Red Hat Text, Arial, sans-serif">AF4: Network Collab</text>
+
+    <!-- AF5 - HIGHLIGHTED -->
+    <g filter="url(#glow)">
+        <rect x="377" y="440" width="145" height="35" rx="6" fill="url(#grad-af5)" stroke="#ef5350" stroke-width="2"/>
+        <text x="449" y="463" text-anchor="middle" fill="#ffffff" font-weight="700" font-size="12" font-family="Red Hat Text, Arial, sans-serif">AF5: SWIM</text>
+    </g>
+
+    <!-- AF6 -->
+    <rect x="535" y="440" width="145" height="35" rx="6" fill="rgba(255,255,255,0.1)" stroke="#81c784" stroke-width="1"/>
+    <text x="607" y="463" text-anchor="middle" fill="#a5d6a7" font-weight="600" font-size="12" font-family="Red Hat Text, Arial, sans-serif">AF6: Trajectory Share</text>
+
+    <!-- AF5 Label -->
+    <text x="450" y="505" text-anchor="middle" fill="#ef5350" font-weight="600" font-size="14" font-family="Red Hat Text, Arial, sans-serif">↑ Our Focus: Digital NOTAM, MET (IWXXM), FF-ICE</text>
+
+</svg>
+

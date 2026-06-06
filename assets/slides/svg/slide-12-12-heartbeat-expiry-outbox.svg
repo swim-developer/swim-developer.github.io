@@ -1,0 +1,93 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" font-family="Red Hat Display, sans-serif">
+  <rect width="1280" height="720" fill="#0d1117"/>
+
+  <text x="640" y="48" text-anchor="middle" fill="#f0f6fc" font-size="28" font-weight="bold">Production-Grade Resilience (Provider)</text>
+
+  <!-- Heartbeat -->
+  <rect x="40" y="80" width="1200" height="180" rx="12" fill="#1c2333" stroke="#f85149" stroke-width="1.5"/>
+  <rect x="60" y="100" width="50" height="50" rx="10" fill="#2a0000"/>
+  <text x="85" y="132" text-anchor="middle" fill="#f85149" font-size="24">💓</text>
+
+  <text x="130" y="118" fill="#f85149" font-size="20" font-weight="bold">Per-Subscription Heartbeat</text>
+  <text x="130" y="142" fill="#8b949e" font-size="14">Every 15 seconds per subscription</text>
+
+  <!-- Heartbeat flow -->
+  <rect x="130" y="165" width="140" height="35" rx="6" fill="#21262d"/>
+  <text x="200" y="187" text-anchor="middle" fill="#f0f6fc" font-size="12">Provider</text>
+  <line x1="275" y1="182" x2="330" y2="182" stroke="#f85149" stroke-width="1.5" marker-end="url(#arrR)"/>
+  <rect x="335" y="165" width="200" height="35" rx="6" fill="#21262d"/>
+  <text x="435" y="187" text-anchor="middle" fill="#f0f6fc" font-size="12">{queue}.heartbeat</text>
+  <line x1="540" y1="182" x2="595" y2="182" stroke="#f85149" stroke-width="1.5" marker-end="url(#arrR)"/>
+  <rect x="600" y="165" width="140" height="35" rx="6" fill="#21262d"/>
+  <text x="670" y="187" text-anchor="middle" fill="#f0f6fc" font-size="12">Consumer</text>
+
+  <text x="130" y="225" fill="#484f58" font-size="12">ACTIVE + PAUSED subscriptions</text>
+  <text x="400" y="225" fill="#484f58" font-size="12">Sequence counter: 1, 2, 3...</text>
+  <text x="700" y="225" fill="#484f58" font-size="12">Missed beats → self-healing trigger</text>
+
+  <!-- JSON payload preview -->
+  <rect x="880" y="100" width="340" height="140" rx="8" fill="#0d1117" stroke="#30363d" stroke-width="1"/>
+  <text x="900" y="125" fill="#484f58" font-size="11" font-family="JetBrains Mono, monospace">{</text>
+  <text x="915" y="143" fill="#8b949e" font-size="11" font-family="JetBrains Mono, monospace">"subscriptionId": <tspan fill="#3fb950">"abc-123"</tspan>,</text>
+  <text x="915" y="161" fill="#8b949e" font-size="11" font-family="JetBrains Mono, monospace">"status": <tspan fill="#3fb950">"ACTIVE"</tspan>,</text>
+  <text x="915" y="179" fill="#8b949e" font-size="11" font-family="JetBrains Mono, monospace">"sequence": <tspan fill="#d29922">12345</tspan>,</text>
+  <text x="915" y="197" fill="#8b949e" font-size="11" font-family="JetBrains Mono, monospace">"nextExpected": <tspan fill="#3fb950">"...15s"</tspan></text>
+  <text x="900" y="215" fill="#484f58" font-size="11" font-family="JetBrains Mono, monospace">}</text>
+
+  <!-- Subscription Expiry -->
+  <rect x="40" y="280" width="1200" height="170" rx="12" fill="#1c2333" stroke="#d29922" stroke-width="1.5"/>
+  <rect x="60" y="300" width="50" height="50" rx="10" fill="#2a1500"/>
+  <text x="85" y="332" text-anchor="middle" fill="#d29922" font-size="24">⏱</text>
+
+  <text x="130" y="318" fill="#d29922" font-size="20" font-weight="bold">Subscription Expiry Scheduler</text>
+  <text x="130" y="342" fill="#8b949e" font-size="14">Automatic lifecycle termination</text>
+
+  <!-- Expiry flow -->
+  <rect x="130" y="365" width="160" height="35" rx="6" fill="#21262d"/>
+  <text x="210" y="387" text-anchor="middle" fill="#f0f6fc" font-size="12">Every 60s check</text>
+  <line x1="295" y1="382" x2="340" y2="382" stroke="#d29922" stroke-width="1.5" marker-end="url(#arrO)"/>
+  <rect x="345" y="365" width="220" height="35" rx="6" fill="#21262d"/>
+  <text x="455" y="387" text-anchor="middle" fill="#f0f6fc" font-size="12">subscriptionEnd &lt; now?</text>
+  <line x1="570" y1="382" x2="615" y2="382" stroke="#d29922" stroke-width="1.5" marker-end="url(#arrO)"/>
+  <rect x="620" y="365" width="170" height="35" rx="6" fill="#2a0000" stroke="#f85149" stroke-width="1"/>
+  <text x="705" y="387" text-anchor="middle" fill="#f85149" font-size="12">TERMINATED</text>
+  <line x1="795" y1="382" x2="840" y2="382" stroke="#d29922" stroke-width="1.5" marker-end="url(#arrO)"/>
+  <text x="870" y="378" fill="#484f58" font-size="11">24h</text>
+  <text x="870" y="393" fill="#484f58" font-size="11">later</text>
+  <line x1="900" y1="382" x2="940" y2="382" stroke="#d29922" stroke-width="1.5" marker-end="url(#arrO)"/>
+  <rect x="945" y="365" width="120" height="35" rx="6" fill="#21262d"/>
+  <text x="1005" y="387" text-anchor="middle" fill="#8b949e" font-size="12">PURGE</text>
+
+  <text x="130" y="425" fill="#484f58" font-size="12">Leader election → only leader pod executes (cluster-safe)</text>
+  <text x="640" y="425" fill="#484f58" font-size="12">Prometheus: swim_subscriptions_terminated_total</text>
+
+  <!-- Outbox -->
+  <rect x="40" y="470" width="1200" height="170" rx="12" fill="#1c2333" stroke="#3fb950" stroke-width="1.5"/>
+  <rect x="60" y="490" width="50" height="50" rx="10" fill="#0a2e0a"/>
+  <text x="85" y="522" text-anchor="middle" fill="#3fb950" font-size="24">📦</text>
+
+  <text x="130" y="508" fill="#3fb950" font-size="20" font-weight="bold">Outbox Pattern (Guaranteed Delivery)</text>
+  <text x="130" y="532" fill="#8b949e" font-size="14">Zero message loss</text>
+
+  <!-- Outbox flow -->
+  <rect x="130" y="555" width="110" height="40" rx="6" fill="#21262d"/>
+  <text x="185" y="580" text-anchor="middle" fill="#f0f6fc" font-size="13">Kafka</text>
+  <line x1="245" y1="575" x2="300" y2="575" stroke="#3fb950" stroke-width="2" marker-end="url(#arrG)"/>
+  <rect x="305" y="555" width="150" height="40" rx="6" fill="#21262d"/>
+  <text x="380" y="580" text-anchor="middle" fill="#f0f6fc" font-size="13">PostgreSQL</text>
+  <line x1="460" y1="575" x2="515" y2="575" stroke="#3fb950" stroke-width="2" marker-end="url(#arrG)"/>
+  <rect x="520" y="555" width="170" height="40" rx="6" fill="#0a2e0a" stroke="#3fb950" stroke-width="1.5"/>
+  <text x="605" y="580" text-anchor="middle" fill="#3fb950" font-size="13" font-weight="bold">AMQP Delivery</text>
+  <line x1="695" y1="575" x2="750" y2="575" stroke="#3fb950" stroke-width="2" marker-end="url(#arrG)"/>
+  <rect x="755" y="555" width="210" height="40" rx="6" fill="#21262d"/>
+  <text x="860" y="580" text-anchor="middle" fill="#f0f6fc" font-size="13">N subscriber queues</text>
+
+  <text x="130" y="620" fill="#484f58" font-size="12">Event persisted BEFORE delivery → scheduler retries failed deliveries every 10s</text>
+
+  <defs>
+    <marker id="arrR" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#f85149"/></marker>
+    <marker id="arrO" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#d29922"/></marker>
+    <marker id="arrG" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#3fb950"/></marker>
+  </defs>
+</svg>
+

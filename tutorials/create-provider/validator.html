@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Part 3: Provider Validator | Create Provider Tutorial | SWIM Developer</title>
+    <meta name="description" content="Build the swim-ffice-provider-validator from source — a Quarkus AMQP consumer test harness that subscribes to the provider, receives FF-ICE events, and runs conformance tests.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@400;500;600;700;900&family=Red+Hat+Text:wght@400;500;600&family=Red+Hat+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="../../styles.css">
+</head>
+<body>
+    <nav class="navbar"></nav>
+
+    <header class="page-header">
+        <div class="container">
+            <div class="page-header-content">
+                <h1><i class="fas fa-graduation-cap"></i> Tutorials</h1>
+                <p class="page-subtitle">Step-by-step guides for deploying, configuring, and validating SWIM services</p>
+            </div>
+        </div>
+    </header>
+
+    <div class="wiki-layout">
+        <aside class="wiki-sidebar">
+            <nav class="wiki-nav">
+                <div class="wiki-nav-group">
+                    <h4 class="wiki-nav-title"><i class="fas fa-rocket"></i> Getting Started</h4>
+                    <ul>
+                        <li><a href="../deploy-gitops.html">GitOps (Argo CD)</a></li>
+                        <li><a href="../deploy-openshift.html">OpenShift</a></li>
+                        <li><a href="../deploy-kubernetes.html">Kubernetes</a></li>
+                        <li><a href="../deploy-openshift-local.html">OpenShift Local</a></li>
+                        <li><a href="../deploy-minikube.html">Minikube</a></li>
+                        <li><a href="../deploy-podman.html">Container Local (Podman)</a></li>
+                        <li><a href="../deploy-java.html">Java / Binary</a></li>
+                    </ul>
+                </div>
+                <div class="wiki-nav-group">
+                    <h4 class="wiki-nav-title"><i class="fas fa-bell"></i> Digital NOTAM</h4>
+                    <ul>
+                        <li><a href="../dnotam-consumer-deploy.html">Deploy Consumer</a></li>
+                        <li><a href="../dnotam-consumer-explore.html">Explore Consumer</a></li>
+                        <li><a href="../dnotam-provider-deploy.html">Deploy Provider</a></li>
+                        <li><a href="../dnotam-provider-explore.html">Explore Provider</a></li>
+                        <li><a href="../consumer-validator-deploy.html">Deploy Consumer Validator</a></li>
+                        <li><a href="../consumer-validator-explore.html">Explore Consumer Validator</a></li>
+                        <li><a href="../provider-validator-deploy.html">Deploy Provider Validator</a></li>
+                        <li><a href="../e2e-test.html">End-to-End Test</a></li>
+                    </ul>
+                </div>
+                <div class="wiki-nav-group">
+                    <h4 class="wiki-nav-title"><i class="fas fa-plane-arrival"></i> ED-254 (AMAN)</h4>
+                    <ul>
+                        <li><a href="../ed254-consumer-deploy.html">Deploy Consumer</a></li>
+                        <li><a href="../ed254-provider-deploy.html">Deploy Provider</a></li>
+                    </ul>
+                </div>
+                <div class="wiki-nav-group">
+                    <h4 class="wiki-nav-title"><i class="fas fa-wand-magic-sparkles"></i> Build Your Own</h4>
+                    <h4 class="wiki-nav-title" style="margin-top: 8px;"><i class="fas fa-upload"></i> Create Provider</h4>
+                    <ul class="chapter-list">
+                        <li><a href="index.html">Introduction &amp; Setup</a></li>
+                        <li><a href="data-model.html">Part 1: Data Model</a></li>
+                        <li><a href="provider.html">Part 2: Provider Service</a></li>
+                        <li><a href="validator.html" class="chapter-active">Part 3: Provider Validator</a></li>
+                        <li><a href="infrastructure.html">Part 4: Infrastructure</a></li>
+                        <li><a href="run.html">Part 5: Run &amp; Verify</a></li>
+                        <li><a href="tests.html">Part 6: Tests</a></li>
+                    </ul>
+                    <h4 class="wiki-nav-title" style="margin-top: 16px;"><i class="fas fa-book"></i> Create Consumer</h4>
+                    <ul>
+                        <li><a href="../create-consumer/index.html">Introduction &amp; Setup</a></li>
+                    </ul>
+                </div>
+            </nav>
+        </aside>
+
+        <main class="wiki-content">
+            <div class="tutorial-progress">
+                <span>Step 4 of 7</span>
+                <div class="progress-bar"><div class="progress-fill" style="width: 57.1%"></div></div>
+            </div>
+
+            <section class="wiki-section">
+                <h2>Part 3: Provider Validator (swim-ffice-provider-validator)</h2>
+
+                <p>The provider validator is a Quarkus application that acts as a SWIM consumer to test your provider. You build it from source — it lives alongside the provider in <code>applications/swim-validators/swim-ffice-provider-validator/</code>.</p>
+
+                <h3>What the validator does</h3>
+                <ul>
+                    <li><strong>Subscribes</strong> to the provider's REST API (<code>/swim/v1/subscriptions</code>)</li>
+                    <li><strong>Connects</strong> to Artemis via AMQPS (mTLS) and receives FF-ICE events</li>
+                    <li><strong>Persists</strong> received messages in MariaDB</li>
+                    <li><strong>Runs</strong> 9 conformance scenarios against the provider's API</li>
+                    <li><strong>Exposes</strong> REST endpoints for message inspection and conformance test execution</li>
+                </ul>
+
+                <div class="wiki-note">
+                    <p>The validator is a <strong>full source project</strong>. When you run the end-to-end validation cycle, you delete and recreate it from scratch by following this tutorial. It is never treated as a black box.</p>
+                </div>
+
+                <h3>3.1 Project structure</h3>
+                <pre class="wiki-code"><code>swim-ffice-provider-validator/
+  pom.xml
+  compose.yml
+  src/main/resources/application.properties
+  src/main/java/com/github/swim_developer/validator/ffice/provider/
+    application/usecase/
+      ConformanceAssertions.java
+      ConformanceTestService.java
+      ConsoleService.java
+      FficeMessageExtractor.java
+      MessageService.java
+      SubscriptionService.java
+    domain/model/
+      FficeMessage.java
+      HttpResult.java
+      ReceivedMessage.java
+    domain/port/in/
+      ConformanceHttpPort.java
+      ConformanceTestPort.java
+      ConnectionTrackerPort.java
+      ConsoleNotificationPort.java
+      MessagePersistencePort.java
+      MessagePort.java
+      ProviderSubscriptionPort.java
+    domain/port/out/
+      ReceivedMessageRepository.java
+    infrastructure/client/
+      ConformanceHttpClient.java
+      ProviderHttpClient.java
+    infrastructure/messaging/
+      AmqpConnectionCleanupScheduler.java
+      AmqpSslConfigurator.java
+      UserConnectionTracker.java
+      UserReceiverLifecycle.java
+    infrastructure/persistence/
+      ReceivedMessageMapper.java
+      ReceivedMessageRepositoryImpl.java
+      entity/ReceivedMessageEntity.java
+    infrastructure/rest/
+      AmqpApiResource.java
+      ApiResource.java
+      ConformanceTestResource.java
+      MessageResource.java
+      ProviderProxyResource.java
+      dto/ReceivedMessageDto.java
+  src/test/java/com/github/swim_developer/validator/ffice/provider/
+    FficeMessageExtractorTest.java</code></pre>
+
+                <h3>3.2 pom.xml</h3>
+                <pre class="wiki-code"><code>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd"&gt;
+    &lt;modelVersion&gt;4.0.0&lt;/modelVersion&gt;
+
+    &lt;parent&gt;
+        &lt;groupId&gt;com.github.swim-developer&lt;/groupId&gt;
+        &lt;artifactId&gt;swim-validators&lt;/artifactId&gt;
+        &lt;version&gt;1.0.0-SNAPSHOT&lt;/version&gt;
+        &lt;relativePath/&gt;
+    &lt;/parent&gt;
+
+    &lt;artifactId&gt;swim-ffice-provider-validator&lt;/artifactId&gt;
+    &lt;name&gt;SWIM FF-ICE Provider Validator&lt;/name&gt;
+
+    &lt;dependencies&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;com.github.swim-developer&lt;/groupId&gt;
+            &lt;artifactId&gt;swim-validator-provider&lt;/artifactId&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;io.vertx&lt;/groupId&gt;
+            &lt;artifactId&gt;vertx-web-client&lt;/artifactId&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.projectlombok&lt;/groupId&gt;
+            &lt;artifactId&gt;lombok&lt;/artifactId&gt;
+            &lt;scope&gt;provided&lt;/scope&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;io.quarkus&lt;/groupId&gt;
+            &lt;artifactId&gt;quarkus-junit5&lt;/artifactId&gt;
+            &lt;scope&gt;test&lt;/scope&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;io.rest-assured&lt;/groupId&gt;
+            &lt;artifactId&gt;rest-assured&lt;/artifactId&gt;
+            &lt;scope&gt;test&lt;/scope&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.assertj&lt;/groupId&gt;
+            &lt;artifactId&gt;assertj-core&lt;/artifactId&gt;
+            &lt;scope&gt;test&lt;/scope&gt;
+        &lt;/dependency&gt;
+    &lt;/dependencies&gt;
+
+    &lt;build&gt;
+        &lt;plugins&gt;
+            &lt;plugin&gt;
+                &lt;groupId&gt;${quarkus.platform.group-id}&lt;/groupId&gt;
+                &lt;artifactId&gt;quarkus-maven-plugin&lt;/artifactId&gt;
+                &lt;version&gt;${quarkus.platform.version}&lt;/version&gt;
+                &lt;extensions&gt;true&lt;/extensions&gt;
+                &lt;executions&gt;
+                    &lt;execution&gt;
+                        &lt;goals&gt;
+                            &lt;goal&gt;build&lt;/goal&gt;
+                            &lt;goal&gt;generate-code&lt;/goal&gt;
+                            &lt;goal&gt;generate-code-tests&lt;/goal&gt;
+                            &lt;goal&gt;native-image-agent&lt;/goal&gt;
+                        &lt;/goals&gt;
+                    &lt;/execution&gt;
+                &lt;/executions&gt;
+            &lt;/plugin&gt;
+            &lt;plugin&gt;
+                &lt;artifactId&gt;maven-compiler-plugin&lt;/artifactId&gt;
+                &lt;configuration&gt;&lt;parameters&gt;true&lt;/parameters&gt;&lt;/configuration&gt;
+            &lt;/plugin&gt;
+            &lt;plugin&gt;
+                &lt;artifactId&gt;maven-surefire-plugin&lt;/artifactId&gt;
+                &lt;configuration&gt;
+                    &lt;systemPropertyVariables&gt;
+                        &lt;java.util.logging.manager&gt;org.jboss.logmanager.LogManager&lt;/java.util.logging.manager&gt;
+                        &lt;maven.home&gt;${maven.home}&lt;/maven.home&gt;
+                    &lt;/systemPropertyVariables&gt;
+                &lt;/configuration&gt;
+            &lt;/plugin&gt;
+        &lt;/plugins&gt;
+    &lt;/build&gt;
+&lt;/project&gt;</code></pre>
+
+                <h3>3.3 application.properties</h3>
+                <pre class="wiki-code"><code>quarkus.application.name=swim-ffice-provider-validator
+quarkus.http.port=${QUARKUS_HTTP_PORT:8080}
+quarkus.ssl.native=true
+
+keycloak.url=${KEYCLOAK_URL:https://rhbk.apps.ocp4.masales.cloud}
+keycloak.realm=${KEYCLOAK_REALM:swim}
+keycloak.client-id=${KEYCLOAK_CLIENT_ID:swim-public-client}
+
+swim.provider.api.urls=${SWIM_PROVIDER_API_URLS:https://swim-ffice-provider-mtls-swim-sandbox.apps.ocp4.masales.cloud}
+
+proxy.mtls.keystore.path=${PROXY_MTLS_KEYSTORE_PATH:certs/keystore.p12}
+proxy.mtls.keystore.password=${PROXY_MTLS_KEYSTORE_PASSWORD:changeit}
+proxy.mtls.keystore.type=${PROXY_MTLS_KEYSTORE_TYPE:PKCS12}
+proxy.mtls.truststore.path=${PROXY_MTLS_TRUSTSTORE_PATH:certs/truststore.p12}
+proxy.mtls.truststore.password=${PROXY_MTLS_TRUSTSTORE_PASSWORD:changeit}
+proxy.mtls.truststore.type=${PROXY_MTLS_TRUSTSTORE_TYPE:PKCS12}
+
+quarkus.datasource.db-kind=mariadb
+quarkus.hibernate-orm.schema-management.strategy=update
+quarkus.datasource.jdbc.min-size=2
+quarkus.datasource.jdbc.max-size=10
+
+%prod.quarkus.datasource.jdbc.url=jdbc:mariadb://${MARIADB_HOST:localhost}:${MARIADB_PORT:3306}/${MARIADB_DATABASE:swim_ffice_provider_validator}
+%prod.quarkus.datasource.username=${MARIADB_USERNAME:swim}
+%prod.quarkus.datasource.password=${MARIADB_PASSWORD:swim}
+
+%dev.quarkus.datasource.jdbc.url=jdbc:mariadb://localhost:3311/swim_ffice_provider_validator
+%dev.quarkus.datasource.username=swim
+%dev.quarkus.datasource.password=swim
+
+%test.quarkus.datasource.jdbc.url=jdbc:h2:mem:swim_ffice_validator_test
+%test.quarkus.datasource.db-kind=h2
+
+swim.provider.amqp.host=${SWIM_PROVIDER_AMQP_HOST:ffice-provider-artemis-swim-sandbox.apps.ocp4.masales.cloud}
+swim.provider.amqp.port=${SWIM_PROVIDER_AMQP_PORT:443}</code></pre>
+
+                <h3>3.4 compose.yml (validator only)</h3>
+                <pre class="wiki-code"><code>services:
+  ffice-provider-validator-mariadb:
+    image: docker.io/library/mariadb:12-ubi
+    container_name: ffice-provider-validator-mariadb
+    ports:
+      - "3311:3306"
+    environment:
+      MARIADB_DATABASE: swim_ffice_provider_validator
+      MARIADB_USER: swim
+      MARIADB_PASSWORD: swim
+      MARIADB_ROOT_PASSWORD: root
+    volumes:
+      - ffice-provider-validator-mariadb-data:/var/lib/mysql
+    networks:
+      - swim-network
+    healthcheck:
+      test: ["CMD-SHELL", "healthcheck.sh --connect --innodb_initialized"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+volumes:
+  ffice-provider-validator-mariadb-data:
+
+networks:
+  swim-network:
+    name: swim-ffice-provider-validator-network
+    driver: bridge</code></pre>
+
+                <h3>3.5 Containerfile.jvm</h3>
+                <p>Create <code>src/main/docker/Containerfile.jvm</code>. This file is used by <code>compose.yml</code> in the provider to build the validator image locally. Use the standard Red Hat UBI9/OpenJDK-21 base image — copy the exact content from section 3.5 of the Markdown tutorial.</p>
+
+                <div class="wiki-note">
+                    <p>Before running <code>podman compose up</code> in the provider, build the validator JAR first: <code>cd swim-ffice-provider-validator &amp;&amp; ../mvnw clean package -DskipTests</code></p>
+                </div>
+
+                <h3>3.6 Domain models</h3>
+
+                <h4>FficeMessage.java</h4>
+                <pre class="wiki-code"><code>package com.github.swim_developer.validator.ffice.provider.domain.model;
+
+public record FficeMessage(
+        String gufi,
+        String messageType,
+        String departureAerodrome,
+        String destinationAerodrome,
+        String aircraftIdentification,
+        String filingTime
+) {}</code></pre>
+
+                <h4>HttpResult.java</h4>
+                <pre class="wiki-code"><code>package com.github.swim_developer.validator.ffice.provider.domain.model;
+
+public record HttpResult(int statusCode, String body) {}</code></pre>
+
+                <h4>ReceivedMessage.java</h4>
+                <pre class="wiki-code"><code>package com.github.swim_developer.validator.ffice.provider.domain.model;
+
+import lombok.Getter;
+import lombok.Setter;
+import java.time.LocalDateTime;
+
+@Getter
+@Setter
+public class ReceivedMessage {
+    private Long id;
+    private String subscriptionId;
+    private String queueName;
+    private String messageId;
+    private String contentType;
+    private String messageType;
+    private String gufi;
+    private String departureAerodrome;
+    private String destinationAerodrome;
+    private String aircraftIdentification;
+    private String body;
+    private LocalDateTime receivedAt;
+}</code></pre>
+
+                <h3>3.7 Ports</h3>
+                <p>Create all port interfaces under <code>domain/port/in/</code> and <code>domain/port/out/</code>. The full source code is provided in the <a href="../../TUTORIAL-FFICE-PROVIDER.md">Markdown tutorial</a> (section 3.7). The key interfaces are:</p>
+                <ul>
+                    <li><code>ConnectionTrackerPort</code> — manages AMQP connections per user</li>
+                    <li><code>ProviderSubscriptionPort</code> — reacts to subscription lifecycle events</li>
+                    <li><code>ConsoleNotificationPort</code> — logs AMQP and messaging events</li>
+                    <li><code>MessagePersistencePort</code> — saves received messages to MariaDB</li>
+                    <li><code>MessagePort</code> — queries persisted messages</li>
+                    <li><code>ConformanceHttpPort</code> — executes mTLS HTTP requests for conformance tests</li>
+                    <li><code>ConformanceTestPort</code> — runs conformance scenarios by ID</li>
+                    <li><code>ReceivedMessageRepository</code> (out) — Panache-backed persistence port</li>
+                </ul>
+
+                <h3>3.8 FficeMessageExtractor.java</h3>
+                <p>Detects the FF-ICE message type from the raw XML body using regex pattern matching. Supports: <code>FILED_FLIGHT_PLAN</code>, <code>FILING_STATUS</code>, <code>FLIGHT_DEPARTURE</code>, <code>FLIGHT_ARRIVAL</code>, <code>FLIGHT_CANCELLATION</code>, <code>FLIGHT_PLAN_UPDATE</code>, <code>PLANNING_STATUS</code>.</p>
+
+                <pre class="wiki-code"><code>package com.github.swim_developer.validator.ffice.provider.application.usecase;
+
+import com.github.swim_developer.validator.ffice.provider.domain.model.FficeMessage;
+import jakarta.enterprise.context.ApplicationScoped;
+import org.jboss.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+@ApplicationScoped
+public class FficeMessageExtractor {
+
+    private static final Logger LOG = Logger.getLogger(FficeMessageExtractor.class);
+    private static final Pattern GUFI_PATTERN = Pattern.compile("&lt;[^:]*:?gufi[^&gt;]*&gt;([^&lt;]+)&lt;/");
+
+    public FficeMessage extract(String xmlBody) {
+        if (xmlBody == null || xmlBody.isBlank()) {
+            return new FficeMessage("UNKNOWN", "UNKNOWN", null, null, null, null);
+        }
+        try {
+            String messageType = detectMessageType(xmlBody);
+            String gufi = extractFirst(GUFI_PATTERN, xmlBody, "UNKNOWN");
+            return new FficeMessage(gufi, messageType, null, null, null, null);
+        } catch (Exception e) {
+            LOG.warnf("Failed to extract FF-ICE message data: %s", e.getMessage());
+            return new FficeMessage("UNKNOWN", "UNKNOWN", null, null, null, null);
+        }
+    }
+
+    private String detectMessageType(String xml) {
+        if (xml.contains("FiledFlightPlan") || xml.contains("filedFlightPlan")) return "FILED_FLIGHT_PLAN";
+        if (xml.contains("FilingStatus")    || xml.contains("filingStatus"))    return "FILING_STATUS";
+        if (xml.contains("FlightDeparture") || xml.contains("flightDeparture")) return "FLIGHT_DEPARTURE";
+        if (xml.contains("FlightArrival")   || xml.contains("flightArrival"))   return "FLIGHT_ARRIVAL";
+        if (xml.contains("FlightCancellation") || xml.contains("flightCancellation")) return "FLIGHT_CANCELLATION";
+        if (xml.contains("FlightPlanUpdate")|| xml.contains("flightPlanUpdate")) return "FLIGHT_PLAN_UPDATE";
+        if (xml.contains("PlanningStatus")  || xml.contains("planningStatus"))  return "PLANNING_STATUS";
+        return "UNKNOWN";
+    }
+
+    private String extractFirst(Pattern pattern, String input, String defaultValue) {
+        Matcher matcher = pattern.matcher(input);
+        return matcher.find() ? matcher.group(1) : defaultValue;
+    }
+}</code></pre>
+
+                <h3>3.9 ConformanceTestService.java</h3>
+                <p>Implements 9 conformance scenarios against the FF-ICE provider REST API:</p>
+                <table>
+                    <thead>
+                        <tr><th>Scenario</th><th>Description</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><code>API-01</code></td><td>Subscribe — Happy Path (Yellow Profile REQ-0100)</td></tr>
+                        <tr><td><code>API-02</code></td><td>List Subscriptions (REQ-0120)</td></tr>
+                        <tr><td><code>API-03</code></td><td>Get Topics (REQ-0110)</td></tr>
+                        <tr><td><code>API-04</code></td><td>Unsubscribe (REQ-0150)</td></tr>
+                        <tr><td><code>DM-01</code></td><td>Required Fields in Subscription Response</td></tr>
+                        <tr><td><code>DM-02</code></td><td>Initial PAUSED Status</td></tr>
+                        <tr><td><code>DM-03</code></td><td>Topics Returns FficeService</td></tr>
+                        <tr><td><code>DM-04</code></td><td>message_type Filter Persisted</td></tr>
+                        <tr><td><code>WFS-01</code></td><td>WFS GetFeature Query</td></tr>
+                    </tbody>
+                </table>
+
+                <p>The subscription body for FF-ICE uses the <code>message_type</code> filter:</p>
+                <pre class="wiki-code"><code>{"message_type":["FILED_FLIGHT_PLAN","FLIGHT_DEPARTURE","FLIGHT_ARRIVAL"]}</code></pre>
+
+                <h3>3.10 Infrastructure — messaging</h3>
+                <p>Four classes handle the AMQP mTLS lifecycle:</p>
+                <ul>
+                    <li><strong>AmqpSslConfigurator</strong> — loads PKCS12 keystore and truststore into Proton <code>ProtonClientOptions</code></li>
+                    <li><strong>UserReceiverLifecycle</strong> — creates Proton receivers per (userId, queueName), extracts FF-ICE metadata, persists to MariaDB</li>
+                    <li><strong>UserConnectionTracker</strong> — manages connection state per user, tracks heartbeats, performs stale cleanup</li>
+                    <li><strong>AmqpConnectionCleanupScheduler</strong> — runs <code>performCleanup()</code> every 60 seconds via <code>@Scheduled</code></li>
+                </ul>
+
+                <h3>3.11 Infrastructure — persistence</h3>
+                <p>Three classes: <code>ReceivedMessageEntity</code> (Panache entity with <code>gufi</code>, <code>messageType</code>, <code>departureAerodrome</code>, <code>destinationAerodrome</code>, <code>aircraftIdentification</code> columns), <code>ReceivedMessageMapper</code> (static utility), <code>ReceivedMessageRepositoryImpl</code>.</p>
+
+                <h3>3.12 Infrastructure — REST resources</h3>
+                <p>Five endpoints:</p>
+                <table>
+                    <thead>
+                        <tr><th>Path</th><th>Purpose</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><code>GET /api/status</code></td><td>Health check and config</td></tr>
+                        <tr><td><code>POST /api/amqp/connect</code></td><td>Open AMQP connection for a user</td></tr>
+                        <tr><td><code>GET /api/amqp/messages/{subId}</code></td><td>List messages received on a subscription</td></tr>
+                        <tr><td><code>POST /api/provider/subscriptions</code></td><td>Proxy to provider subscription API (mTLS)</td></tr>
+                        <tr><td><code>POST /api/conformance/run/{scenarioId}</code></td><td>Execute a conformance test scenario</td></tr>
+                    </tbody>
+                </table>
+
+                <h3>3.13 Test</h3>
+                <p>A plain JUnit 5 test (no Quarkus runtime) validates the extractor with 7 cases:</p>
+                <pre class="wiki-code"><code>class FficeMessageExtractorTest {
+
+    private final FficeMessageExtractor extractor = new FficeMessageExtractor();
+
+    @Test void extractsFiledFlightPlanType() { ... }
+    @Test void extractsFlightDepartureType() { ... }
+    @Test void extractsFlightArrivalType()   { ... }
+    @Test void extractsFlightCancellationType() { ... }
+    @Test void extractsGufi()            { ... }
+    @Test void handlesNullBody()         { ... }
+    @Test void handlesBlankBody()        { ... }
+}</code></pre>
+
+                <h3>3.14 Build and verify</h3>
+                <pre class="wiki-code"><code># Install parent modules first (required for relativePath resolution)
+cd applications/swim-validators
+./mvnw clean install -DskipTests -q
+
+# Build and test the validator
+cd swim-ffice-provider-validator
+../mvnw clean package -DskipTests
+../mvnw test</code></pre>
+
+                <p>Expected output:</p>
+                <pre class="wiki-code"><code>Tests run: 7, Failures: 0, Errors: 0, Skipped: 0
+BUILD SUCCESS</code></pre>
+            </section>
+
+            <div class="tutorial-nav-footer">
+                <a href="provider.html" class="nav-prev">
+                    <span class="nav-label"><i class="fas fa-arrow-left"></i> Previous</span>
+                    <span class="nav-title">Part 2: Provider Service</span>
+                </a>
+                <a href="infrastructure.html" class="nav-next">
+                    <span class="nav-label">Next <i class="fas fa-arrow-right"></i></span>
+                    <span class="nav-title">Part 4: Infrastructure</span>
+                </a>
+            </div>
+        </main>
+    </div>
+
+    <footer class="footer"></footer>
+    <script src="../../script.js"></script>
+</body>
+</html>

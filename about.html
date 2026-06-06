@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About | SWIM Developer</title>
+    <meta name="description" content="About the SWIM Developer project: origin, mission, governance, and how to get involved.">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@400;500;600;700;900&family=Red+Hat+Text:wght@400;500;600&family=Red+Hat+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav class="navbar"></nav>
+
+    <header class="page-header">
+        <div class="container">
+            <div class="page-header-content">
+                <h1><i class="fas fa-people-group"></i> About</h1>
+                <p class="page-subtitle">An open-source initiative by SWIM practitioners, for the SWIM community.</p>
+            </div>
+        </div>
+    </header>
+
+    <div class="wiki-layout">
+        <aside class="wiki-sidebar">
+            <nav class="wiki-nav">
+                <div class="wiki-nav-group">
+                    <h4 class="wiki-nav-title"><i class="fas fa-compass"></i> About</h4>
+                    <ul>
+                        <li><a href="#origin">Origin</a></li>
+                        <li><a href="#why-open-source">Why Open Source</a></li>
+                        <li><a href="#governance">Governance</a></li>
+                        <li><a href="#contribute">Get Involved</a></li>
+                        <li><a href="#license">License</a></li>
+                    </ul>
+                </div>
+            </nav>
+        </aside>
+
+        <main class="wiki-content">
+            <section class="wiki-section" id="origin">
+                <h2>What is swim-developer</h2>
+                <p>
+                    swim-developer is an open-source initiative created to accelerate the adoption of
+                    <a href="https://www.eurocontrol.int/concept/system-wide-information-management" target="_blank">SWIM</a>
+                    (System Wide Information Management). It is maintained by the SWIM development community.
+                </p>
+                <p>
+                    The specifications are public. The data models are public.
+                    The implementation should be public too.
+                </p>
+            </section>
+
+            <section class="wiki-section" id="why-open-source">
+                <h2>Why Open Source</h2>
+                <p>
+                    SWIM connects Air Navigation Service Providers across national borders.
+                    A provider in one country publishes data consumed by organizations in dozens of others.
+                    When this infrastructure depends on proprietary implementations, every integration
+                    becomes a bilateral negotiation between vendors.
+                </p>
+                <ul class="wiki-list">
+                    <li><strong>Interoperability</strong> - Open source means any ANSP, integrator, or regulator can inspect
+                        exactly how a SWIM service encodes, validates, and delivers data. No ambiguity in specification
+                        interpretation, no hidden behavior</li>
+                    <li><strong>Auditability</strong> - Aviation is safety-critical infrastructure. Organizations evaluating
+                        a SWIM implementation need to verify compliance with SPEC-170, ED-254, and national regulations.
+                        Closed-source requires trusting a vendor's claims. Open source allows direct verification</li>
+                    <li><strong>No vendor lock-in</strong> - ANSPs operate on multi-decade timescales. An open implementation
+                        built on open standards (AIXM, FIXM, AMQP 1.0) ensures that the investment in SWIM adoption
+                        survives any single vendor's business decisions</li>
+                </ul>
+            </section>
+
+            <section class="wiki-section" id="governance">
+                <h2>Governance</h2>
+                <p>
+                    All development happens in public repositories under the
+                    <a href="https://github.com/swim-developer" target="_blank">swim-developer</a>
+                    organization on GitHub.
+                </p>
+                <ul class="wiki-list">
+                    <li><strong>Architecture decisions</strong> are documented as ADRs and reviewed before implementation</li>
+                    <li><strong>Roadmap priorities</strong> are driven by SWIM standards evolution, community feedback, and CP1 compliance requirements</li>
+                    <li><strong>Code contributions</strong> are reviewed through pull requests</li>
+                </ul>
+            </section>
+
+            <section class="wiki-section" id="contribute">
+                <h2>Get Involved</h2>
+                <ul class="wiki-list">
+                    <li><strong>Report issues</strong> - Open an issue on the relevant <a href="https://github.com/swim-developer" target="_blank">GitHub repository</a></li>
+                    <li><strong>Implement a new SWIM service</strong> - Use the <a href="projects.html">Maven archetypes</a> to create a consumer or provider for a service not yet implemented (e.g., MET, AIM, ATFCM)</li>
+                    <li><strong>Test and validate</strong> - Deploy in your environment and report your findings</li>
+                    <li><strong>Share feedback</strong> - Architecture discussions, standards interpretation, and deployment experiences are valuable</li>
+                </ul>
+            </section>
+
+            <section class="wiki-section" id="license">
+                <h2>License</h2>
+                <p>
+                    All swim-developer repositories are licensed under the
+                    <a href="https://www.apache.org/licenses/LICENSE-2.0" target="_blank">Apache License 2.0</a>.
+                    Free to use, modify, and distribute for any purpose, including commercial use.
+                    Redistributions must retain the original copyright notice and license text.
+                </p>
+            </section>
+        </main>
+    </div>
+
+    <button class="wiki-sidebar-toggle" aria-label="Toggle navigation">
+        <i class="fas fa-list"></i>
+    </button>
+
+    <footer class="footer"></footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

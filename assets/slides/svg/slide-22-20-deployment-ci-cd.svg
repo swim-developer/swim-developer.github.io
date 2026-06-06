@@ -1,0 +1,92 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" font-family="Red Hat Display, sans-serif">
+  <rect width="1280" height="720" fill="#0d1117"/>
+
+  <text x="640" y="45" text-anchor="middle" fill="#f0f6fc" font-size="28" font-weight="bold">One CR Deploys the Entire Stack</text>
+
+  <!-- YAML block -->
+  <rect x="40" y="70" width="520" height="280" rx="10" fill="#161b22" stroke="#30363d" stroke-width="1"/>
+  <rect x="40" y="70" width="520" height="30" rx="10" fill="#21262d"/>
+  <rect x="40" y="90" width="520" height="10" fill="#21262d"/>
+  <circle cx="60" cy="86" r="5" fill="#f85149"/><circle cx="76" cy="86" r="5" fill="#d29922"/><circle cx="92" cy="86" r="5" fill="#3fb950"/>
+  <text x="300" y="89" text-anchor="middle" fill="#484f58" font-size="10">swim-dnotam-consumer.yaml</text>
+
+  <text x="65" y="122" fill="#d29922" font-size="13" font-family="JetBrains Mono, monospace">apiVersion: <tspan fill="#3fb950">swim.redhat.com/v1</tspan></text>
+  <text x="65" y="142" fill="#d29922" font-size="13" font-family="JetBrains Mono, monospace">kind: <tspan fill="#3fb950">SwimDnotamConsumer</tspan></text>
+  <text x="65" y="162" fill="#d29922" font-size="13" font-family="JetBrains Mono, monospace">metadata:</text>
+  <text x="85" y="182" fill="#d29922" font-size="13" font-family="JetBrains Mono, monospace">name: <tspan fill="#3fb950">dnotam-consumer</tspan></text>
+  <text x="65" y="206" fill="#d29922" font-size="13" font-family="JetBrains Mono, monospace">spec:</text>
+  <text x="85" y="226" fill="#d29922" font-size="13" font-family="JetBrains Mono, monospace">providers:</text>
+  <text x="105" y="246" fill="#d29922" font-size="13" font-family="JetBrains Mono, monospace">- providerId: <tspan fill="#3fb950">"ead"</tspan></text>
+  <text x="125" y="266" fill="#d29922" font-size="13" font-family="JetBrains Mono, monospace">amqpBroker:</text>
+  <text x="145" y="286" fill="#d29922" font-size="13" font-family="JetBrains Mono, monospace">host: <tspan fill="#3fb950">"ead.eurocontrol.int:5671"</tspan></text>
+
+  <!-- Arrow -->
+  <line x1="570" y1="210" x2="620" y2="210" stroke="#58a6ff" stroke-width="2" marker-end="url(#arr20)"/>
+  <text x="595" y="200" text-anchor="middle" fill="#58a6ff" font-size="20">→</text>
+
+  <!-- What operator creates -->
+  <rect x="640" y="70" width="600" height="280" rx="10" fill="#1c2333" stroke="#58a6ff" stroke-width="1.5"/>
+  <text x="940" y="100" text-anchor="middle" fill="#58a6ff" font-size="16" font-weight="bold">Operator creates in 7 minutes:</text>
+
+  <rect x="665" y="115" width="270" height="35" rx="6" fill="#21262d"/>
+  <text x="800" y="138" text-anchor="middle" fill="#f0f6fc" font-size="13">Consumer Deployment</text>
+  <rect x="665" y="158" width="270" height="35" rx="6" fill="#21262d"/>
+  <text x="800" y="181" text-anchor="middle" fill="#f0f6fc" font-size="13">MongoDB StatefulSet</text>
+  <rect x="665" y="201" width="270" height="35" rx="6" fill="#21262d"/>
+  <text x="800" y="224" text-anchor="middle" fill="#f0f6fc" font-size="13">Kafka (6 topics)</text>
+  <rect x="665" y="244" width="270" height="35" rx="6" fill="#21262d"/>
+  <text x="800" y="267" text-anchor="middle" fill="#f0f6fc" font-size="13">mTLS Certificates</text>
+
+  <rect x="950" y="115" width="270" height="35" rx="6" fill="#21262d"/>
+  <text x="1085" y="138" text-anchor="middle" fill="#f0f6fc" font-size="13">Health Checks</text>
+  <rect x="950" y="158" width="270" height="35" rx="6" fill="#21262d"/>
+  <text x="1085" y="181" text-anchor="middle" fill="#f0f6fc" font-size="13">OpenTelemetry Agent</text>
+  <rect x="950" y="201" width="270" height="35" rx="6" fill="#21262d"/>
+  <text x="1085" y="224" text-anchor="middle" fill="#f0f6fc" font-size="13">Prometheus Metrics</text>
+  <rect x="950" y="244" width="270" height="35" rx="6" fill="#21262d"/>
+  <text x="1085" y="267" text-anchor="middle" fill="#f0f6fc" font-size="13">ConfigMaps + Secrets</text>
+
+  <rect x="665" y="295" width="555" height="35" rx="6" fill="#0a2e0a" stroke="#3fb950" stroke-width="1"/>
+  <text x="942" y="318" text-anchor="middle" fill="#3fb950" font-size="13" font-weight="bold">Total: 7 minutes from CR to fully operational</text>
+
+  <!-- CI/CD Section -->
+  <rect x="40" y="385" width="1200" height="160" rx="12" fill="#1c2333" stroke="#d29922" stroke-width="1.5"/>
+  <text x="640" y="415" text-anchor="middle" fill="#d29922" font-size="18" font-weight="bold">CI/CD: 7 Tekton Pipelines on OpenShift</text>
+
+  <!-- Pipeline flow -->
+  <rect x="70" y="440" width="130" height="45" rx="8" fill="#21262d"/>
+  <text x="135" y="467" text-anchor="middle" fill="#f0f6fc" font-size="12">git push</text>
+  <line x1="205" y1="462" x2="240" y2="462" stroke="#d29922" stroke-width="1.5" marker-end="url(#arr20o)"/>
+
+  <rect x="245" y="440" width="150" height="45" rx="8" fill="#21262d"/>
+  <text x="320" y="460" text-anchor="middle" fill="#f0f6fc" font-size="12">GitHub</text>
+  <text x="320" y="476" text-anchor="middle" fill="#484f58" font-size="10">webhook</text>
+  <line x1="400" y1="462" x2="435" y2="462" stroke="#d29922" stroke-width="1.5" marker-end="url(#arr20o)"/>
+
+  <rect x="440" y="440" width="130" height="45" rx="8" fill="#21262d"/>
+  <text x="505" y="460" text-anchor="middle" fill="#f0f6fc" font-size="12">CEL filter</text>
+  <text x="505" y="476" text-anchor="middle" fill="#484f58" font-size="10">path-based</text>
+  <line x1="575" y1="462" x2="610" y2="462" stroke="#d29922" stroke-width="1.5" marker-end="url(#arr20o)"/>
+
+  <rect x="615" y="440" width="160" height="45" rx="8" fill="#21262d"/>
+  <text x="695" y="460" text-anchor="middle" fill="#f0f6fc" font-size="12">Native Build</text>
+  <text x="695" y="476" text-anchor="middle" fill="#484f58" font-size="10">Mandrel 16Gi 8CPU</text>
+  <line x1="780" y1="462" x2="815" y2="462" stroke="#d29922" stroke-width="1.5" marker-end="url(#arr20o)"/>
+
+  <rect x="820" y="440" width="130" height="45" rx="8" fill="#21262d"/>
+  <text x="885" y="460" text-anchor="middle" fill="#f0f6fc" font-size="12">Quay.io</text>
+  <text x="885" y="476" text-anchor="middle" fill="#484f58" font-size="10">push image</text>
+  <line x1="955" y1="462" x2="990" y2="462" stroke="#d29922" stroke-width="1.5" marker-end="url(#arr20o)"/>
+
+  <rect x="995" y="440" width="160" height="45" rx="8" fill="#0d419d"/>
+  <text x="1075" y="460" text-anchor="middle" fill="#f0f6fc" font-size="12" font-weight="bold">Operator</text>
+  <text x="1075" y="476" text-anchor="middle" fill="#f0f6fc" font-size="10">redeploy</text>
+
+  <text x="640" y="520" text-anchor="middle" fill="#484f58" font-size="13">15 minutes · zero manual intervention · everything runs inside the cluster</text>
+
+  <defs>
+    <marker id="arr20" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#58a6ff"/></marker>
+    <marker id="arr20o" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#d29922"/></marker>
+  </defs>
+</svg>
+

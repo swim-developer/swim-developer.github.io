@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deploy on OpenShift Local | Tutorials | SWIM Developer</title>
+    <meta name="description" content="Deploy the full SWIM ecosystem on OpenShift Local (CRC) with Helm charts, operators, and automated infrastructure.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@400;500;600;700;900&family=Red+Hat+Text:wght@400;500;600&family=Red+Hat+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+    <nav class="navbar"></nav>
+
+    <header class="page-header">
+        <div class="container">
+            <div class="page-header-content">
+                <h1><i class="fas fa-graduation-cap"></i> Tutorials</h1>
+                <p class="page-subtitle">Step-by-step guides for deploying, configuring, and validating SWIM services</p>
+            </div>
+        </div>
+    </header>
+
+    <div class="wiki-layout">
+        <aside class="wiki-sidebar">
+            <nav class="wiki-nav">
+                <div class="wiki-nav-group">
+                    <h4 class="wiki-nav-title"><i class="fas fa-rocket"></i> Getting Started</h4>
+                    <ul>
+                        <li><a href="deploy-gitops.html">GitOps (Argo CD)</a></li>
+                        <li><a href="deploy-openshift.html">OpenShift</a></li>
+                        <li><a href="deploy-kubernetes.html">Kubernetes</a></li>
+                        <li><a href="deploy-openshift-local.html" class="active">OpenShift Local</a></li>
+                        <li><a href="deploy-minikube.html">Minikube</a></li>
+                        <li><a href="deploy-podman.html">Container Local (Podman)</a></li>
+                        <li><a href="deploy-java.html">Java / Binary</a></li>
+                    </ul>
+                </div>
+                <div class="wiki-nav-group">
+                    <h4 class="wiki-nav-title"><i class="fas fa-bell"></i> Digital NOTAM</h4>
+                    <ul>
+                        <li><a href="dnotam-consumer-deploy.html">Deploy Consumer</a></li>
+                        <li><a href="dnotam-consumer-explore.html">Explore Consumer</a></li>
+                        <li><a href="dnotam-provider-deploy.html">Deploy Provider</a></li>
+                        <li><a href="dnotam-provider-explore.html">Explore Provider</a></li>
+                        <li><a href="consumer-validator-deploy.html">Deploy Consumer Validator</a></li>
+                        <li><a href="consumer-validator-explore.html">Explore Consumer Validator</a></li>
+                        <li><a href="provider-validator-deploy.html">Deploy Provider Validator</a></li>
+                        <li><a href="e2e-test.html">End-to-End Test</a></li>
+                    </ul>
+                </div>
+                <div class="wiki-nav-group">
+                    <h4 class="wiki-nav-title"><i class="fas fa-plane-arrival"></i> ED-254 (AMAN)</h4>
+                    <ul>
+                        <li><a href="ed254-consumer-deploy.html">Deploy Consumer</a></li>
+                        <li><a href="ed254-provider-deploy.html">Deploy Provider</a></li>
+                    </ul>
+                </div>
+                <div class="wiki-nav-group">
+                    <h4 class="wiki-nav-title"><i class="fas fa-wand-magic-sparkles"></i> Build Your Own</h4>
+                    <ul>
+                        <li><a href="create-consumer.html">Create Consumer</a></li>
+                        <li><a href="create-provider.html">Create Provider</a></li>
+                    </ul>
+                </div>
+            </nav>
+        </aside>
+
+        <main class="wiki-content">
+            <section class="wiki-section">
+                <h2>Deploy on OpenShift Local</h2>
+                <p>
+                    Deploy the complete SWIM ecosystem on your local machine using
+                    Red Hat OpenShift Local (formerly CodeReady Containers). This is a
+                    self-contained deployment project that includes all Helm charts,
+                    operator subscriptions, and infrastructure configuration needed to
+                    run the full SWIM Reference Architecture locally.
+                </p>
+                <p>
+                    By the end of this tutorial you will have a fully functional SWIM
+                    environment with Digital NOTAM services, ED-254 Arrival Sequence
+                    services, validators, message brokers, databases, identity provider,
+                    and example applications.
+                </p>
+
+                <h3>What Gets Deployed</h3>
+                <p>The deployment project installs 19 components organized in layers:</p>
+                <div class="wiki-requirements">
+                    <div class="wiki-req-item">
+                        <i class="fas fa-layer-group"></i>
+                        <div>
+                            <strong>Shared Infrastructure (7)</strong>
+                            <span>Kafka, Artemis brokers, MongoDB, PostgreSQL, MariaDB, Keycloak, cert-manager PKI</span>
+                        </div>
+                    </div>
+                    <div class="wiki-req-item">
+                        <i class="fas fa-cogs"></i>
+                        <div>
+                            <strong>SWIM Services (4)</strong>
+                            <span>DNOTAM Provider, DNOTAM Consumer, ED-254 Provider, ED-254 Consumer</span>
+                        </div>
+                    </div>
+                    <div class="wiki-req-item">
+                        <i class="fas fa-vial"></i>
+                        <div>
+                            <strong>Validators (4)</strong>
+                            <span>Mock providers and consumers for isolated testing and conformance validation</span>
+                        </div>
+                    </div>
+                    <div class="wiki-req-item">
+                        <i class="fas fa-desktop"></i>
+                        <div>
+                            <strong>Example Applications (4)</strong>
+                            <span>DNOTAM Dashboard, DNOTAM Event Publisher, ED-254 Arrival Flow Manager, ED-254 AMAN Client</span>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>Prerequisites</h3>
+                <div class="wiki-requirements">
+                    <div class="wiki-req-item">
+                        <i class="fas fa-cube"></i>
+                        <div>
+                            <strong>Podman Desktop (recommended)</strong>
+                            <span>graphical tool for managing containers, Kubernetes, and OpenShift environments. From <a href="https://podman-desktop.io/" target="_blank">podman-desktop.io</a></span>
+                        </div>
+                    </div>
+                    <div class="wiki-req-item">
+                        <i class="fab fa-redhat"></i>
+                        <div>
+                            <strong>OpenShift Local 2.x</strong>
+                            <span>from <a href="https://developers.redhat.com/products/openshift-local" target="_blank">Red Hat Developers</a> (<a href="https://developers.redhat.com/content-gateway/link/3875380" target="_blank">download</a>). Can also be installed via Podman Desktop</span>
+                        </div>
+                    </div>
+                    <div class="wiki-req-item">
+                        <i class="fas fa-terminal"></i>
+                        <div>
+                            <strong>oc CLI + Make + Git</strong>
+                            <span><code>oc</code> is included with CRC. <code>make</code> and <code>git</code> are pre-installed on Linux/macOS. On Windows: <code>choco install make git</code></span>
+                        </div>
+                    </div>
+                    <div class="wiki-req-item">
+                        <i class="fas fa-dharmachakra"></i>
+                        <div>
+                            <strong>Helm CLI</strong>
+                            <span>Install from <a href="https://helm.sh/docs/intro/install/" target="_blank">helm.sh/docs/intro/install</a> or via package manager: <code>choco install kubernetes-helm</code> (Windows), <code>brew install helm</code> (macOS), <code>sudo snap install helm --classic</code> (Linux)</span>
+                        </div>
+                    </div>
+                    <div class="wiki-req-item">
+                        <i class="fas fa-microchip"></i>
+                        <div>
+                            <strong>CPU: 6 minimum, 8 recommended. RAM: 16 GB minimum, 24 GB recommended</strong>
+                            <span>for the full SWIM stack on CRC</span>
+                        </div>
+                    </div>
+                    <div class="wiki-req-item">
+                        <i class="fas fa-id-card"></i>
+                        <div>
+                            <strong>Red Hat Developer Account</strong>
+                            <span>free account from <a href="https://developers.redhat.com" target="_blank">developers.redhat.com</a> for CRC pull secret and <code>registry.redhat.io</code> container images</span>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>1. Clone the Deployment Project</h3>
+                <pre class="wiki-code"><code>git clone https://github.com/swim-developer/swim-deploy-openshift-local.git
+cd swim-deploy-openshift-local</code></pre>
+
+                <h3>2. Start OpenShift Local</h3>
+                <div class="wiki-code-tabs">
+                    <div class="wiki-tab-header" role="tablist">
+                        <button class="wiki-tab-btn active" data-tab="unix" role="tab" aria-selected="true">
+                            <i class="fa-brands fa-apple"></i>
+                            <i class="fa-brands fa-linux"></i>
+                            macOS / Linux
+                        </button>
+                        <button class="wiki-tab-btn" data-tab="windows" role="tab" aria-selected="false">
+                            <i class="fa-brands fa-windows"></i>
+                            Windows
+                        </button>
+                    </div>
+                    <pre class="wiki-code wiki-tab-panel active" data-tab="unix" role="tabpanel"><code># Configure CRC resources (first time only)
+# Minimum: 8 CPUs, 20 GB RAM. Recommended: 10 CPUs, 24 GB RAM
+crc config set cpus 8
+crc config set memory 24576
+crc setup
+
+# Start the cluster
+crc start
+
+# Configure CLI
+eval $(crc oc-env)
+oc login -u kubeadmin https://api.crc.testing:6443</code></pre>
+                    <pre class="wiki-code wiki-tab-panel" data-tab="windows" role="tabpanel"><code># Configure CRC resources (first time only)
+# Minimum: 8 CPUs, 20 GB RAM. Recommended: 10 CPUs, 24 GB RAM
+crc config set cpus 8
+crc config set memory 24576
+crc setup
+
+# Start the cluster
+crc start
+
+# Configure CLI
+& crc oc-env | Invoke-Expression
+oc login -u kubeadmin https://api.crc.testing:6443</code></pre>
+                </div>
+                <p>
+                    The kubeadmin password is displayed by <code>crc start</code> or can be
+                    retrieved with <code>crc console --credentials</code>.
+                </p>
+
+                <div class="wiki-note">
+                    <i class="fa-brands fa-windows"></i>
+                    <p>
+                        <strong>Windows:</strong> The commands below use GNU Make. Install it via
+                        <code>choco install make</code> (Chocolatey) or <code>scoop install make</code>.
+                    </p>
+                </div>
+
+                <h3>3. Deploy Everything</h3>
+                <p>
+                    A single command deploys the complete stack in the correct order:
+                    operators, infrastructure, services, validators, and example applications.
+                </p>
+                <pre class="wiki-code"><code>make all</code></pre>
+                <p>
+                    This takes a few minutes on a fresh CRC instance. The
+                    Makefile handles namespace creation, operator installation, CRD readiness
+                    checks, Keycloak SPI setup, Helm chart deployment, and Artemis SSL
+                    configuration automatically.
+                </p>
+
+                <h3>4. Step-by-Step (Alternative)</h3>
+                <p>
+                    If you prefer to deploy layer by layer, or need to troubleshoot a
+                    specific step, use <code>oc</code> and <code>helm</code> directly.
+                    All commands run from the <code>swim-deploy-openshift-local</code>
+                    project directory.
+                </p>
+
+                <h4>4.1 Create the Namespace</h4>
+                <pre class="wiki-code"><code>oc new-project swim-demo</code></pre>
+
+                <h4>4.2 Install OLM Operators</h4>
+                <pre class="wiki-code"><code>oc apply -f operators/cert-manager-operator.yaml
+oc apply -f operators/amq-streams-operator.yaml
+oc apply -f operators/amq-streams-console-operator.yaml
+oc apply -f operators/amq-broker-operator.yaml
+oc apply -f operators/rhbk-operator.yaml</code></pre>
+                <p>Wait for all operator CRDs (2-5 minutes on a fresh CRC):</p>
+                <pre class="wiki-code"><code>oc wait --for=condition=Established crd/kafkas.kafka.strimzi.io --timeout=300s
+oc wait --for=condition=Established crd/clusterissuers.cert-manager.io --timeout=300s
+oc wait --for=condition=Established crd/activemqartemises.broker.amq.io --timeout=300s
+oc wait --for=condition=Established crd/keycloaks.k8s.keycloak.org --timeout=300s</code></pre>
+
+                <h4>4.3 Create Keycloak SPI Secret</h4>
+                <div class="wiki-code-tabs">
+                    <div class="wiki-tab-header" role="tablist">
+                        <button class="wiki-tab-btn active" data-tab="unix" role="tab" aria-selected="true">
+                            <i class="fa-brands fa-apple"></i>
+                            <i class="fa-brands fa-linux"></i>
+                            macOS / Linux
+                        </button>
+                        <button class="wiki-tab-btn" data-tab="windows" role="tab" aria-selected="false">
+                            <i class="fa-brands fa-windows"></i>
+                            Windows
+                        </button>
+                    </div>
+                    <pre class="wiki-code wiki-tab-panel active" data-tab="unix" role="tabpanel"><code>oc create secret generic keycloak-swim-role-spi -n swim-demo \
+  --from-file=keycloak-swim-role-spi.jar=lib/keycloak-swim-role-spi.jar</code></pre>
+                    <pre class="wiki-code wiki-tab-panel" data-tab="windows" role="tabpanel"><code>oc create secret generic keycloak-swim-role-spi -n swim-demo `
+  --from-file=keycloak-swim-role-spi.jar=lib/keycloak-swim-role-spi.jar</code></pre>
+                </div>
+
+                <h4>4.4 Deploy Shared Infrastructure</h4>
+                <div class="wiki-code-tabs">
+                    <div class="wiki-tab-header" role="tablist">
+                        <button class="wiki-tab-btn active" data-tab="unix" role="tab" aria-selected="true">
+                            <i class="fa-brands fa-apple"></i>
+                            <i class="fa-brands fa-linux"></i>
+                            macOS / Linux
+                        </button>
+                        <button class="wiki-tab-btn" data-tab="windows" role="tab" aria-selected="false">
+                            <i class="fa-brands fa-windows"></i>
+                            Windows
+                        </button>
+                    </div>
+                    <pre class="wiki-code wiki-tab-panel active" data-tab="unix" role="tabpanel"><code>helm upgrade --install swim-infra charts/swim-infra \
+  -n swim-demo \
+  -f charts/swim-infra/values.yaml</code></pre>
+                    <pre class="wiki-code wiki-tab-panel" data-tab="windows" role="tabpanel"><code>helm upgrade --install swim-infra charts/swim-infra `
+  -n swim-demo `
+  -f charts/swim-infra/values.yaml</code></pre>
+                </div>
+                <p>
+                    Wait for all infrastructure pods. Kafka and Keycloak are the
+                    slowest to initialize:
+                </p>
+                <pre class="wiki-code"><code>oc get pods -n swim-demo -w</code></pre>
+
+                <h4>4.5 Create Artemis SSL Secrets</h4>
+                <p>
+                    Once cert-manager has issued the Artemis TLS certificates, create
+                    the broker SSL secrets. This step extracts JKS keystores from
+                    cert-manager secrets and is best done with the Makefile target:
+                </p>
+                <pre class="wiki-code"><code>make infra-artemis-ssl</code></pre>
+                <p>
+                    For the manual <code>oc</code> commands, see
+                    <a href="https://github.com/swim-developer/swim-deploy-openshift-local#step-6-create-artemis-ssl-secrets" target="_blank">Step 6 in the deployment project README</a>.
+                </p>
+
+                <h4>4.6 Deploy Digital NOTAM (DNOTAM)</h4>
+                <p>
+                    Start with the DNOTAM module. Deploy the provider and consumer first,
+                    then their validators.
+                </p>
+                <p><strong>DNOTAM Services:</strong></p>
+                <div class="wiki-code-tabs">
+                    <div class="wiki-tab-header" role="tablist">
+                        <button class="wiki-tab-btn active" data-tab="unix" role="tab" aria-selected="true">
+                            <i class="fa-brands fa-apple"></i>
+                            <i class="fa-brands fa-linux"></i>
+                            macOS / Linux
+                        </button>
+                        <button class="wiki-tab-btn" data-tab="windows" role="tab" aria-selected="false">
+                            <i class="fa-brands fa-windows"></i>
+                            Windows
+                        </button>
+                    </div>
+                    <pre class="wiki-code wiki-tab-panel active" data-tab="unix" role="tabpanel"><code>helm upgrade --install swim-dnotam-provider charts/swim-dnotam-provider \
+  -n swim-demo \
+  -f charts/swim-dnotam-provider/values.yaml
+
+helm upgrade --install swim-dnotam-consumer charts/swim-dnotam-consumer \
+  -n swim-demo \
+  -f charts/swim-dnotam-consumer/values.yaml</code></pre>
+                    <pre class="wiki-code wiki-tab-panel" data-tab="windows" role="tabpanel"><code>helm upgrade --install swim-dnotam-provider charts/swim-dnotam-provider `
+  -n swim-demo `
+  -f charts/swim-dnotam-provider/values.yaml
+
+helm upgrade --install swim-dnotam-consumer charts/swim-dnotam-consumer `
+  -n swim-demo `
+  -f charts/swim-dnotam-consumer/values.yaml</code></pre>
+                </div>
+                <p><strong>DNOTAM Validators:</strong></p>
+                <div class="wiki-code-tabs">
+                    <div class="wiki-tab-header" role="tablist">
+                        <button class="wiki-tab-btn active" data-tab="unix" role="tab" aria-selected="true">
+                            <i class="fa-brands fa-apple"></i>
+                            <i class="fa-brands fa-linux"></i>
+                            macOS / Linux
+                        </button>
+                        <button class="wiki-tab-btn" data-tab="windows" role="tab" aria-selected="false">
+                            <i class="fa-brands fa-windows"></i>
+                            Windows
+                        </button>
+                    </div>
+                    <pre class="wiki-code wiki-tab-panel active" data-tab="unix" role="tabpanel"><code>helm upgrade --install swim-dnotam-consumer-validator charts/swim-dnotam-consumer-validator \
+  -n swim-demo \
+  -f charts/swim-dnotam-consumer-validator/values.yaml
+
+helm upgrade --install swim-dnotam-provider-validator charts/swim-dnotam-provider-validator \
+  -n swim-demo \
+  -f charts/swim-dnotam-provider-validator/values.yaml</code></pre>
+                    <pre class="wiki-code wiki-tab-panel" data-tab="windows" role="tabpanel"><code>helm upgrade --install swim-dnotam-consumer-validator charts/swim-dnotam-consumer-validator `
+  -n swim-demo `
+  -f charts/swim-dnotam-consumer-validator/values.yaml
+
+helm upgrade --install swim-dnotam-provider-validator charts/swim-dnotam-provider-validator `
+  -n swim-demo `
+  -f charts/swim-dnotam-provider-validator/values.yaml</code></pre>
+                </div>
+                <p>Verify all four DNOTAM pods are running before proceeding:</p>
+                <pre class="wiki-code"><code>oc get pods -n swim-demo -l app.kubernetes.io/part-of=swim-dnotam</code></pre>
+
+                <h4>4.7 Add More Modules (ED-254)</h4>
+                <p>
+                    Each SWIM module follows the same pattern: two services (provider and
+                    consumer) and two validators. The only difference between modules is
+                    which charts to deploy.
+                </p>
+                <div class="wiki-note">
+                    <i class="fas fa-microchip"></i>
+                    <div>
+                        <p><strong>Resource consideration</strong></p>
+                        <p>
+                            OpenShift Local runs on a single VM with limited CPU and memory.
+                            Running all modules simultaneously is possible with 8 CPUs and 24 GB RAM,
+                            but on constrained machines you may prefer to test one module at a time.
+                            Remove the current module before deploying the next one to stay within
+                            resource limits.
+                        </p>
+                    </div>
+                </div>
+                <p><strong>(Optional) Remove DNOTAM before deploying ED-254:</strong></p>
+                <pre class="wiki-code"><code>helm uninstall swim-dnotam-provider-validator -n swim-demo
+helm uninstall swim-dnotam-consumer-validator -n swim-demo
+helm uninstall swim-dnotam-consumer -n swim-demo
+helm uninstall swim-dnotam-provider -n swim-demo</code></pre>
+                <p><strong>ED-254 Services:</strong></p>
+                <div class="wiki-code-tabs">
+                    <div class="wiki-tab-header" role="tablist">
+                        <button class="wiki-tab-btn active" data-tab="unix" role="tab" aria-selected="true">
+                            <i class="fa-brands fa-apple"></i>
+                            <i class="fa-brands fa-linux"></i>
+                            macOS / Linux
+                        </button>
+                        <button class="wiki-tab-btn" data-tab="windows" role="tab" aria-selected="false">
+                            <i class="fa-brands fa-windows"></i>
+                            Windows
+                        </button>
+                    </div>
+                    <pre class="wiki-code wiki-tab-panel active" data-tab="unix" role="tabpanel"><code>helm upgrade --install swim-ed254-provider charts/swim-ed254-provider \
+  -n swim-demo \
+  -f charts/swim-ed254-provider/values.yaml
+
+helm upgrade --install swim-ed254-consumer charts/swim-ed254-consumer \
+  -n swim-demo \
+  -f charts/swim-ed254-consumer/values.yaml</code></pre>
+                    <pre class="wiki-code wiki-tab-panel" data-tab="windows" role="tabpanel"><code>helm upgrade --install swim-ed254-provider charts/swim-ed254-provider `
+  -n swim-demo `
+  -f charts/swim-ed254-provider/values.yaml
+
+helm upgrade --install swim-ed254-consumer charts/swim-ed254-consumer `
+  -n swim-demo `
+  -f charts/swim-ed254-consumer/values.yaml</code></pre>
+                </div>
+                <p><strong>ED-254 Validators:</strong></p>
+                <div class="wiki-code-tabs">
+                    <div class="wiki-tab-header" role="tablist">
+                        <button class="wiki-tab-btn active" data-tab="unix" role="tab" aria-selected="true">
+                            <i class="fa-brands fa-apple"></i>
+                            <i class="fa-brands fa-linux"></i>
+                            macOS / Linux
+                        </button>
+                        <button class="wiki-tab-btn" data-tab="windows" role="tab" aria-selected="false">
+                            <i class="fa-brands fa-windows"></i>
+                            Windows
+                        </button>
+                    </div>
+                    <pre class="wiki-code wiki-tab-panel active" data-tab="unix" role="tabpanel"><code>helm upgrade --install swim-ed254-consumer-validator charts/swim-ed254-consumer-validator \
+  -n swim-demo \
+  -f charts/swim-ed254-consumer-validator/values.yaml
+
+helm upgrade --install swim-ed254-provider-validator charts/swim-ed254-provider-validator \
+  -n swim-demo \
+  -f charts/swim-ed254-provider-validator/values.yaml</code></pre>
+                    <pre class="wiki-code wiki-tab-panel" data-tab="windows" role="tabpanel"><code>helm upgrade --install swim-ed254-consumer-validator charts/swim-ed254-consumer-validator `
+  -n swim-demo `
+  -f charts/swim-ed254-consumer-validator/values.yaml
+
+helm upgrade --install swim-ed254-provider-validator charts/swim-ed254-provider-validator `
+  -n swim-demo `
+  -f charts/swim-ed254-provider-validator/values.yaml</code></pre>
+                </div>
+                <p>Verify all four ED-254 pods are running:</p>
+                <pre class="wiki-code"><code>oc get pods -n swim-demo -l app.kubernetes.io/part-of=swim-ed254</code></pre>
+
+                <h4>4.8 Deploy DNOTAM Example Applications (Optional)</h4>
+                <p>
+                    Two demonstration applications complement the DNOTAM services and show how
+                    real-world clients integrate with the SWIM platform from each end of the pipeline.
+                </p>
+                <div class="wiki-requirements">
+                    <div class="wiki-req-item">
+                        <i class="fas fa-chart-line"></i>
+                        <div>
+                            <strong>DNOTAM Operations Dashboard</strong>
+                            <span>
+                                Simulates an <strong>ANSP or airport operations centre</strong>. Consumes all 6
+                                categorized Kafka topics produced by <code>swim-dnotam-consumer</code> and presents
+                                events in a real-time map view, event timeline, critical alerts panel, and a CP1
+                                compliance audit dashboard. Requires <code>swim-dnotam-consumer</code> running and
+                                publishing to Kafka.
+                            </span>
+                        </div>
+                    </div>
+                    <div class="wiki-req-item">
+                        <i class="fas fa-paper-plane"></i>
+                        <div>
+                            <strong>DNOTAM Event Publisher</strong>
+                            <span>
+                                Simulates an <strong>AISP or EAD operator workstation</strong> generating and
+                                publishing Digital NOTAM events. Browse pre-built AIXM 5.1.1 templates by scenario
+                                category (runway closures, airspace activations, obstacles, surface conditions),
+                                preview the raw XML, and inject the event into <code>swim-dnotam-provider</code>
+                                via HTTP trigger or directly to the Kafka ingress topic. Requires
+                                <code>swim-dnotam-provider</code> running. The companion injection tool for the
+                                dashboard: publish here, watch the event appear there.
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <p><strong>Build the container images</strong> (run from the workspace root, one machine needed). Source: <a href="https://github.com/swim-developer/swim-example-apps" target="_blank">github.com/swim-developer/swim-example-apps</a>.</p>
+                <pre class="wiki-code"><code>cd example-apps/dnotam-operations-dashboard
+make jvm-backend     # backend only
+make jvm-frontend    # frontend only
+# or: make jvm — builds both at once
+
+cd ../dnotam-event-publisher
+make jvm-backend
+make jvm-frontend
+
+cd ../..</code></pre>
+                <p>
+                    Each <code>make jvm</code> target builds multi-arch images for <code>linux/amd64</code>
+                    and <code>linux/arm64</code> and pushes them to <code>quay.io/masales</code>. Run
+                    <code>make help</code> inside each directory for all available options.
+                </p>
+                <p><strong>Deploy the DNOTAM applications:</strong></p>
+                <div class="wiki-code-tabs">
+                    <div class="wiki-tab-header" role="tablist">
+                        <button class="wiki-tab-btn active" data-tab="unix" role="tab" aria-selected="true">
+                            <i class="fa-brands fa-apple"></i>
+                            <i class="fa-brands fa-linux"></i>
+                            macOS / Linux
+                        </button>
+                        <button class="wiki-tab-btn" data-tab="windows" role="tab" aria-selected="false">
+                            <i class="fa-brands fa-windows"></i>
+                            Windows
+                        </button>
+                    </div>
+                    <pre class="wiki-code wiki-tab-panel active" data-tab="unix" role="tabpanel"><code>helm upgrade --install dnotam-dashboard charts/dnotam-dashboard \
+  -n swim-demo \
+  -f charts/dnotam-dashboard/values.yaml
+
+helm upgrade --install dnotam-event-publisher charts/dnotam-event-publisher \
+  -n swim-demo \
+  -f charts/dnotam-event-publisher/values.yaml</code></pre>
+                    <pre class="wiki-code wiki-tab-panel" data-tab="windows" role="tabpanel"><code>helm upgrade --install dnotam-dashboard charts/dnotam-dashboard `
+  -n swim-demo `
+  -f charts/dnotam-dashboard/values.yaml
+
+helm upgrade --install dnotam-event-publisher charts/dnotam-event-publisher `
+  -n swim-demo `
+  -f charts/dnotam-event-publisher/values.yaml</code></pre>
+                </div>
+                <p>Verify both pods are running:</p>
+                <pre class="wiki-code"><code>oc get pods -n swim-demo -l app.kubernetes.io/part-of=swim-dnotam-apps</code></pre>
+                <p>
+                    To confirm the end-to-end loop works, open the publisher at
+                    <a href="https://dnotam-event-publisher.apps-crc.testing" target="_blank"><code>https://dnotam-event-publisher.apps-crc.testing</code></a>, publish a
+                    <code>RWY.CLS</code> event using HTTP Trigger, then open the dashboard at
+                    <a href="https://dnotam-dashboard.apps-crc.testing" target="_blank"><code>https://dnotam-dashboard.apps-crc.testing</code></a> and verify the event
+                    appears in the Critical Alerts panel.
+                </p>
+                <p><strong>ED-254 example applications</strong> follow the same pattern. Deploy them after the DNOTAM apps or after switching to the ED-254 module:</p>
+                <div class="wiki-code-tabs">
+                    <div class="wiki-tab-header" role="tablist">
+                        <button class="wiki-tab-btn active" data-tab="unix" role="tab" aria-selected="true">
+                            <i class="fa-brands fa-apple"></i>
+                            <i class="fa-brands fa-linux"></i>
+                            macOS / Linux
+                        </button>
+                        <button class="wiki-tab-btn" data-tab="windows" role="tab" aria-selected="false">
+                            <i class="fa-brands fa-windows"></i>
+                            Windows
+                        </button>
+                    </div>
+                    <pre class="wiki-code wiki-tab-panel active" data-tab="unix" role="tabpanel"><code>helm upgrade --install ed254-arrival-flow-manager charts/ed254-arrival-flow-manager \
+  -n swim-demo \
+  -f charts/ed254-arrival-flow-manager/values.yaml
+
+helm upgrade --install ed254-aman-client charts/ed254-aman-client \
+  -n swim-demo \
+  -f charts/ed254-aman-client/values.yaml</code></pre>
+                    <pre class="wiki-code wiki-tab-panel" data-tab="windows" role="tabpanel"><code>helm upgrade --install ed254-arrival-flow-manager charts/ed254-arrival-flow-manager `
+  -n swim-demo `
+  -f charts/ed254-arrival-flow-manager/values.yaml
+
+helm upgrade --install ed254-aman-client charts/ed254-aman-client `
+  -n swim-demo `
+  -f charts/ed254-aman-client/values.yaml</code></pre>
+                </div>
+
+                <h3>5. Verify the Deployment</h3>
+                <pre class="wiki-code"><code>helm list -n swim-demo
+oc get pods -n swim-demo
+oc get routes -n swim-demo</code></pre>
+                <p>Key endpoints on CRC:</p>
+                <div class="wiki-requirements">
+                    <div class="wiki-req-item">
+                        <i class="fas fa-key"></i>
+                        <div>
+                            <strong>Keycloak</strong>
+                            <span><a href="https://rhbk.apps-crc.testing" target="_blank"><code>https://rhbk.apps-crc.testing</code></a> (username <code>admin</code>, password <code>password</code>)</span>
+                        </div>
+                    </div>
+                    <div class="wiki-req-item">
+                        <i class="fas fa-bell"></i>
+                        <div>
+                            <strong>DNOTAM Provider (mTLS)</strong>
+                            <span><a href="https://swim-dnotam-provider-mtls.apps-crc.testing" target="_blank"><code>https://swim-dnotam-provider-mtls.apps-crc.testing</code></a></span>
+                        </div>
+                    </div>
+                    <div class="wiki-req-item">
+                        <i class="fas fa-plane-arrival"></i>
+                        <div>
+                            <strong>ED-254 Provider (mTLS)</strong>
+                            <span><a href="https://swim-ed254-provider-mtls.apps-crc.testing" target="_blank"><code>https://swim-ed254-provider-mtls.apps-crc.testing</code></a></span>
+                        </div>
+                    </div>
+                    <div class="wiki-req-item">
+                        <i class="fas fa-vial"></i>
+                        <div>
+                            <strong>DNOTAM Provider Validator</strong>
+                            <span><a href="https://dnotam-provider-validator-swim-demo.apps-crc.testing" target="_blank"><code>https://dnotam-provider-validator-swim-demo.apps-crc.testing</code></a></span>
+                        </div>
+                    </div>
+                    <div class="wiki-req-item">
+                        <i class="fas fa-chart-line"></i>
+                        <div>
+                            <strong>DNOTAM Dashboard</strong>
+                            <span><a href="https://dnotam-dashboard.apps-crc.testing" target="_blank"><code>https://dnotam-dashboard.apps-crc.testing</code></a></span>
+                        </div>
+                    </div>
+                    <div class="wiki-req-item">
+                        <i class="fas fa-paper-plane"></i>
+                        <div>
+                            <strong>DNOTAM Event Publisher</strong>
+                            <span><a href="https://dnotam-event-publisher.apps-crc.testing" target="_blank"><code>https://dnotam-event-publisher.apps-crc.testing</code></a></span>
+                        </div>
+                    </div>
+                    <div class="wiki-req-item">
+                        <i class="fas fa-stream"></i>
+                        <div>
+                            <strong>ED-254 Arrival Flow Manager</strong>
+                            <span><a href="https://ed254-arrival-flow-manager.apps-crc.testing" target="_blank"><code>https://ed254-arrival-flow-manager.apps-crc.testing</code></a></span>
+                        </div>
+                    </div>
+                    <div class="wiki-req-item">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <div>
+                            <strong>ED-254 AMAN Client</strong>
+                            <span><a href="https://ed254-aman-client.apps-crc.testing" target="_blank"><code>https://ed254-aman-client.apps-crc.testing</code></a></span>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>6. Troubleshooting</h3>
+
+                <h4>ED-254 services fail to start after fresh infra deploy</h4>
+                <p>
+                    If you see ED-254 pods failing with database connection errors, confirm
+                    the <code>ed254</code> module is active in <code>charts/swim-infra/values.yaml</code>:
+                </p>
+                <pre class="wiki-code"><code>modules:
+  - dnotam
+  - ed254   # must be present (not commented)</code></pre>
+                <p>
+                    After enabling the module and redeploying infra, restart any
+                    ED-254 service pods that started before the databases were ready:
+                </p>
+                <pre class="wiki-code"><code>oc rollout restart deploy/swim-ed254-provider -n swim-demo
+oc rollout restart deploy/swim-ed254-consumer -n swim-demo</code></pre>
+
+                <h4>swim-ed254-provider-validator stuck in ImagePullBackOff</h4>
+                <p>
+                    The <code>swim-ed254-provider-validator</code> image may not be available on the public registry.
+                    Build it locally and push directly to the OpenShift internal registry using the
+                    <code>oc new-build --binary</code> workflow:
+                </p>
+                <div class="wiki-code-tabs">
+                    <div class="wiki-tab-header" role="tablist">
+                        <button class="wiki-tab-btn active" data-tab="unix" role="tab" aria-selected="true">
+                            <i class="fa-brands fa-apple"></i>
+                            <i class="fa-brands fa-linux"></i>
+                            macOS / Linux
+                        </button>
+                        <button class="wiki-tab-btn" data-tab="windows" role="tab" aria-selected="false">
+                            <i class="fa-brands fa-windows"></i>
+                            Windows
+                        </button>
+                    </div>
+                    <pre class="wiki-code wiki-tab-panel active" data-tab="unix" role="tabpanel"><code># 1. Install shared modules in local Maven repo (run once)
+cd applications/swim-validators
+./mvnw clean install -DskipTests
+
+# 2. Build the JAR
+cd swim-ed254-provider-validator
+./mvnw clean package -DskipTests
+
+# 3. Prepare build context
+mkdir -p /tmp/ed254-pv-build/target/quarkus-app
+cp src/main/docker/Containerfile.jvm /tmp/ed254-pv-build/Dockerfile
+cp -r target/quarkus-app/. /tmp/ed254-pv-build/target/quarkus-app/
+
+# 4. Create BuildConfig and build inside OpenShift
+oc new-build --binary --name=swim-ed254-provider-validator \
+  --strategy=docker --to=swim-demo/swim-ed254-provider-validator:latest \
+  -n swim-demo
+oc start-build swim-ed254-provider-validator \
+  --from-dir=/tmp/ed254-pv-build --follow -n swim-demo
+
+# 5. Update values.yaml to use the internal registry
+# In charts/swim-ed254-provider-validator/values.yaml, set:
+# image.repository: image-registry.openshift-image-registry.svc:5000/swim-demo/swim-ed254-provider-validator
+
+# 6. Helm upgrade
+helm upgrade swim-ed254-provider-validator charts/swim-ed254-provider-validator \
+  -f charts/swim-ed254-provider-validator/values.yaml \
+  -n swim-demo</code></pre>
+                    <pre class="wiki-code wiki-tab-panel" data-tab="windows" role="tabpanel"><code># 1. Install shared modules in local Maven repo (run once)
+cd applications\swim-validators
+.\mvnw.cmd clean install -DskipTests
+
+# 2. Build the JAR
+cd swim-ed254-provider-validator
+.\mvnw.cmd clean package -DskipTests
+
+# 3. Prepare build context
+New-Item -ItemType Directory -Force -Path "$env:TEMP\ed254-pv-build\target\quarkus-app"
+Copy-Item src\main\docker\Containerfile.jvm "$env:TEMP\ed254-pv-build\Dockerfile"
+Copy-Item -Recurse target\quarkus-app\* "$env:TEMP\ed254-pv-build\target\quarkus-app\"
+
+# 4. Create BuildConfig and build inside OpenShift
+oc new-build --binary --name=swim-ed254-provider-validator `
+  --strategy=docker --to=swim-demo/swim-ed254-provider-validator:latest `
+  -n swim-demo
+oc start-build swim-ed254-provider-validator `
+  --from-dir="$env:TEMP\ed254-pv-build" --follow -n swim-demo
+
+# 5. Update values.yaml to use the internal registry
+# In charts/swim-ed254-provider-validator/values.yaml, set:
+# image.repository: image-registry.openshift-image-registry.svc:5000/swim-demo/swim-ed254-provider-validator
+
+# 6. Helm upgrade
+helm upgrade swim-ed254-provider-validator charts/swim-ed254-provider-validator `
+  -f charts/swim-ed254-provider-validator/values.yaml `
+  -n swim-demo</code></pre>
+                </div>
+
+                <h4>swim-ed254-provider-validator crashes with UnknownHostException for MariaDB</h4>
+                <p>
+                    The <code>swim-infra</code> chart was missing the MariaDB instance for
+                    <code>swim-ed254-provider-validator</code>. Add the following entry to
+                    <code>charts/swim-infra/values.yaml</code> under <code>mariadb.instances</code>:
+                </p>
+                <pre class="wiki-code"><code>    - name: swim-ed254-provider-validator-mariadb
+      databaseName: swim_client
+      module: ed254</code></pre>
+                <p>Then redeploy infra and restart the validator:</p>
+                <div class="wiki-code-tabs">
+                    <div class="wiki-tab-header" role="tablist">
+                        <button class="wiki-tab-btn active" data-tab="unix" role="tab" aria-selected="true">
+                            <i class="fa-brands fa-apple"></i>
+                            <i class="fa-brands fa-linux"></i>
+                            macOS / Linux
+                        </button>
+                        <button class="wiki-tab-btn" data-tab="windows" role="tab" aria-selected="false">
+                            <i class="fa-brands fa-windows"></i>
+                            Windows
+                        </button>
+                    </div>
+                    <pre class="wiki-code wiki-tab-panel active" data-tab="unix" role="tabpanel"><code>helm upgrade swim-infra charts/swim-infra \
+  -f charts/swim-infra/values.yaml \
+  -n swim-demo
+oc rollout restart deployment/swim-ed254-provider-validator -n swim-demo</code></pre>
+                    <pre class="wiki-code wiki-tab-panel" data-tab="windows" role="tabpanel"><code>helm upgrade swim-infra charts/swim-infra `
+  -f charts/swim-infra/values.yaml `
+  -n swim-demo
+oc rollout restart deployment/swim-ed254-provider-validator -n swim-demo</code></pre>
+                </div>
+
+                <h4>OTEL connection refused warnings in consumer logs</h4>
+                <p>
+                    The DNOTAM and ED-254 consumers log warnings like
+                    <code>Connection refused: localhost/127.0.0.1:4317</code> because OpenTelemetry
+                    is enabled by default but no Jaeger collector is deployed in the CRC
+                    environment. These warnings are harmless — all business functionality
+                    (AMQP subscription, event processing, Kafka routing) works normally.
+                    No action required.
+                </p>
+
+                <h4>Artemis SSL secrets already exist</h4>
+                <p>
+                    If <code>make infra-artemis-ssl</code> fails with "already exists",
+                    the secrets are still valid from a previous deployment. No action required.
+                </p>
+
+                <h3>7. Teardown</h3>
+                <p>Remove components with Helm in reverse deployment order:</p>
+                <pre class="wiki-code"><code># Example applications
+helm uninstall ed254-aman-client -n swim-demo
+helm uninstall ed254-arrival-flow-manager -n swim-demo
+helm uninstall dnotam-dashboard -n swim-demo
+helm uninstall dnotam-event-publisher -n swim-demo
+
+# Validators
+helm uninstall swim-ed254-provider-validator -n swim-demo
+helm uninstall swim-ed254-consumer-validator -n swim-demo
+helm uninstall swim-dnotam-provider-validator -n swim-demo
+helm uninstall swim-dnotam-consumer-validator -n swim-demo
+
+# SWIM services
+helm uninstall swim-ed254-consumer -n swim-demo
+helm uninstall swim-ed254-provider -n swim-demo
+helm uninstall swim-dnotam-consumer -n swim-demo
+helm uninstall swim-dnotam-provider -n swim-demo
+
+# Shared infrastructure
+helm uninstall swim-infra -n swim-demo</code></pre>
+
+                <div class="wiki-note">
+                    <i class="fas fa-info-circle"></i>
+                    <p>
+                        Alternatively, <code>make destroy</code> removes all components
+                        including operator subscriptions in the correct reverse order. For
+                        the complete Makefile reference, project structure, and Artemis SSL
+                        manual commands, see the
+                        <a href="https://github.com/swim-developer/swim-deploy-openshift-local" target="_blank">deployment project README</a>.
+                    </p>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <button class="wiki-sidebar-toggle" aria-label="Toggle tutorial navigation">
+        <i class="fas fa-list"></i>
+    </button>
+
+    <footer class="footer"></footer>
+
+    <script src="../script.js"></script>
+</body>
+</html>

@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 1200 700" xmlns="http://www.w3.org/2000/svg">
+    <defs/>
+
+    <!-- Title -->
+    <text x="600" y="50" text-anchor="middle" fill="#ffffff" font-weight="700" font-size="32" font-family="Red Hat Display, Arial, sans-serif">Deploy the DNOTAM Consumer &#8212; Get These Benefits</text>
+
+    <!-- Subtitle -->
+    <text x="600" y="85" text-anchor="middle" fill="#a0a0a0" font-weight="400" font-size="16" font-family="Red Hat Text, Arial, sans-serif">What you gain immediately with a single deployment</text>
+
+    <!-- Row 1: 3 cards -->
+
+    <!-- Card 1: Observability + Audit (merged) -->
+    <g>
+        <rect x="60" y="120" width="340" height="170" rx="12" fill="#1a1a2e" stroke="#2e7d32" stroke-width="2"/>
+        <rect x="60" y="120" width="340" height="50" rx="12" fill="#2e7d32"/>
+        <rect x="60" y="158" width="340" height="12" fill="#2e7d32"/>
+        <text x="230" y="155" text-anchor="middle" fill="#ffffff" font-weight="700" font-size="17" font-family="Red Hat Display, Arial, sans-serif">&#10003; Observability + CP1 Audit</text>
+        <text x="80" y="200" fill="#e0e0e0" font-size="14" font-family="Red Hat Text, Arial, sans-serif">OpenTelemetry distributed tracing</text>
+        <text x="80" y="222" fill="#e0e0e0" font-size="14" font-family="Red Hat Text, Arial, sans-serif">Every message persisted with full trace</text>
+        <text x="80" y="244" fill="#e0e0e0" font-size="14" font-family="Red Hat Text, Arial, sans-serif">Query by airport, scenario, eventId</text>
+        <text x="80" y="266" fill="#a5d6a7" font-size="13" font-family="Red Hat Text, Arial, sans-serif">CP1 regulatory audit &#8212; ready out of the box</text>
+    </g>
+
+    <!-- Card 2: Zero Message Loss -->
+    <g>
+        <rect x="430" y="120" width="340" height="170" rx="12" fill="#1a1a2e" stroke="#1565c0" stroke-width="2"/>
+        <rect x="430" y="120" width="340" height="50" rx="12" fill="#1565c0"/>
+        <rect x="430" y="158" width="340" height="12" fill="#1565c0"/>
+        <text x="600" y="155" text-anchor="middle" fill="#ffffff" font-weight="700" font-size="18" font-family="Red Hat Display, Arial, sans-serif">&#10003; Zero Message Loss</text>
+        <text x="450" y="205" fill="#e0e0e0" font-size="14" font-family="Red Hat Text, Arial, sans-serif">Inbox/Outbox pattern</text>
+        <text x="450" y="230" fill="#e0e0e0" font-size="14" font-family="Red Hat Text, Arial, sans-serif">Exactly-once delivery guarantee</text>
+        <text x="450" y="255" fill="#e0e0e0" font-size="14" font-family="Red Hat Text, Arial, sans-serif">Survives pod crashes</text>
+    </g>
+
+    <!-- Card 3: Self-Healing -->
+    <g>
+        <rect x="800" y="120" width="340" height="170" rx="12" fill="#1a1a2e" stroke="#7b1fa2" stroke-width="2"/>
+        <rect x="800" y="120" width="340" height="50" rx="12" fill="#7b1fa2"/>
+        <rect x="800" y="158" width="340" height="12" fill="#7b1fa2"/>
+        <text x="970" y="155" text-anchor="middle" fill="#ffffff" font-weight="700" font-size="18" font-family="Red Hat Display, Arial, sans-serif">&#10003; Self-Healing</text>
+        <text x="820" y="205" fill="#e0e0e0" font-size="14" font-family="Red Hat Text, Arial, sans-serif">Automatic subscription reconciliation</text>
+        <text x="820" y="230" fill="#e0e0e0" font-size="14" font-family="Red Hat Text, Arial, sans-serif">Retry with exponential backoff</text>
+        <text x="820" y="255" fill="#e0e0e0" font-size="14" font-family="Red Hat Text, Arial, sans-serif">No manual intervention needed</text>
+    </g>
+
+    <!-- Row 2: 3 cards -->
+
+    <!-- Card 4: Heartbeat Monitoring -->
+    <g>
+        <rect x="60" y="320" width="340" height="170" rx="12" fill="#1a1a2e" stroke="#ef6c00" stroke-width="2"/>
+        <rect x="60" y="320" width="340" height="50" rx="12" fill="#ef6c00"/>
+        <rect x="60" y="358" width="340" height="12" fill="#ef6c00"/>
+        <text x="230" y="355" text-anchor="middle" fill="#ffffff" font-weight="700" font-size="18" font-family="Red Hat Display, Arial, sans-serif">&#10003; Heartbeat Monitoring</text>
+        <text x="80" y="405" fill="#e0e0e0" font-size="14" font-family="Red Hat Text, Arial, sans-serif">Detects provider health via heartbeat</text>
+        <text x="80" y="430" fill="#e0e0e0" font-size="14" font-family="Red Hat Text, Arial, sans-serif">Auto-pauses stale subscriptions</text>
+        <text x="80" y="455" fill="#e0e0e0" font-size="14" font-family="Red Hat Text, Arial, sans-serif">Resumes automatically when provider recovers</text>
+    </g>
+
+    <!-- Card 5: AIXM Validation -->
+    <g>
+        <rect x="430" y="320" width="340" height="170" rx="12" fill="#1a1a2e" stroke="#c62828" stroke-width="2"/>
+        <rect x="430" y="320" width="340" height="50" rx="12" fill="#c62828"/>
+        <rect x="430" y="358" width="340" height="12" fill="#c62828"/>
+        <text x="600" y="355" text-anchor="middle" fill="#ffffff" font-weight="700" font-size="18" font-family="Red Hat Display, Arial, sans-serif">&#10003; AIXM Validation</text>
+        <text x="450" y="405" fill="#e0e0e0" font-size="14" font-family="Red Hat Text, Arial, sans-serif">XSD + pluggable rules (Schematron/SBVR)</text>
+        <text x="450" y="430" fill="#e0e0e0" font-size="14" font-family="Red Hat Text, Arial, sans-serif">Invalid messages &#8594; Dead Letter Queue</text>
+        <text x="450" y="455" fill="#e0e0e0" font-size="14" font-family="Red Hat Text, Arial, sans-serif">No garbage in your system</text>
+    </g>
+
+    <!-- Card 6: Business Intent Routing -->
+    <g>
+        <rect x="800" y="320" width="340" height="170" rx="12" fill="#1a1a2e" stroke="#00838f" stroke-width="2"/>
+        <rect x="800" y="320" width="340" height="50" rx="12" fill="#00838f"/>
+        <rect x="800" y="358" width="340" height="12" fill="#00838f"/>
+        <text x="970" y="355" text-anchor="middle" fill="#ffffff" font-weight="700" font-size="18" font-family="Red Hat Display, Arial, sans-serif">&#10003; Business Intent Routing</text>
+        <text x="820" y="405" fill="#e0e0e0" font-size="14" font-family="Red Hat Text, Arial, sans-serif">Events routed by business meaning</text>
+        <text x="820" y="430" fill="#e0e0e0" font-size="14" font-family="Red Hat Text, Arial, sans-serif">Kafka topics: closures, restrictions...</text>
+        <text x="820" y="455" fill="#e0e0e0" font-size="14" font-family="Red Hat Text, Arial, sans-serif">Consume only what matters to you</text>
+    </g>
+
+    <!-- Bottom highlight box -->
+    <rect x="150" y="530" width="900" height="120" rx="16" fill="#0d47a1"/>
+    <text x="600" y="575" text-anchor="middle" fill="#ffffff" font-weight="700" font-size="22" font-family="Red Hat Display, Arial, sans-serif">One Deployment. Full SWIM-TI Yellow Profile Compliance.</text>
+    <text x="600" y="610" text-anchor="middle" fill="#bbdefb" font-weight="400" font-size="16" font-family="Red Hat Text, Arial, sans-serif">AMQP 1.0 over mTLS &#183; Heartbeat &#183; Self-Healing &#183; CP1 Audit &#183; Cloud-native (Quarkus) &#183; Operator-managed</text>
+
+</svg>

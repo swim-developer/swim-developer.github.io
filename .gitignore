@@ -1,0 +1,10 @@
+# AI tools
+.claude/
+.cursor/
+.copilot/
+.aider/
+.codeium/
+
+# OS
+.DS_Store
+Thumbs.db

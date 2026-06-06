@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" font-family="Red Hat Display, sans-serif">
+  <rect width="1280" height="720" fill="#0d1117"/>
+
+  <text x="640" y="50" text-anchor="middle" fill="#f0f6fc" font-size="30" font-weight="bold">Provider (AISP Role)</text>
+  <text x="640" y="78" text-anchor="middle" fill="#8b949e" font-size="16">Production-Grade Event Distribution</text>
+
+  <!-- Row 1 -->
+  <!-- Card 1: Subscription Manager -->
+  <rect x="40" y="105" width="380" height="170" rx="12" fill="#1c2333" stroke="#58a6ff" stroke-width="1.5"/>
+  <rect x="60" y="125" width="40" height="40" rx="8" fill="#0d419d"/>
+  <text x="80" y="152" text-anchor="middle" fill="#f0f6fc" font-size="20">📋</text>
+  <text x="115" y="140" fill="#f0f6fc" font-size="17" font-weight="bold">Subscription Manager API</text>
+  <text x="115" y="162" fill="#8b949e" font-size="13">Full lifecycle management</text>
+  <text x="70" y="200" fill="#484f58" font-size="13">PAUSED → ACTIVE → TERMINATED</text>
+  <text x="70" y="222" fill="#484f58" font-size="13">Idempotent creation (hash-based)</text>
+  <text x="70" y="244" fill="#484f58" font-size="13">Circuit breaker on GET operations</text>
+
+  <!-- Card 2: Queue Provisioning -->
+  <rect x="450" y="105" width="380" height="170" rx="12" fill="#1c2333" stroke="#3fb950" stroke-width="1.5"/>
+  <rect x="470" y="125" width="40" height="40" rx="8" fill="#0a2e0a"/>
+  <text x="490" y="152" text-anchor="middle" fill="#f0f6fc" font-size="20">🔐</text>
+  <text x="525" y="140" fill="#f0f6fc" font-size="17" font-weight="bold">Queue Provisioning + RBAC</text>
+  <text x="525" y="162" fill="#8b949e" font-size="13">Dev/Prod parity</text>
+  <text x="480" y="200" fill="#484f58" font-size="13">Dev: Artemis JMX (Jolokia REST)</text>
+  <text x="480" y="222" fill="#484f58" font-size="13">Prod: K8s Secret → AMQ Operator</text>
+  <text x="480" y="244" fill="#484f58" font-size="13">Same RBAC model in both envs</text>
+
+  <!-- Card 3: OGC Filter -->
+  <rect x="860" y="105" width="380" height="170" rx="12" fill="#1c2333" stroke="#d29922" stroke-width="1.5"/>
+  <rect x="880" y="125" width="40" height="40" rx="8" fill="#2a1500"/>
+  <text x="900" y="152" text-anchor="middle" fill="#f0f6fc" font-size="20">🔍</text>
+  <text x="935" y="140" fill="#f0f6fc" font-size="17" font-weight="bold">OGC Filter Parser</text>
+  <text x="935" y="162" fill="#8b949e" font-size="13">FES 2.0 · WFS GetFeature</text>
+  <text x="890" y="200" fill="#484f58" font-size="13">6 filter dimensions (scenario,</text>
+  <text x="890" y="222" fill="#484f58" font-size="13">airport, airspace, provider, time)</text>
+  <text x="890" y="244" fill="#484f58" font-size="13">XXE-safe · WFS 2.0 pagination</text>
+
+  <!-- Row 2 -->
+  <!-- Card 4: Heartbeat -->
+  <rect x="40" y="300" width="380" height="170" rx="12" fill="#1c2333" stroke="#f85149" stroke-width="1.5"/>
+  <rect x="60" y="320" width="40" height="40" rx="8" fill="#2a0000"/>
+  <text x="80" y="347" text-anchor="middle" fill="#f0f6fc" font-size="20">💓</text>
+  <text x="115" y="335" fill="#f0f6fc" font-size="17" font-weight="bold">Per-Subscription Heartbeat</text>
+  <text x="115" y="357" fill="#8b949e" font-size="13">15s interval · sequence counter</text>
+  <text x="70" y="395" fill="#484f58" font-size="13">Sent to {queue}.heartbeat</text>
+  <text x="70" y="417" fill="#484f58" font-size="13">ACTIVE and PAUSED subscriptions</text>
+  <text x="70" y="439" fill="#484f58" font-size="13">Enables consumer self-healing</text>
+
+  <!-- Card 5: Multi-Subscriber -->
+  <rect x="450" y="300" width="380" height="170" rx="12" fill="#1c2333" stroke="#a371f7" stroke-width="1.5"/>
+  <rect x="470" y="320" width="40" height="40" rx="8" fill="#1a0a2e"/>
+  <text x="490" y="347" text-anchor="middle" fill="#f0f6fc" font-size="20">📡</text>
+  <text x="525" y="335" fill="#f0f6fc" font-size="17" font-weight="bold">Multi-Subscriber Delivery</text>
+  <text x="525" y="357" fill="#8b949e" font-size="13">1 event → N AMQP queues</text>
+  <text x="480" y="395" fill="#484f58" font-size="13">6-dimension filter matching</text>
+  <text x="480" y="417" fill="#484f58" font-size="13">Delivery tracking per subscriber</text>
+  <text x="480" y="439" fill="#484f58" font-size="13">OpenTelemetry span per delivery</text>
+
+  <!-- Card 6: Outbox -->
+  <rect x="860" y="300" width="380" height="170" rx="12" fill="#1c2333" stroke="#e3b341" stroke-width="1.5"/>
+  <rect x="880" y="320" width="40" height="40" rx="8" fill="#1a1500"/>
+  <text x="900" y="347" text-anchor="middle" fill="#f0f6fc" font-size="20">📦</text>
+  <text x="935" y="335" fill="#f0f6fc" font-size="17" font-weight="bold">Outbox Pattern</text>
+  <text x="935" y="357" fill="#8b949e" font-size="13">Guaranteed delivery</text>
+  <text x="890" y="395" fill="#484f58" font-size="13">Kafka → PostgreSQL → AMQP</text>
+  <text x="890" y="417" fill="#484f58" font-size="13">Persist before delivery attempt</text>
+  <text x="890" y="439" fill="#484f58" font-size="13">Zero message loss</text>
+
+  <!-- Bottom stats -->
+  <rect x="40" y="510" width="1200" height="80" rx="10" fill="#161b22" stroke="#30363d" stroke-width="1"/>
+  <text x="220" y="545" text-anchor="middle" fill="#58a6ff" font-size="28" font-weight="900">45</text>
+  <text x="220" y="572" text-anchor="middle" fill="#8b949e" font-size="13">DNOTAM Provider classes</text>
+  <line x1="400" y1="520" x2="400" y2="580" stroke="#30363d" stroke-width="1"/>
+  <text x="540" y="545" text-anchor="middle" fill="#d29922" font-size="28" font-weight="900">38</text>
+  <text x="540" y="572" text-anchor="middle" fill="#8b949e" font-size="13">ED-254 Provider classes</text>
+  <line x1="680" y1="520" x2="680" y2="580" stroke="#30363d" stroke-width="1"/>
+  <text x="840" y="545" text-anchor="middle" fill="#3fb950" font-size="28" font-weight="900">11</text>
+  <text x="840" y="572" text-anchor="middle" fill="#8b949e" font-size="13">framework Provider classes</text>
+  <line x1="980" y1="520" x2="980" y2="580" stroke="#30363d" stroke-width="1"/>
+  <text x="1100" y="545" text-anchor="middle" fill="#f85149" font-size="28" font-weight="900">95%</text>
+  <text x="1100" y="572" text-anchor="middle" fill="#8b949e" font-size="13">code parity DNOTAM / ED-254</text>
+</svg>
+

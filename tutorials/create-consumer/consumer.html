@@ -1,0 +1,1026 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Part 3: Consumer Service | Create Consumer Tutorial | SWIM Developer</title>
+    <meta name="description" content="Generate swim-ffice-consumer from archetype, add dependencies, Kafka channels, domain classes, and verify compilation.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@400;500;600;700;900&family=Red+Hat+Text:wght@400;500;600&family=Red+Hat+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="../../styles.css">
+</head>
+<body>
+    <nav class="navbar"></nav>
+
+    <header class="page-header">
+        <div class="container">
+            <div class="page-header-content">
+                <h1><i class="fas fa-graduation-cap"></i> Tutorials</h1>
+                <p class="page-subtitle">Step-by-step guides for deploying, configuring, and validating SWIM services</p>
+            </div>
+        </div>
+    </header>
+
+    <div class="wiki-layout">
+        <aside class="wiki-sidebar">
+            <nav class="wiki-nav">
+                <div class="wiki-nav-group">
+                    <h4 class="wiki-nav-title"><i class="fas fa-rocket"></i> Getting Started</h4>
+                    <ul>
+                        <li><a href="../deploy-gitops.html">GitOps (Argo CD)</a></li>
+                        <li><a href="../deploy-openshift.html">OpenShift</a></li>
+                        <li><a href="../deploy-kubernetes.html">Kubernetes</a></li>
+                        <li><a href="../deploy-openshift-local.html">OpenShift Local</a></li>
+                        <li><a href="../deploy-minikube.html">Minikube</a></li>
+                        <li><a href="../deploy-podman.html">Container Local (Podman)</a></li>
+                        <li><a href="../deploy-java.html">Java / Binary</a></li>
+                    </ul>
+                </div>
+                <div class="wiki-nav-group">
+                    <h4 class="wiki-nav-title"><i class="fas fa-bell"></i> Digital NOTAM</h4>
+                    <ul>
+                        <li><a href="../dnotam-consumer-deploy.html">Deploy Consumer</a></li>
+                        <li><a href="../dnotam-consumer-explore.html">Explore Consumer</a></li>
+                        <li><a href="../dnotam-provider-deploy.html">Deploy Provider</a></li>
+                        <li><a href="../dnotam-provider-explore.html">Explore Provider</a></li>
+                        <li><a href="../consumer-validator-deploy.html">Deploy Consumer Validator</a></li>
+                        <li><a href="../consumer-validator-explore.html">Explore Consumer Validator</a></li>
+                        <li><a href="../provider-validator-deploy.html">Deploy Provider Validator</a></li>
+                        <li><a href="../e2e-test.html">End-to-End Test</a></li>
+                    </ul>
+                </div>
+                <div class="wiki-nav-group">
+                    <h4 class="wiki-nav-title"><i class="fas fa-plane-arrival"></i> ED-254 (AMAN)</h4>
+                    <ul>
+                        <li><a href="../ed254-consumer-deploy.html">Deploy Consumer</a></li>
+                        <li><a href="../ed254-provider-deploy.html">Deploy Provider</a></li>
+                    </ul>
+                </div>
+                <div class="wiki-nav-group">
+                    <h4 class="wiki-nav-title"><i class="fas fa-wand-magic-sparkles"></i> Build Your Own</h4>
+                    <ul>
+                        <li><a href="../create-provider.html">Create Provider</a></li>
+                    </ul>
+                    <h4 class="wiki-nav-title" style="margin-top: 8px;"><i class="fas fa-book"></i> Create Consumer</h4>
+                    <ul class="chapter-list">
+                        <li><a href="index.html">Introduction &amp; Setup</a></li>
+                        <li><a href="data-model.html">Part 1: Data Model</a></li>
+                        <li><a href="outbox-extension.html">Part 2: Outbox Extension</a></li>
+                        <li><a href="consumer.html" class="chapter-active">Part 3: Consumer Service</a></li>
+                        <li><a href="validator.html">Part 4: Consumer Validator</a></li>
+                        <li><a href="infrastructure.html">Part 5: Infrastructure</a></li>
+                        <li><a href="tests.html">Part 6: Tests</a></li>
+                        <li><a href="run.html">Part 7: Run &amp; Verify</a></li>
+                    </ul>
+                </div>
+            </nav>
+        </aside>
+
+        <main class="wiki-content">
+            <div class="tutorial-progress">
+                <span>Step 4 of 8</span>
+                <div class="progress-bar"><div class="progress-fill" style="width: 50%"></div></div>
+            </div>
+
+            <section class="wiki-section">
+                <h2>Part 3: Consumer Service (swim-ffice-consumer)</h2>
+
+                <h3>3.1 Generate the project</h3>
+                <p>Choose a working directory for your new project and run:</p>
+                <pre class="wiki-code"><code>mvn archetype:generate \
+  -DarchetypeGroupId=com.github.swim-developer \
+  -DarchetypeArtifactId=swim-consumer-archetype \
+  -DarchetypeVersion=1.0.0-SNAPSHOT \
+  -DgroupId=com.github.swim_developer \
+  -DartifactId=swim-ffice-consumer \
+  -Dversion=1.0.0-SNAPSHOT \
+  -DserviceName=ffice \
+  -DserviceDisplayName="FF-ICE" \
+  -DservicePrefix=Ffice \
+  -DdataModel=FIXM \
+  -DcollectionPrefix=ffice \
+  -DmodelArtifactId=swim-fixm-ffice-model \
+  -DinteractiveMode=false</code></pre>
+                <p>Enter the generated project:</p>
+                <pre class="wiki-code"><code>cd swim-ffice-consumer
+chmod +x mvnw                            # Linux / macOS only</code></pre>
+                <p>On Windows, use <code>mvnw.cmd</code> instead of <code>./mvnw</code> in all subsequent commands.</p>
+                <p>The archetype generates 38 Java classes. 10 require domain-specific implementation. The remaining 28 work out of the box.</p>
+
+                <h3>3.2 Add dependencies to <code>pom.xml</code></h3>
+                <p>Add these dependencies:</p>
+                <pre class="wiki-code"><code>&lt;dependency&gt;
+    &lt;groupId&gt;com.github.swim-developer&lt;/groupId&gt;
+    &lt;artifactId&gt;swim-fixm-ffice-model&lt;/artifactId&gt;
+    &lt;version&gt;${project.version}&lt;/version&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;com.github.swim-developer&lt;/groupId&gt;
+    &lt;artifactId&gt;swim-outbox-kafka-ffice&lt;/artifactId&gt;
+    &lt;version&gt;${project.version}&lt;/version&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;com.github.swim-developer&lt;/groupId&gt;
+    &lt;artifactId&gt;swim-inbox-store-kafka&lt;/artifactId&gt;
+    &lt;version&gt;${project.version}&lt;/version&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;com.github.swim-developer&lt;/groupId&gt;
+    &lt;artifactId&gt;swim-inbox-reader-kafka&lt;/artifactId&gt;
+    &lt;version&gt;${project.version}&lt;/version&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;com.github.swim-developer&lt;/groupId&gt;
+    &lt;artifactId&gt;swim-framework-persistence-mongodb&lt;/artifactId&gt;
+    &lt;version&gt;${project.version}&lt;/version&gt;
+&lt;/dependency&gt;</code></pre>
+                <p>The Jandex index entries for these modules (so Quarkus discovers their beans) are added in Step 3.3 together with the Kafka channel configuration.</p>
+
+                <h3>3.3 Configure Kafka serializers</h3>
+                <p>In <code>application.properties</code>, add the following outgoing Kafka channels (connectors, topics, serializers, compression, and acks) for default event routing and FF-ICE domain outbox routing:</p>
+                <pre class="wiki-code"><code>mp.messaging.outgoing.out-events.connector=smallrye-kafka
+mp.messaging.outgoing.out-events.topic=ffice-events-topic
+mp.messaging.outgoing.out-events.value.serializer=org.apache.kafka.common.serialization.StringSerializer
+mp.messaging.outgoing.out-events.key.serializer=org.apache.kafka.common.serialization.StringSerializer
+mp.messaging.outgoing.out-events.compression.type=lz4
+mp.messaging.outgoing.out-events.acks=1
+mp.messaging.outgoing.out-events.max-inflight-messages=${KAFKA_MAX_INFLIGHT:0}
+mp.messaging.outgoing.out-events.buffer-size=${KAFKA_BUFFER_SIZE:2048}
+mp.messaging.outgoing.out-events.waitForWriteCompletion=false
+mp.messaging.outgoing.out-events.tracing-enabled=true
+
+mp.messaging.outgoing.out-dlq.connector=smallrye-kafka
+mp.messaging.outgoing.out-dlq.topic=ffice-events-dlq-topic
+mp.messaging.outgoing.out-dlq.value.serializer=org.apache.kafka.common.serialization.StringSerializer
+mp.messaging.outgoing.out-dlq.key.serializer=org.apache.kafka.common.serialization.StringSerializer
+mp.messaging.outgoing.out-dlq.compression.type=lz4
+mp.messaging.outgoing.out-dlq.acks=1
+mp.messaging.outgoing.out-dlq.max-inflight-messages=${KAFKA_MAX_INFLIGHT:0}
+mp.messaging.outgoing.out-dlq.buffer-size=${KAFKA_BUFFER_SIZE:2048}
+mp.messaging.outgoing.out-dlq.waitForWriteCompletion=false
+mp.messaging.outgoing.out-dlq.tracing-enabled=true
+
+mp.messaging.outgoing.out-flight-plan.connector=smallrye-kafka
+mp.messaging.outgoing.out-flight-plan.topic=ffice-flight-plan-topic
+mp.messaging.outgoing.out-flight-plan.value.serializer=org.apache.kafka.common.serialization.StringSerializer
+mp.messaging.outgoing.out-flight-plan.key.serializer=org.apache.kafka.common.serialization.StringSerializer
+mp.messaging.outgoing.out-flight-plan.compression.type=lz4
+mp.messaging.outgoing.out-flight-plan.acks=1
+
+mp.messaging.outgoing.out-flight-update.connector=smallrye-kafka
+mp.messaging.outgoing.out-flight-update.topic=ffice-flight-update-topic
+mp.messaging.outgoing.out-flight-update.value.serializer=org.apache.kafka.common.serialization.StringSerializer
+mp.messaging.outgoing.out-flight-update.key.serializer=org.apache.kafka.common.serialization.StringSerializer
+mp.messaging.outgoing.out-flight-update.compression.type=lz4
+mp.messaging.outgoing.out-flight-update.acks=1
+
+mp.messaging.outgoing.out-operations.connector=smallrye-kafka
+mp.messaging.outgoing.out-operations.topic=ffice-operations-topic
+mp.messaging.outgoing.out-operations.value.serializer=org.apache.kafka.common.serialization.StringSerializer
+mp.messaging.outgoing.out-operations.key.serializer=org.apache.kafka.common.serialization.StringSerializer
+mp.messaging.outgoing.out-operations.compression.type=lz4
+mp.messaging.outgoing.out-operations.acks=1
+
+mp.messaging.outgoing.out-trial.connector=smallrye-kafka
+mp.messaging.outgoing.out-trial.topic=ffice-trial-topic
+mp.messaging.outgoing.out-trial.value.serializer=org.apache.kafka.common.serialization.StringSerializer
+mp.messaging.outgoing.out-trial.key.serializer=org.apache.kafka.common.serialization.StringSerializer
+mp.messaging.outgoing.out-trial.compression.type=lz4
+mp.messaging.outgoing.out-trial.acks=1
+
+mp.messaging.outgoing.out-submission.connector=smallrye-kafka
+mp.messaging.outgoing.out-submission.topic=ffice-submission-topic
+mp.messaging.outgoing.out-submission.value.serializer=org.apache.kafka.common.serialization.StringSerializer
+mp.messaging.outgoing.out-submission.key.serializer=org.apache.kafka.common.serialization.StringSerializer
+mp.messaging.outgoing.out-submission.compression.type=lz4
+mp.messaging.outgoing.out-submission.acks=1
+
+mp.messaging.outgoing.out-data.connector=smallrye-kafka
+mp.messaging.outgoing.out-data.topic=ffice-data-topic
+mp.messaging.outgoing.out-data.value.serializer=org.apache.kafka.common.serialization.StringSerializer
+mp.messaging.outgoing.out-data.key.serializer=org.apache.kafka.common.serialization.StringSerializer
+mp.messaging.outgoing.out-data.compression.type=lz4
+mp.messaging.outgoing.out-data.acks=1
+
+mp.messaging.outgoing.out-ffice-dlq.connector=smallrye-kafka
+mp.messaging.outgoing.out-ffice-dlq.topic=ffice-dlq-topic
+mp.messaging.outgoing.out-ffice-dlq.value.serializer=org.apache.kafka.common.serialization.StringSerializer
+mp.messaging.outgoing.out-ffice-dlq.key.serializer=org.apache.kafka.common.serialization.StringSerializer
+mp.messaging.outgoing.out-ffice-dlq.compression.type=lz4
+mp.messaging.outgoing.out-ffice-dlq.acks=1</code></pre>
+                <p>Add Jandex index entries for external modules (model, outbox extension, inbox store, inbox reader):</p>
+                <pre class="wiki-code"><code># =============================================================================
+# Jandex Index - External Modules
+# =============================================================================
+quarkus.index-dependency.swim-fixm-ffice-model.group-id=com.github.swim-developer
+quarkus.index-dependency.swim-fixm-ffice-model.artifact-id=swim-fixm-ffice-model
+quarkus.index-dependency.swim-outbox-kafka-ffice.group-id=com.github.swim-developer
+quarkus.index-dependency.swim-outbox-kafka-ffice.artifact-id=swim-outbox-kafka-ffice
+quarkus.index-dependency.swim-inbox-store-kafka.group-id=com.github.swim-developer
+quarkus.index-dependency.swim-inbox-store-kafka.artifact-id=swim-inbox-store-kafka
+quarkus.index-dependency.swim-inbox-reader-kafka.group-id=com.github.swim-developer
+quarkus.index-dependency.swim-inbox-reader-kafka.artifact-id=swim-inbox-reader-kafka</code></pre>
+
+                <h3>3.4 Register the Caffeine cache</h3>
+                <p>The framework uses Quarkus Caffeine cache for idempotency. The cache declared in <code>application.properties</code> is only initialized at build time if referenced by a <code>@CacheName</code> annotation. Create a simple registration bean:</p>
+                <pre class="wiki-code"><code>package com.github.swim_developer.infrastructure;
+
+import io.quarkus.cache.CacheName;
+import io.quarkus.cache.Cache;
+import jakarta.enterprise.context.ApplicationScoped;
+
+@ApplicationScoped
+public class CacheRegistration {
+
+    @CacheName("processed-messages")
+    Cache processedMessagesCache;
+}</code></pre>
+
+                <h3>3.5 Implement the 10 domain classes</h3>
+                <p>These are the classes that contain <code>// TODO</code> markers. Replace each one with the full implementation below.</p>
+
+                <h4>1. EventExtractor.java</h4>
+                <p><code>infrastructure/out/xml/EventExtractor.java</code> - Extracts FF-ICE domain metadata from the JAXB object graph into the <code>Event</code> entity.</p>
+                <pre class="wiki-code"><code>package com.github.swim_developer.infrastructure.out.xml;
+
+import aero.fixm.base.AerodromeReferenceType;
+import aero.fixm.base.GloballyUniqueFlightIdentifierType;
+import aero.fixm.ffice.FficeMessageType;
+import aero.fixm.ffice.MessageTypeType;
+import aero.fixm.flight.ArrivalType;
+import aero.fixm.flight.DepartureType;
+import aero.fixm.flight.FlightIdentificationType;
+import aero.fixm.flight.FlightType;
+import com.github.swim_developer.domain.model.Event;
+import com.github.swim_developer.framework.application.port.out.SwimEventExtractor;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.xml.bind.JAXBElement;
+import lombok.extern.slf4j.Slf4j;
+
+import java.util.List;
+import java.util.Optional;
+
+@Slf4j
+@ApplicationScoped
+public class EventExtractor implements SwimEventExtractor&lt;Event, FficeMessageType&gt; {
+
+    @Override
+    public String getTypeLabel(Event event) {
+        return event.getFficeMessageType() != null ? event.getFficeMessageType() : "unknown";
+    }
+
+    @Override
+    public List&lt;Optional&lt;Event&gt;&gt; extract(FficeMessageType fficeMessage) {
+        if (fficeMessage == null) {
+            return List.of(Optional.empty());
+        }
+
+        Event event = new Event();
+
+        MessageTypeType msgType = fficeMessage.getType();
+        if (msgType != null) {
+            event.setFficeMessageType(msgType.name());
+        }
+
+        if (fficeMessage.getTimestamp() != null) {
+            event.setMessageTimestamp(fficeMessage.getTimestamp().toString());
+        }
+        if (fficeMessage.getUniqueMessageIdentifier() != null) {
+            event.setUniqueMessageIdentifier(fficeMessage.getUniqueMessageIdentifier().getValue());
+        }
+
+        FlightType flight = fficeMessage.getFlight();
+        if (flight != null) {
+            extractFlightData(event, flight);
+        }
+
+        return List.of(Optional.of(event));
+    }
+
+    private void extractFlightData(Event event, FlightType flight) {
+        FlightIdentificationType flightId = unwrap(flight.getFlightIdentification());
+        if (flightId != null) {
+            GloballyUniqueFlightIdentifierType gufi = unwrap(flightId.getGufi());
+            if (gufi != null) {
+                event.setGufi(gufi.getValue());
+            }
+
+            String acId = unwrap(flightId.getAircraftIdentification());
+            if (acId != null) {
+                event.setAircraftIdentification(acId);
+            }
+        }
+
+        DepartureType departure = unwrap(flight.getDeparture());
+        if (departure != null) {
+            event.setDepartureAerodrome(extractLocationIndicator(departure.getDepartureAerodrome()));
+        }
+
+        ArrivalType arrival = unwrap(flight.getArrival());
+        if (arrival != null) {
+            String dest = extractLocationIndicator(arrival.getDestinationAerodrome());
+            if (dest == null) {
+                dest = extractLocationIndicator(arrival.getArrivalAerodrome());
+            }
+            event.setArrivalAerodrome(dest);
+        }
+    }
+
+    private String extractLocationIndicator(JAXBElement&lt;AerodromeReferenceType&gt; element) {
+        AerodromeReferenceType ref = unwrap(element);
+        if (ref == null) {
+            return null;
+        }
+        return unwrap(ref.getLocationIndicator());
+    }
+
+    private static &lt;T&gt; T unwrap(JAXBElement&lt;T&gt; element) {
+        return (element != null &amp;&amp; element.getValue() != null) ? element.getValue() : null;
+    }
+}</code></pre>
+
+                <h4>2. JaxbUnmarshallerPool.java</h4>
+                <p><code>infrastructure/out/xml/JaxbUnmarshallerPool.java</code> - Adapts the model's <code>FficeUnmarshallerPool</code> to the framework's <code>SwimXmlUnmarshallerPort</code>.</p>
+                <pre class="wiki-code"><code>package com.github.swim_developer.infrastructure.out.xml;
+
+import aero.fixm.ffice.FficeMessageType;
+import aero.fixm.ffice.validation.FficeUnmarshallerPool;
+import com.github.swim_developer.framework.application.port.out.SwimXmlUnmarshallerPort;
+import com.github.swim_developer.framework.domain.exception.XmlValidationException;
+import jakarta.annotation.PostConstruct;
+import jakarta.enterprise.context.ApplicationScoped;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@ApplicationScoped
+public class JaxbUnmarshallerPool implements SwimXmlUnmarshallerPort&lt;FficeMessageType&gt; {
+
+    private FficeUnmarshallerPool pool;
+
+    @PostConstruct
+    void init() {
+        this.pool = new FficeUnmarshallerPool();
+        log.info("FF-ICE JAXB unmarshaller pool initialized");
+    }
+
+    @Override
+    public FficeMessageType unmarshalAndValidate(String xml) throws XmlValidationException {
+        try {
+            Object result = pool.unmarshalAndValidate(xml);
+            if (result instanceof FficeMessageType fficeMessage) {
+                return fficeMessage;
+            }
+            throw new XmlValidationException("Unexpected JAXB root type: " + result.getClass().getName());
+        } catch (FficeUnmarshallerPool.FficeUnmarshalException e) {
+            throw new XmlValidationException(e.getMessage(), e);
+        }
+    }
+}</code></pre>
+                <h4>3. XmlEnvelopeParser.java</h4>
+                <p><code>infrastructure/out/xml/XmlEnvelopeParser.java</code> - Each FF-ICE AMQP message contains a single <code>FficeMessage</code>, so the implementation returns the input as-is.</p>
+                <pre class="wiki-code"><code>package com.github.swim_developer.infrastructure.out.xml;
+
+import jakarta.enterprise.context.ApplicationScoped;
+import lombok.extern.slf4j.Slf4j;
+
+import java.util.List;
+
+@Slf4j
+@ApplicationScoped
+public class XmlEnvelopeParser {
+
+    // TODO: Implement envelope splitting logic for your XML format
+    // DNOTAM uses AIXMBasicMessage which may contain multiple members
+    // ED-254 passes through single messages
+    // Your service should split according to its data model
+    public List&lt;String&gt; splitEnvelope(String rawPayload) {
+        return List.of(rawPayload);
+    }
+}</code></pre>
+
+                <h4>4. EventDataValidator.java</h4>
+                <p><code>application/service/EventDataValidator.java</code> - Validates the extracted event data. Warns if <code>fficeMessageType</code> is missing.</p>
+                <pre class="wiki-code"><code>package com.github.swim_developer.application.service;
+
+import com.github.swim_developer.domain.model.Event;
+import com.github.swim_developer.framework.application.model.ProcessingContext;
+import com.github.swim_developer.framework.consumer.application.messaging.processing.SwimEventValidator;
+import jakarta.enterprise.context.ApplicationScoped;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@ApplicationScoped
+public class EventDataValidator implements SwimEventValidator&lt;Event&gt; {
+
+    @Override
+    public void validateExtractedData(ProcessingContext ctx, Event event) {
+        if (event.getFficeMessageType() == null || event.getFficeMessageType().isBlank()) {
+            log.warn("FF-ICE message type is missing - MessageId: {}", ctx.compositeMessageId());
+        }
+    }
+}</code></pre>
+
+                <h4>5. EventFilterService.java</h4>
+                <p><code>application/service/EventFilterService.java</code> - Returns an empty list of filter rules (no domain-specific filtering initially).</p>
+                <pre class="wiki-code"><code>package com.github.swim_developer.application.service;
+
+import com.github.swim_developer.domain.model.Event;
+import com.github.swim_developer.framework.application.port.out.SwimDeadLetterPort;
+import com.github.swim_developer.framework.application.port.out.SwimSubscriptionFilterPort;
+import com.github.swim_developer.framework.consumer.application.messaging.processing.AbstractEventFilterService;
+import com.github.swim_developer.framework.consumer.application.messaging.processing.FilterRule;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+
+import java.util.List;
+
+@ApplicationScoped
+public class EventFilterService extends AbstractEventFilterService&lt;Event&gt; {
+
+    @Inject
+    public EventFilterService(SwimSubscriptionFilterPort filterCache,
+                              SwimDeadLetterPort deadLetterService) {
+        super(filterCache, deadLetterService);
+    }
+
+    @Override
+    protected List&lt;FilterRule&lt;Event&gt;&gt; buildFilterRules(Event event) {
+        return List.of();
+    }
+}</code></pre>
+
+                <h4>6. EventPersistenceService.java</h4>
+                <p><code>application/service/EventPersistenceService.java</code> - Populates the event entity with audit fields and delegates persistence.</p>
+                <pre class="wiki-code"><code>package com.github.swim_developer.application.service;
+
+import com.github.swim_developer.application.port.out.EventStore;
+import com.github.swim_developer.domain.model.Event;
+import com.github.swim_developer.framework.application.model.OutboxDeliveryStatus;
+import com.github.swim_developer.framework.application.model.ProcessingContext;
+import com.github.swim_developer.framework.application.port.out.SwimDeadLetterPort;
+import com.github.swim_developer.framework.consumer.application.messaging.outbox.OutboxRouterFanOut;
+import com.github.swim_developer.framework.consumer.application.messaging.processing.AbstractEventPersistenceService;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+
+import java.time.Instant;
+import java.util.List;
+
+@ApplicationScoped
+public class EventPersistenceService extends AbstractEventPersistenceService&lt;Event, Event&gt; {
+
+    private final EventStore repository;
+
+    @Inject
+    public EventPersistenceService(EventStore repository,
+                                   OutboxRouterFanOut outboxRouterFanOut,
+                                   SwimDeadLetterPort deadLetterService) {
+        super(outboxRouterFanOut, deadLetterService);
+        this.repository = repository;
+    }
+
+    @Override
+    protected Event assembleEntity(ProcessingContext ctx, Event event, String contentHash) {
+        event.setSubscriptionId(ctx.subscriptionId());
+        event.setMessageId(ctx.amqpMessageId());
+        event.setRawPayload(ctx.xmlPayload());
+        event.setContentHash(contentHash);
+        event.setDeliveryStatus(OutboxDeliveryStatus.SENT);
+        event.setDispatchedAt(Instant.now());
+        return event;
+    }
+
+    @Override
+    protected void persistEntity(Event entity) { repository.persist(entity); }
+
+    @Override
+    protected void persistEntities(List&lt;Event&gt; entities) { repository.persist(entities); }
+
+    @Override
+    protected void updateEntity(Event entity) { repository.update(entity); }
+
+    @Override
+    protected String getServicePrefix() { return "FF-ICE"; }
+}</code></pre>
+                <h4>7. ProcessorCallbacks.java</h4>
+                <p><code>application/service/ProcessorCallbacks.java</code> - Lifecycle hooks for event processing: paused subscription check, duplicate detection, error logging.</p>
+                <pre class="wiki-code"><code>package com.github.swim_developer.application.service;
+
+import com.github.swim_developer.application.port.out.SubscriptionStore;
+import com.github.swim_developer.domain.model.Event;
+import com.github.swim_developer.domain.model.Subscription;
+import com.github.swim_developer.framework.application.model.ProcessingContext;
+import com.github.swim_developer.framework.consumer.application.messaging.processing.SwimEventProcessorCallbacks;
+import com.github.swim_developer.framework.consumer.application.messaging.processing.SwimEventProcessorConfig;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import lombok.extern.slf4j.Slf4j;
+
+import java.util.Optional;
+
+@Slf4j
+@ApplicationScoped
+public class ProcessorCallbacks implements SwimEventProcessorCallbacks&lt;Event&gt; {
+
+    private final ProcessingMetrics metrics;
+    private final SubscriptionStore subscriptionStore;
+
+    @Inject
+    public ProcessorCallbacks(ProcessingMetrics metrics, SubscriptionStore subscriptionStore) {
+        this.metrics = metrics;
+        this.subscriptionStore = subscriptionStore;
+    }
+
+    @Override
+    public boolean preProcess(ProcessingContext ctx) {
+        Optional&lt;Subscription&gt; sub = subscriptionStore.findBySubscriptionId(ctx.subscriptionId());
+        if (sub.isPresent() &amp;&amp; "PAUSED".equals(sub.get().getSubscriptionStatus())) {
+            log.warn("PAUSED_SUBSCRIPTION_DISCARD: SubscriptionId={}, MessageId={}",
+                    ctx.subscriptionId(), ctx.amqpMessageId());
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public void onDuplicateDetected(ProcessingContext ctx, String contentHash) {
+        metrics.incrementDuplicate();
+    }
+
+    @Override
+    public void onExtractionFailure(ProcessingContext ctx, SwimEventProcessorConfig config) {
+        metrics.incrementInvalid("INVALID");
+        log.error("Invalid FF-ICE message - MessageId: {}", ctx.compositeMessageId());
+    }
+
+    @Override
+    public void onValidationFailure(ProcessingContext ctx, Exception e) {
+        log.error("Problematic XML (first 500 chars): {}",
+                ctx.xmlPayload().length() &gt; 500 ? ctx.xmlPayload().substring(0, 500) : ctx.xmlPayload());
+    }
+}</code></pre>
+
+                <h4>8. FficeSubscriptionRenewalStrategy.java</h4>
+                <p><code>infrastructure/out/subscription/FficeSubscriptionRenewalStrategy.java</code> - Finds subscriptions near expiry and renews them via the Subscription Manager REST API. The archetype generates this file with the correct <code>Ffice</code> prefix.</p>
+                <pre class="wiki-code"><code>package com.github.swim_developer.infrastructure.out.subscription;
+
+import com.github.swim_developer.domain.model.Subscription;
+import com.github.swim_developer.application.port.out.SubscriptionStore;
+import com.github.swim_developer.infrastructure.out.client.SubscriptionManagerAdapter;
+import com.github.swim_developer.infrastructure.out.client.SubscriptionManagerRestClient;
+import com.github.swim_developer.infrastructure.in.rest.dto.SubscriptionResponse;
+import com.github.swim_developer.framework.consumer.infrastructure.out.config.provider.ProviderConfigParser;
+import com.github.swim_developer.framework.application.model.ProviderConfiguration;
+import com.github.swim_developer.framework.domain.model.SubscriptionRenewalInfo;
+import com.github.swim_developer.framework.domain.exception.SubscriptionRenewalException;
+import com.github.swim_developer.framework.domain.model.SubscriptionStatus;
+import com.github.swim_developer.framework.application.port.out.SubscriptionRenewalStrategy;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import lombok.extern.slf4j.Slf4j;
+
+import java.time.Instant;
+import java.util.List;
+
+@Slf4j
+@ApplicationScoped
+public class FficeSubscriptionRenewalStrategy implements SubscriptionRenewalStrategy {
+
+    private final SubscriptionStore subscriptionStore;
+    private final SubscriptionManagerAdapter smClientRegistry;
+    private final ProviderConfigParser providerConfigParser;
+
+    @Inject
+    public FficeSubscriptionRenewalStrategy(SubscriptionStore subscriptionStore,
+                                            SubscriptionManagerAdapter smClientRegistry,
+                                            ProviderConfigParser providerConfigParser) {
+        this.subscriptionStore = subscriptionStore;
+        this.smClientRegistry = smClientRegistry;
+        this.providerConfigParser = providerConfigParser;
+    }
+
+    @Override
+    public List&lt;SubscriptionRenewalInfo&gt; findSubscriptionsNearExpiry(Instant threshold) {
+        return subscriptionStore.findBySubscriptionEndBefore(threshold)
+                .stream()
+                .filter(sub -&gt; SubscriptionStatus.ACTIVE.name().equals(sub.getSubscriptionStatus()))
+                .map(sub -&gt; new SubscriptionRenewalInfo(sub.getSubscriptionId(), sub.getSubscriptionEnd()))
+                .toList();
+    }
+
+    @Override
+    public void renewSubscription(String subscriptionId) throws SubscriptionRenewalException {
+        log.info("Renewing subscription: {}", subscriptionId);
+
+        Subscription subscription = subscriptionStore.findBySubscriptionId(subscriptionId)
+                .orElseThrow(() -&gt; new IllegalStateException("Subscription not found: " + subscriptionId));
+
+        SubscriptionManagerRestClient client = resolveSmClient(subscription.getProviderId());
+        SubscriptionResponse response = client.renewSubscription(subscriptionId);
+
+        subscription.setSubscriptionEnd(response.subscriptionEnd());
+        subscriptionStore.updateSubscription(subscription);
+
+        log.info("Subscription renewed - ID: {}, New end: {}", subscriptionId, response.subscriptionEnd());
+    }
+
+    private SubscriptionManagerRestClient resolveSmClient(String providerId) {
+        ProviderConfiguration provider = providerConfigParser.findByProviderId(providerId)
+                .orElseThrow(() -&gt; new IllegalStateException("Provider not configured: " + providerId));
+        return smClientRegistry.getOrCreate(provider);
+    }
+}</code></pre>
+
+                <h4>9. InboxMessageHandler.java</h4>
+                <p><code>infrastructure/in/amqp/InboxMessageHandler.java</code> - Reads from the Kafka inbox topic, processes batches of FF-ICE events.</p>
+                <pre class="wiki-code"><code>package com.github.swim_developer.infrastructure.in.amqp;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.swim_developer.application.usecase.EventProcessingUseCase;
+import com.github.swim_developer.domain.model.Event;
+import com.github.swim_developer.infrastructure.out.xml.XmlEnvelopeParser;
+import com.github.swim_developer.extension.inbox.reader.kafka.AbstractKafkaInboxReader;
+import com.github.swim_developer.framework.application.model.PreparedEvent;
+import com.github.swim_developer.framework.application.model.ProcessingOutcome;
+import com.github.swim_developer.framework.infrastructure.out.messaging.InboxEnvelope;
+import io.micrometer.core.instrument.MeterRegistry;
+import io.opentelemetry.api.trace.Span;
+import io.opentelemetry.instrumentation.annotations.WithSpan;
+import io.smallrye.common.annotation.Blocking;
+import io.smallrye.reactive.messaging.kafka.KafkaRecordBatch;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import lombok.extern.slf4j.Slf4j;
+import org.eclipse.microprofile.reactive.messaging.Incoming;
+
+import java.util.List;
+import java.util.concurrent.CompletionStage;
+
+@Slf4j
+@ApplicationScoped
+public class InboxMessageHandler extends AbstractKafkaInboxReader {
+
+    private final EventProcessingUseCase eventProcessor;
+    private final XmlEnvelopeParser envelopeParser;
+
+    protected InboxMessageHandler() {
+        this(null, null, null, null);
+    }
+
+    @Inject
+    public InboxMessageHandler(ObjectMapper objectMapper,
+                               MeterRegistry meterRegistry,
+                               EventProcessingUseCase eventProcessor,
+                               XmlEnvelopeParser envelopeParser) {
+        super(objectMapper, meterRegistry);
+        this.eventProcessor = eventProcessor;
+        this.envelopeParser = envelopeParser;
+    }
+
+    // TODO: Update channel name to match your Kafka inbox topic config
+    @Incoming("in-ffice-inbox")
+    @Blocking
+    public CompletionStage&lt;Void&gt; onInboxBatch(KafkaRecordBatch&lt;String, String&gt; batch) {
+        List&lt;PreparedEvent&lt;Event&gt;&gt; prepared = prepareBatch(batch, eventProcessor.eventProcessingOrchestrator());
+
+        if (!prepared.isEmpty()) {
+            eventProcessor.batchPersistAndDispatch(prepared);
+            eventProcessor.markBatchAsProcessed(prepared);
+        }
+
+        processedCounter.increment(prepared.size());
+        return batch.ack();
+    }
+
+    @Override
+    public List&lt;String&gt; extractMessages(String rawPayload) {
+        return envelopeParser.splitEnvelope(rawPayload);
+    }
+
+    @WithSpan("ffice.consumer.event.process")
+    @Override
+    public void processSingleMessage(InboxEnvelope envelope, String xmlPayload, int index) {
+        Span.current().setAttribute("ffice.subscription", envelope.subscriptionId());
+        Span.current().setAttribute("ffice.queue", envelope.queueName());
+
+        ProcessingOutcome outcome = eventProcessor.processAndPersistSingleMessage(
+                envelope.subscriptionId(),
+                envelope.queueName(),
+                envelope.amqpMessageId(),
+                xmlPayload,
+                index);
+        Span.current().setAttribute("ffice.outcome", outcome.name());
+    }
+
+    @Override
+    public String getMetricPrefix() {
+        return "ffice";
+    }
+}</code></pre>
+
+                <h4>10. OutboxMessageHandler.java</h4>
+                <p><code>infrastructure/out/messaging/OutboxMessageHandler.java</code> - Processes outbox events with fault tolerance annotations.</p>
+                <pre class="wiki-code"><code>package com.github.swim_developer.infrastructure.out.messaging;
+
+import com.github.swim_developer.framework.consumer.application.messaging.outbox.AbstractOutboxEventConsumer;
+import com.github.swim_developer.framework.consumer.application.messaging.outbox.OutboxRouterFanOut;
+import com.github.swim_developer.framework.consumer.application.port.out.SwimOutboxRetryPort;
+import com.github.swim_developer.framework.domain.model.SwimOutboxEvent;
+import com.github.swim_developer.framework.infrastructure.out.cache.HandoffCache;
+import com.github.swim_developer.domain.model.Event;
+import com.github.swim_developer.infrastructure.out.persistence.MongoEventStore;
+import io.opentelemetry.instrumentation.annotations.WithSpan;
+import io.quarkus.vertx.ConsumeEvent;
+import io.smallrye.common.annotation.Blocking;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import lombok.extern.slf4j.Slf4j;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
+import org.eclipse.microprofile.faulttolerance.Bulkhead;
+import org.eclipse.microprofile.faulttolerance.Retry;
+import org.eclipse.microprofile.faulttolerance.Timeout;
+
+import java.util.Optional;
+
+@Slf4j
+@ApplicationScoped
+public class OutboxMessageHandler extends AbstractOutboxEventConsumer&lt;Event&gt; implements SwimOutboxRetryPort {
+
+    public static final String OUTBOX_EVENT_ADDRESS = "outbox.pending";
+
+    private final MongoEventStore eventRepository;
+    private final OutboxRouterFanOut outboxRouterFanOut;
+    private final HandoffCache handoffCache;
+
+    @Inject
+    public OutboxMessageHandler(MongoEventStore eventRepository,
+                                OutboxRouterFanOut outboxRouterFanOut,
+                                HandoffCache handoffCache,
+                                @ConfigProperty(name = "swim.outbox.kafka.max-retries", defaultValue = "3") int maxKafkaRetries) {
+        super(maxKafkaRetries);
+        this.eventRepository = eventRepository;
+        this.outboxRouterFanOut = outboxRouterFanOut;
+        this.handoffCache = handoffCache;
+    }
+
+    @Override
+    @ConsumeEvent(OUTBOX_EVENT_ADDRESS)
+    @Blocking
+    @Timeout(10000)
+    @Retry(maxRetries = 3, delay = 1000)
+    @Bulkhead(250)
+    @WithSpan("ffice.consumer.outbox.kafka")
+    public void processOutboxEvent(String eventId) {
+        super.processOutboxEvent(eventId);
+    }
+
+    @Override
+    public void retryOutboxEvent(SwimOutboxEvent event) {
+        sendAndUpdateStatus((Event) event);
+    }
+
+    @Override
+    protected Event resolveEvent(String eventIdStr) {
+        Optional&lt;Event&gt; cached = handoffCache.getAndRemove(eventIdStr, Event.class);
+        if (cached.isPresent()) {
+            return cached.get();
+        }
+        return eventRepository.findEventById(eventIdStr);
+    }
+
+    @Override
+    protected OutboxRouterFanOut getRouterFanOut() { return outboxRouterFanOut; }
+
+    @Override
+    protected String getEventId(Event event) {
+        return event.getId() != null ? event.getId().toHexString() : null;
+    }
+
+    @Override
+    protected void updateEvent(Event event) { eventRepository.persistOrUpdate(event); }
+
+    public static String getEventAddress() { return OUTBOX_EVENT_ADDRESS; }
+}</code></pre>
+
+                <p>Create <code>src/main/java/com/github/swim_developer/infrastructure/CacheRegistration.java</code>:</p>
+                <pre class="wiki-code"><code>package com.github.swim_developer.infrastructure;
+
+import io.quarkus.cache.CacheName;
+import io.quarkus.cache.Cache;
+import jakarta.enterprise.context.ApplicationScoped;
+
+@ApplicationScoped
+public class CacheRegistration {
+
+    @CacheName("processed-messages")
+    Cache processedMessagesCache;
+}</code></pre>
+                <h3>3.6 Replace <code>Object</code> with <code>FficeMessageType</code> in EventProcessingUseCase</h3>
+                <p>The archetype generates <code>EventProcessingUseCase.java</code> with <code>Object</code> as a generic placeholder for the JAXB root type. You must replace it with the actual FF-ICE root type.</p>
+                <p>Open <code>src/main/java/com/github/swim_developer/application/usecase/EventProcessingUseCase.java</code> and make 4 replacements:</p>
+                <ol>
+                    <li>Add the import at the top of the file (after the other imports):<br><code>import aero.fixm.ffice.FficeMessageType;</code></li>
+                    <li>Replace <strong>all 4 occurrences</strong> of <code>Object</code> with <code>FficeMessageType</code>:</li>
+                </ol>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Line (approx.)</th>
+                            <th>Before</th>
+                            <th>After</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Field declaration</td>
+                            <td><code>EventProcessingOrchestrator&lt;Event, Object&gt;</code></td>
+                            <td><code>EventProcessingOrchestrator&lt;Event, FficeMessageType&gt;</code></td>
+                        </tr>
+                        <tr>
+                            <td>Constructor parameter</td>
+                            <td><code>SwimXmlUnmarshallerPort&lt;Object&gt; jaxbPool</code></td>
+                            <td><code>SwimXmlUnmarshallerPort&lt;FficeMessageType&gt; jaxbPool</code></td>
+                        </tr>
+                        <tr>
+                            <td>Parser reference</td>
+                            <td><code>SwimEventParser&lt;Object&gt; parser</code></td>
+                            <td><code>SwimEventParser&lt;FficeMessageType&gt; parser</code></td>
+                        </tr>
+                        <tr>
+                            <td>Getter return type</td>
+                            <td><code>EventProcessingOrchestrator&lt;Event, Object&gt;</code></td>
+                            <td><code>EventProcessingOrchestrator&lt;Event, FficeMessageType&gt;</code></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <ol start="3">
+                    <li>Delete the <code>// TODO</code> comment on the line above the field declaration.</li>
+                </ol>
+                <p>After the edits, the file should look like this:</p>
+                <pre class="wiki-code"><code>package com.github.swim_developer.application.usecase;
+
+import com.github.swim_developer.application.service.ProcessingMetrics;
+import com.github.swim_developer.application.port.out.SubscriptionStore;
+import com.github.swim_developer.application.service.EventDataValidator;
+import com.github.swim_developer.application.service.EventFilterService;
+import com.github.swim_developer.application.service.EventPersistenceService;
+import com.github.swim_developer.application.service.ProcessorCallbacks;
+import com.github.swim_developer.domain.model.Event;
+import aero.fixm.ffice.FficeMessageType;
+import com.github.swim_developer.infrastructure.out.xml.EventExtractor;
+import com.github.swim_developer.framework.consumer.application.messaging.processing.DefaultEventProcessorConfig;
+import com.github.swim_developer.framework.application.model.PreparedEvent;
+import com.github.swim_developer.framework.application.model.ProcessingContext;
+import com.github.swim_developer.framework.application.model.ProcessingOutcome;
+import com.github.swim_developer.framework.consumer.application.messaging.processing.EventProcessingOrchestrator;
+import com.github.swim_developer.framework.consumer.application.messaging.processing.EventProcessingOrchestratorDependencies;
+import com.github.swim_developer.framework.consumer.application.messaging.processing.SwimEventParser;
+import com.github.swim_developer.framework.consumer.application.messaging.processing.SwimEventProcessorCallbacks;
+import com.github.swim_developer.framework.application.port.in.SwimMessageInterceptor;
+import com.github.swim_developer.framework.application.port.out.SwimXmlUnmarshallerPort;
+import io.micrometer.core.instrument.MeterRegistry;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.inject.Any;
+import jakarta.enterprise.inject.Instance;
+import jakarta.inject.Inject;
+
+import java.util.List;
+
+@ApplicationScoped
+public class EventProcessingUseCase {
+
+    private final EventProcessingOrchestrator&lt;Event, FficeMessageType&gt; orchestrator;
+    private final EventPersistenceService persistenceService;
+
+    @Inject
+    public EventProcessingUseCase(
+            DefaultEventProcessorConfig processorConfig,
+            SwimXmlUnmarshallerPort&lt;FficeMessageType&gt; jaxbPool,
+            EventExtractor eventExtractor,
+            EventDataValidator validator,
+            EventFilterService filterService,
+            EventPersistenceService persistenceService,
+            ProcessingMetrics metrics,
+            MeterRegistry meterRegistry,
+            SubscriptionStore subscriptionStore,
+            @Any Instance&lt;SwimMessageInterceptor&gt; interceptorInstances) {
+        this.persistenceService = persistenceService;
+        SwimEventParser&lt;FficeMessageType&gt; parser = jaxbPool::unmarshalAndValidate;
+        SwimEventProcessorCallbacks&lt;Event&gt; callbacks = new ProcessorCallbacks(metrics, subscriptionStore);
+        this.orchestrator = new EventProcessingOrchestrator&lt;&gt;(new EventProcessingOrchestratorDependencies&lt;&gt;(
+                processorConfig, parser, eventExtractor, validator, filterService,
+                persistenceService, callbacks, meterRegistry, interceptorInstances));
+    }
+
+    public ProcessingOutcome processAndPersistSingleMessage(String subscriptionId, String queueName,
+                                                            String amqpMessageId, String xml, int index) {
+        return orchestrator.processMessage(new ProcessingContext(subscriptionId, queueName, amqpMessageId, xml, index, null));
+    }
+
+    public EventProcessingOrchestrator&lt;Event, FficeMessageType&gt; eventProcessingOrchestrator() {
+        return orchestrator;
+    }
+
+    public void batchPersistAndDispatch(List&lt;PreparedEvent&lt;Event&gt;&gt; batch) {
+        persistenceService.batchPersistAndDispatch(batch);
+    }
+
+    public void markBatchAsProcessed(List&lt;PreparedEvent&lt;Event&gt;&gt; batch) {
+        orchestrator.markBatchAsProcessed(batch);
+    }
+}</code></pre>
+
+                <h3>3.7 Add domain fields to Event</h3>
+                <p>Add FF-ICE-specific fields to the <code>Event</code> entity class:</p>
+                <pre class="wiki-code"><code>private String fficeMessageType;
+private String gufi;
+private String aircraftIdentification;
+private String departureAerodrome;
+private String arrivalAerodrome;
+private String messageTimestamp;
+private String uniqueMessageIdentifier;</code></pre>
+
+                <h3>3.8 Update EventDTO and SubscriptionMapper</h3>
+                <p>The archetype generates a generic <code>EventDTO</code> with a <code>deliveryStatus</code> field. Replace it with the FF-ICE-specific fields that match the domain model.</p>
+                <p>Replace <code>src/main/java/com/github/swim_developer/infrastructure/in/rest/dto/EventDTO.java</code> with:</p>
+                <pre class="wiki-code"><code>package com.github.swim_developer.infrastructure.in.rest.dto;
+
+import java.time.Instant;
+
+public record EventDTO(
+        String id,
+        String messageId,
+        String subscriptionId,
+        Instant receivedAt,
+        String fficeMessageType,
+        String gufi,
+        String aircraftIdentification,
+        String departureAerodrome,
+        String arrivalAerodrome
+) {}</code></pre>
+                <p>Update <code>src/main/java/com/github/swim_developer/infrastructure/out/mapper/SubscriptionMapper.java</code> to map the FF-ICE fields instead of <code>deliveryStatus</code>:</p>
+                <pre class="wiki-code"><code>package com.github.swim_developer.infrastructure.out.mapper;
+
+import com.github.swim_developer.framework.consumer.infrastructure.out.dlq.DeadLetterMessage;
+import com.github.swim_developer.domain.model.Event;
+import com.github.swim_developer.infrastructure.in.rest.dto.EventDTO;
+import com.github.swim_developer.framework.infrastructure.out.messaging.DlqMessageDTO;
+import jakarta.enterprise.context.ApplicationScoped;
+
+@ApplicationScoped
+public class SubscriptionMapper {
+
+    public EventDTO toDTO(Event event) {
+        return new EventDTO(
+                event.getId() != null ? event.getId().toHexString() : null,
+                event.getMessageId(),
+                event.getSubscriptionId(),
+                event.getReceivedAt(),
+                event.getFficeMessageType(),
+                event.getGufi(),
+                event.getAircraftIdentification(),
+                event.getDepartureAerodrome(),
+                event.getArrivalAerodrome()
+        );
+    }
+
+    public DlqMessageDTO toDTO(DeadLetterMessage dlq) {
+        return new DlqMessageDTO(
+                dlq.getId(),
+                dlq.getAmqpMessageId(),
+                dlq.getMessageIndex(),
+                dlq.getSubscriptionId(),
+                dlq.getQueueName(),
+                dlq.getErrorType(),
+                dlq.getErrorMessage(),
+                dlq.getRawPayload(),
+                dlq.getReceivedAt(),
+                dlq.getFailedAt()
+        );
+    }
+}</code></pre>
+
+                <h3>3.9 Verify compilation</h3>
+                <pre class="wiki-code"><code>./mvnw clean package -DskipTests        # Linux / macOS
+mvnw.cmd clean package -DskipTests      # Windows</code></pre>
+            </section>
+
+            <div class="tutorial-nav-footer">
+                <a href="outbox-extension.html" class="nav-prev">
+                    <span class="nav-label"><i class="fas fa-arrow-left"></i> Previous</span>
+                    <span class="nav-title">Part 2: Outbox Extension</span>
+                </a>
+                <a href="validator.html" class="nav-next">
+                    <span class="nav-label">Next <i class="fas fa-arrow-right"></i></span>
+                    <span class="nav-title">Part 4: Consumer Validator</span>
+                </a>
+            </div>
+        </main>
+    </div>
+
+    <footer class="footer"></footer>
+    <script src="../../script.js"></script>
+</body>
+</html>

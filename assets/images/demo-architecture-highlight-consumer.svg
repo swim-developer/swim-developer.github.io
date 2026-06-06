@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 1200 580" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+        <style type="text/css">
+            @import url('https://fonts.googleapis.com/css2?family=Red+Hat+Text:wght@400;500;600;700&amp;family=Red+Hat+Display:wght@400;700&amp;display=swap');
+        </style>
+        <marker id="arrowhead" markerWidth="6" markerHeight="5" refX="5" refY="2.5" orient="auto">
+            <polygon points="0 0, 6 2.5, 0 5" fill="#90a4ae"/>
+        </marker>
+        <marker id="arrowhead-purple" markerWidth="6" markerHeight="5" refX="5" refY="2.5" orient="auto">
+            <polygon points="0 0, 6 2.5, 0 5" fill="#7986cb"/>
+        </marker>
+        <marker id="arrowhead-red" markerWidth="10" markerHeight="8" refX="5" refY="4" orient="auto">
+            <polygon points="0 0, 10 4, 0 8" fill="#e53935"/>
+        </marker>
+        <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+            <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.3"/>
+        </filter>
+        <filter id="glow-red" x="-20%" y="-20%" width="140%" height="140%">
+            <feDropShadow dx="0" dy="0" stdDeviation="8" flood-color="#ff5722" flood-opacity="0.6"/>
+        </filter>
+    </defs>
+
+    <!-- Title -->
+    <text x="600" y="35" text-anchor="middle" fill="#ffffff" font-weight="700" font-size="24" font-family="'Red Hat Display', sans-serif">Demo Architecture — Three Namespaces</text>
+
+    <!-- ==================== KEYCLOAK (Top Left - Corporate Auth) - DIMMED ==================== -->
+    <g class="keycloak-group" opacity="0.35">
+        <rect x="270" y="55" width="200" height="65" rx="8" fill="#5c6bc0" stroke="#3949ab" stroke-width="2" filter="url(#shadow)"/>
+        <rect x="270" y="55" width="200" height="28" rx="8" fill="#3949ab"/>
+        <rect x="270" y="75" width="200" height="8" fill="#3949ab"/>
+        <text x="370" y="75" text-anchor="middle" fill="#fff" font-weight="700" font-size="14" font-family="'Red Hat Display', sans-serif">Keycloak</text>
+        <text x="370" y="100" text-anchor="middle" fill="#c5cae9" font-size="10" font-family="'Red Hat Text', sans-serif">Corporate Auth/Authz</text>
+    </g>
+
+    <!-- ==================== NAMESPACE 1: External Consumer (MockClient) - LEFT - DIMMED ==================== -->
+    <g class="namespace-external-consumer" opacity="0.35">
+        <rect x="20" y="140" width="200" height="420" rx="12" fill="none" stroke="#e91e63" stroke-width="2" stroke-dasharray="8,4"/>
+        <rect x="20" y="140" width="200" height="40" rx="12" fill="#c2185b"/>
+        <rect x="20" y="170" width="200" height="10" fill="#c2185b"/>
+        <text x="120" y="168" text-anchor="middle" fill="#ffffff" font-weight="700" font-size="12" font-family="'Red Hat Display', sans-serif">External Consumer</text>
+        <text x="120" y="198" text-anchor="middle" fill="#f8bbd0" font-size="10" font-family="'Red Hat Text', sans-serif">namespace: swim-mockclient</text>
+        <text x="120" y="215" text-anchor="middle" fill="#f48fb1" font-style="italic" font-size="9" font-family="'Red Hat Text', sans-serif">Simulates External Consumer</text>
+
+        <!-- MockClient -->
+        <rect x="35" y="235" width="170" height="140" rx="8" fill="#fce4ec" stroke="#c2185b" stroke-width="2" filter="url(#shadow)"/>
+        <rect x="35" y="235" width="170" height="32" rx="8" fill="#c2185b"/>
+        <rect x="35" y="259" width="170" height="8" fill="#c2185b"/>
+        <text x="120" y="258" text-anchor="middle" fill="#fff" font-weight="600" font-size="13" font-family="'Red Hat Text', sans-serif">MockClient</text>
+        <text x="120" y="290" text-anchor="middle" fill="#880e4f" font-size="11" font-family="'Red Hat Text', sans-serif">Test Client UI</text>
+        <text x="120" y="310" text-anchor="middle" fill="#ad1457" font-size="11" font-family="'Red Hat Text', sans-serif">Manage Subscriptions</text>
+        <text x="120" y="330" text-anchor="middle" fill="#ad1457" font-size="11" font-family="'Red Hat Text', sans-serif">Event Streaming</text>
+        <text x="120" y="350" text-anchor="middle" fill="#ad1457" font-size="11" font-family="'Red Hat Text', sans-serif">Map Visualization</text>
+
+        <!-- MockClient Infrastructure -->
+        <rect x="35" y="405" width="170" height="70" rx="8" fill="#424242" stroke="#757575" stroke-width="2" filter="url(#shadow)"/>
+        <rect x="35" y="405" width="170" height="28" rx="8" fill="#757575"/>
+        <rect x="35" y="425" width="170" height="8" fill="#757575"/>
+        <text x="120" y="423" text-anchor="middle" fill="#fff" font-weight="600" font-size="10" font-family="'Red Hat Text', sans-serif">Infrastructure</text>
+        <text x="120" y="455" text-anchor="middle" fill="#e0e0e0" font-size="11" font-family="'Red Hat Text', sans-serif">MariaDB</text>
+
+        <!-- Arrow MockClient to Infrastructure -->
+        <line x1="120" y1="380" x2="120" y2="400" stroke="#90a4ae" stroke-width="2" marker-end="url(#arrowhead)"/>
+    </g>
+
+    <!-- ==================== NAMESPACE 2: Corporate (Provider + Consumer + Kafka) - CENTER - HIGHLIGHTED CONTAINER ==================== -->
+    <g class="namespace-corporate">
+        <!-- Corporate Environment border - HIGHLIGHTED -->
+        <rect x="250" y="140" width="700" height="420" rx="12" fill="none" stroke="#2196f3" stroke-width="3"/>
+        <rect x="250" y="140" width="700" height="40" rx="12" fill="#1565c0"/>
+        <rect x="250" y="170" width="700" height="10" fill="#1565c0"/>
+        <text x="600" y="168" text-anchor="middle" fill="#ffffff" font-weight="700" font-size="14" font-family="'Red Hat Display', sans-serif">Corporate Environment — ANSP Internal</text>
+        <text x="600" y="198" text-anchor="middle" fill="#90caf9" font-size="11" font-family="'Red Hat Text', sans-serif">namespace: swim-dnotam</text>
+
+        <!-- Provider Infrastructure - DIMMED -->
+        <g opacity="0.35">
+            <rect x="270" y="230" width="130" height="130" rx="8" fill="#424242" stroke="#757575" stroke-width="2" filter="url(#shadow)"/>
+            <rect x="270" y="230" width="130" height="30" rx="8" fill="#757575"/>
+            <rect x="270" y="252" width="130" height="8" fill="#757575"/>
+            <text x="335" y="250" text-anchor="middle" fill="#fff" font-weight="600" font-size="10" font-family="'Red Hat Text', sans-serif">Provider Infra</text>
+            <text x="335" y="280" text-anchor="middle" fill="#e0e0e0" font-size="11" font-family="'Red Hat Text', sans-serif">AMQP Broker</text>
+            <text x="335" y="297" text-anchor="middle" fill="#bdbdbd" font-size="9" font-family="'Red Hat Text', sans-serif">(ActiveMQ Artemis)</text>
+            <text x="335" y="330" text-anchor="middle" fill="#e0e0e0" font-size="11" font-family="'Red Hat Text', sans-serif">PostgreSQL</text>
+        </g>
+
+        <!-- DNOTAM Provider - DIMMED -->
+        <g opacity="0.35">
+            <rect x="440" y="230" width="160" height="160" rx="8" fill="#e8f5e9" stroke="#2e7d32" stroke-width="2" filter="url(#shadow)"/>
+            <rect x="440" y="230" width="160" height="32" rx="8" fill="#2e7d32"/>
+            <rect x="440" y="254" width="160" height="8" fill="#2e7d32"/>
+            <text x="520" y="253" text-anchor="middle" fill="#fff" font-weight="600" font-size="13" font-family="'Red Hat Text', sans-serif">DNOTAM Provider</text>
+            <text x="520" y="283" text-anchor="middle" fill="#1b5e20" font-weight="600" font-size="11" font-family="'Red Hat Text', sans-serif">SWIM API</text>
+            <text x="520" y="303" text-anchor="middle" fill="#2e7d32" font-size="11" font-family="'Red Hat Text', sans-serif">Subscription Manager</text>
+            <text x="520" y="323" text-anchor="middle" fill="#2e7d32" font-size="11" font-family="'Red Hat Text', sans-serif">WFS GetFeature</text>
+            <text x="520" y="343" text-anchor="middle" fill="#2e7d32" font-size="11" font-family="'Red Hat Text', sans-serif">Event Publisher</text>
+            <text x="520" y="363" text-anchor="middle" fill="#2e7d32" font-size="11" font-family="'Red Hat Text', sans-serif">Outbox Pattern</text>
+        </g>
+
+        <!-- DNOTAM Consumer - HIGHLIGHTED -->
+        <g>
+            <!-- Highlight glow background -->
+            <rect x="630" y="220" width="180" height="180" rx="12" fill="none" stroke="#ff5722" stroke-width="4" filter="url(#glow-red)" opacity="0.8"/>
+            
+            <rect x="640" y="230" width="160" height="160" rx="8" fill="#e3f2fd" stroke="#1565c0" stroke-width="2" filter="url(#shadow)"/>
+            <rect x="640" y="230" width="160" height="32" rx="8" fill="#1565c0"/>
+            <rect x="640" y="254" width="160" height="8" fill="#1565c0"/>
+            <text x="720" y="253" text-anchor="middle" fill="#fff" font-weight="600" font-size="13" font-family="'Red Hat Text', sans-serif">DNOTAM Consumer</text>
+            <text x="720" y="283" text-anchor="middle" fill="#0d47a1" font-size="11" font-family="'Red Hat Text', sans-serif">Manage Subscriptions</text>
+            <text x="720" y="303" text-anchor="middle" fill="#1565c0" font-size="11" font-family="'Red Hat Text', sans-serif">Event Processor</text>
+            <text x="720" y="323" text-anchor="middle" fill="#1565c0" font-size="11" font-family="'Red Hat Text', sans-serif">XSD + Pluggable Rules</text>
+            <text x="720" y="343" text-anchor="middle" fill="#1565c0" font-size="11" font-family="'Red Hat Text', sans-serif">Inbox Pattern</text>
+            <text x="720" y="363" text-anchor="middle" fill="#1565c0" font-size="11" font-family="'Red Hat Text', sans-serif">Outbox Pattern</text>
+        </g>
+
+        <!-- Consumer Infrastructure - HIGHLIGHTED -->
+        <g>
+            <!-- Highlight border -->
+            <rect x="830" y="220" width="120" height="100" rx="12" fill="none" stroke="#ff5722" stroke-width="4" filter="url(#glow-red)" opacity="0.8"/>
+            
+            <rect x="840" y="230" width="100" height="80" rx="8" fill="#424242" stroke="#757575" stroke-width="2" filter="url(#shadow)"/>
+            <rect x="840" y="230" width="100" height="30" rx="8" fill="#757575"/>
+            <rect x="840" y="252" width="100" height="8" fill="#757575"/>
+            <text x="890" y="250" text-anchor="middle" fill="#fff" font-weight="600" font-size="9" font-family="'Red Hat Text', sans-serif">Consumer Infra</text>
+            <text x="890" y="285" text-anchor="middle" fill="#e0e0e0" font-size="11" font-family="'Red Hat Text', sans-serif">MongoDB</text>
+        </g>
+
+        <!-- Event Bus (Kafka) - HIGHLIGHTED -->
+        <g>
+            <!-- Highlight border -->
+            <rect x="340" y="410" width="510" height="90" rx="12" fill="none" stroke="#ff5722" stroke-width="4" filter="url(#glow-red)" opacity="0.8"/>
+            
+            <rect x="350" y="420" width="490" height="70" rx="8" fill="#424242" stroke="#757575" stroke-width="2" filter="url(#shadow)"/>
+            <rect x="350" y="420" width="490" height="30" rx="8" fill="#757575"/>
+            <rect x="350" y="442" width="490" height="8" fill="#757575"/>
+            <text x="595" y="440" text-anchor="middle" fill="#fff" font-weight="700" font-size="14" font-family="'Red Hat Display', sans-serif">Event Bus</text>
+            <text x="595" y="470" text-anchor="middle" fill="#e0e0e0" font-size="12" font-family="'Red Hat Text', sans-serif">Apache Kafka (AMQ Streams)</text>
+        </g>
+
+        <!-- Internal Arrows - DIMMED -->
+        <g opacity="0.35">
+            <line x1="435" y1="300" x2="405" y2="300" stroke="#90a4ae" stroke-width="2" marker-end="url(#arrowhead)"/>
+            <line x1="520" y1="395" x2="520" y2="415" stroke="#90a4ae" stroke-width="2" marker-end="url(#arrowhead)"/>
+        </g>
+        
+        <!-- Consumer arrows -->
+        <line x1="805" y1="280" x2="835" y2="280" stroke="#90a4ae" stroke-width="2" marker-end="url(#arrowhead)"/>
+        <line x1="720" y1="395" x2="720" y2="415" stroke="#90a4ae" stroke-width="2" marker-end="url(#arrowhead)"/>
+    </g>
+
+    <!-- ==================== RED ARROW POINTING DOWN TO CONSUMER ==================== -->
+    <g class="highlight-arrow">
+        <polygon points="720,135 705,105 715,105 715,50 725,50 725,105 735,105" fill="#e53935"/>
+    </g>
+
+    <!-- ==================== NAMESPACE 3: External AISP (MockServer) - RIGHT - DIMMED ==================== -->
+    <g class="namespace-external-aisp" opacity="0.35">
+        <rect x="980" y="140" width="200" height="420" rx="12" fill="none" stroke="#ff9800" stroke-width="2" stroke-dasharray="8,4"/>
+        <rect x="980" y="140" width="200" height="40" rx="12" fill="#ff9800"/>
+        <rect x="980" y="170" width="200" height="10" fill="#ff9800"/>
+        <text x="1080" y="168" text-anchor="middle" fill="#ffffff" font-weight="700" font-size="12" font-family="'Red Hat Display', sans-serif">External AISP Simulation</text>
+        <text x="1080" y="198" text-anchor="middle" fill="#ffcc80" font-size="10" font-family="'Red Hat Text', sans-serif">namespace: swim-mockserver</text>
+        <text x="1080" y="215" text-anchor="middle" fill="#ffe0b2" font-style="italic" font-size="9" font-family="'Red Hat Text', sans-serif">Simulates AISP Provider</text>
+
+        <!-- MockServer -->
+        <rect x="995" y="235" width="170" height="140" rx="8" fill="#fff3e0" stroke="#f57c00" stroke-width="2" filter="url(#shadow)"/>
+        <rect x="995" y="235" width="170" height="32" rx="8" fill="#f57c00"/>
+        <rect x="995" y="259" width="170" height="8" fill="#f57c00"/>
+        <text x="1080" y="258" text-anchor="middle" fill="#fff" font-weight="600" font-size="13" font-family="'Red Hat Text', sans-serif">MockServer</text>
+        <text x="1080" y="290" text-anchor="middle" fill="#e65100" font-size="11" font-family="'Red Hat Text', sans-serif">Subscription API</text>
+        <text x="1080" y="310" text-anchor="middle" fill="#e65100" font-size="11" font-family="'Red Hat Text', sans-serif">WFS GetFeature</text>
+        <text x="1080" y="330" text-anchor="middle" fill="#e65100" font-size="11" font-family="'Red Hat Text', sans-serif">Event Generator</text>
+        <text x="1080" y="350" text-anchor="middle" fill="#e65100" font-size="11" font-family="'Red Hat Text', sans-serif">DNOTAM Samples</text>
+
+        <!-- MockServer Infrastructure -->
+        <rect x="995" y="405" width="170" height="110" rx="8" fill="#424242" stroke="#757575" stroke-width="2" filter="url(#shadow)"/>
+        <rect x="995" y="405" width="170" height="30" rx="8" fill="#757575"/>
+        <rect x="995" y="427" width="170" height="8" fill="#757575"/>
+        <text x="1080" y="425" text-anchor="middle" fill="#fff" font-weight="600" font-size="10" font-family="'Red Hat Text', sans-serif">Infrastructure</text>
+        <text x="1080" y="455" text-anchor="middle" fill="#e0e0e0" font-size="11" font-family="'Red Hat Text', sans-serif">AMQP Broker</text>
+        <text x="1080" y="472" text-anchor="middle" fill="#bdbdbd" font-size="9" font-family="'Red Hat Text', sans-serif">(ActiveMQ Artemis)</text>
+        <text x="1080" y="500" text-anchor="middle" fill="#e0e0e0" font-size="11" font-family="'Red Hat Text', sans-serif">MariaDB</text>
+
+        <!-- Arrow MockServer to Infrastructure -->
+        <line x1="1080" y1="380" x2="1080" y2="400" stroke="#90a4ae" stroke-width="2" marker-end="url(#arrowhead)"/>
+    </g>
+
+    <!-- ==================== CROSS-NAMESPACE ARROWS - DIMMED ==================== -->
+    <g opacity="0.35">
+        <!-- MockClient to Provider Infra AMQP -->
+        <line x1="210" y1="300" x2="265" y2="300" stroke="#90a4ae" stroke-width="2" marker-end="url(#arrowhead)"/>
+        <text x="237" y="290" text-anchor="middle" fill="#e0e0e0" font-size="9" font-family="'Red Hat Text', sans-serif">AMQP</text>
+        <text x="237" y="320" text-anchor="middle" fill="#e0e0e0" font-size="9" font-family="'Red Hat Text', sans-serif">(mTLS)</text>
+
+        <!-- MockClient to DNOTAM Provider -->
+        <line x1="210" y1="370" x2="435" y2="370" stroke="#90a4ae" stroke-width="2" marker-end="url(#arrowhead)"/>
+        <text x="320" y="383" text-anchor="middle" fill="#e0e0e0" font-size="9" font-family="'Red Hat Text', sans-serif">HTTP (mTLS)</text>
+
+        <!-- Consumer to MockServer -->
+        <line x1="805" y1="320" x2="990" y2="320" stroke="#90a4ae" stroke-width="2" marker-end="url(#arrowhead)"/>
+        <text x="900" y="335" text-anchor="middle" fill="#e0e0e0" font-size="9" font-family="'Red Hat Text', sans-serif">HTTP (mTLS)</text>
+
+        <!-- Consumer to MockServer Infra AMQP -->
+        <line x1="805" y1="360" x2="990" y2="450" stroke="#90a4ae" stroke-width="2" marker-end="url(#arrowhead)"/>
+        <text x="920" y="395" text-anchor="middle" fill="#e0e0e0" font-size="9" font-family="'Red Hat Text', sans-serif">AMQP (mTLS)</text>
+    </g>
+
+    <!-- ==================== KEYCLOAK ARROWS - DIMMED ==================== -->
+    <g opacity="0.35">
+        <path d="M 200 230 L 200 87 L 265 87" fill="none" stroke="#7986cb" stroke-width="2" marker-end="url(#arrowhead-purple)"/>
+        <text x="230" y="80" text-anchor="middle" fill="#b39ddb" font-size="9" font-family="'Red Hat Text', sans-serif">OIDC/OAuth</text>
+
+        <line x1="445" y1="225" x2="445" y2="125" stroke="#7986cb" stroke-width="2" marker-end="url(#arrowhead-purple)"/>
+        <text x="455" y="195" text-anchor="start" fill="#b39ddb" font-size="9" font-family="'Red Hat Text', sans-serif">OIDC/OAuth</text>
+
+        <line x1="335" y1="225" x2="335" y2="125" stroke="#7986cb" stroke-width="2" marker-end="url(#arrowhead-purple)"/>
+        <text x="355" y="195" text-anchor="start" fill="#b39ddb" font-size="9" font-family="'Red Hat Text', sans-serif">OIDC/OAuth</text>
+    </g>
+</svg>
+

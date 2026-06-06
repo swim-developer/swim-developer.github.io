@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Explore DNOTAM Provider | Tutorials | SWIM Developer</title>
+    <meta name="description" content="Internals of the DNOTAM Provider: outbox pattern, subscriptions, and AMQP publishing.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@400;500;600;700;900&family=Red+Hat+Text:wght@400;500;600&family=Red+Hat+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+    <nav class="navbar"></nav>
+
+    <header class="page-header">
+        <div class="container">
+            <div class="page-header-content">
+                <h1><i class="fas fa-graduation-cap"></i> Tutorials</h1>
+                <p class="page-subtitle">Step-by-step guides for deploying, configuring, and validating SWIM services</p>
+            </div>
+        </div>
+    </header>
+
+    <div class="wiki-layout">
+        <aside class="wiki-sidebar">
+            <nav class="wiki-nav">
+                <div class="wiki-nav-group">
+                    <h4 class="wiki-nav-title"><i class="fas fa-rocket"></i> Getting Started</h4>
+                    <ul>
+                        <li><a href="deploy-gitops.html">GitOps (Argo CD)</a></li>
+                        <li><a href="deploy-openshift.html">OpenShift</a></li>
+                        <li><a href="deploy-kubernetes.html">Kubernetes</a></li>
+                        <li><a href="deploy-openshift-local.html">OpenShift Local</a></li>
+                        <li><a href="deploy-minikube.html">Minikube</a></li>
+                        <li><a href="deploy-podman.html">Container Local (Podman)</a></li>
+                        <li><a href="deploy-java.html">Java / Binary</a></li>
+                    </ul>
+                </div>
+                <div class="wiki-nav-group">
+                    <h4 class="wiki-nav-title"><i class="fas fa-bell"></i> Digital NOTAM</h4>
+                    <ul>
+                        <li><a href="dnotam-consumer-deploy.html">Deploy Consumer</a></li>
+                        <li><a href="dnotam-consumer-explore.html">Explore Consumer</a></li>
+                        <li><a href="dnotam-provider-deploy.html">Deploy Provider</a></li>
+                        <li><a href="dnotam-provider-explore.html" class="active">Explore Provider</a></li>
+                        <li><a href="consumer-validator-deploy.html">Deploy Consumer Validator</a></li>
+                        <li><a href="consumer-validator-explore.html">Explore Consumer Validator</a></li>
+                        <li><a href="provider-validator-deploy.html">Deploy Provider Validator</a></li>
+                        <li><a href="e2e-test.html">End-to-End Test</a></li>
+                    </ul>
+                </div>
+                <div class="wiki-nav-group">
+                    <h4 class="wiki-nav-title"><i class="fas fa-plane-arrival"></i> ED-254 (AMAN)</h4>
+                    <ul>
+                        <li><a href="ed254-consumer-deploy.html">Deploy Consumer</a></li>
+                        <li><a href="ed254-provider-deploy.html">Deploy Provider</a></li>
+                    </ul>
+                </div>
+                <div class="wiki-nav-group">
+                    <h4 class="wiki-nav-title"><i class="fas fa-wand-magic-sparkles"></i> Build Your Own</h4>
+                    <ul>
+                        <li><a href="create-consumer.html">Create Consumer</a></li>
+                        <li><a href="create-provider.html">Create Provider</a></li>
+                    </ul>
+                </div>
+            </nav>
+        </aside>
+
+        <main class="wiki-content">
+            <section class="wiki-section">
+                <h2>Explore the DNOTAM Provider</h2>
+                <p>A walkthrough of the DNOTAM Provider internals: how it receives events from internal systems, applies the outbox pattern for reliable delivery, manages consumer subscriptions, and publishes AIXM messages over AMQP. The companion video demonstrates this on an OpenShift environment.</p>
+
+                <div class="wiki-video-inline" data-video-id="d-qA90W3jiY">
+                    <div class="wiki-video-thumb">
+                        <img src="https://img.youtube.com/vi/d-qA90W3jiY/maxresdefault.jpg" alt="Explore DNOTAM Provider" loading="lazy">
+                        <div class="wiki-video-play"><i class="fas fa-play-circle"></i></div>
+                    </div>
+                    <div class="wiki-video-label">
+                        <i class="fab fa-youtube"></i> Video walkthrough: Explore DNOTAM Provider
+                    </div>
+                </div>
+
+                <h3>Key Concepts</h3>
+                <ul class="wiki-list">
+                    <li>Outbox pattern for zero message loss</li>
+                    <li>Consumer subscription lifecycle management</li>
+                    <li>AMQP 1.0 topic-based message distribution</li>
+                    <li>Heartbeat generation for active subscriptions</li>
+                    <li>REST API for DNOTAM event ingestion</li>
+                </ul>
+            </section>
+        </main>
+    </div>
+
+    <button class="wiki-sidebar-toggle" aria-label="Toggle tutorial navigation">
+        <i class="fas fa-list"></i>
+    </button>
+
+    <div id="video-modal" class="video-modal">
+        <div class="video-modal-content">
+            <button class="video-modal-close" aria-label="Close video">
+                <i class="fas fa-times"></i>
+            </button>
+            <div class="video-modal-player">
+                <iframe id="video-iframe" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
+            <a id="video-youtube-link" href="" target="_blank" class="video-youtube-btn">
+                <i class="fab fa-youtube"></i> Watch on YouTube
+            </a>
+        </div>
+    </div>
+
+    <footer class="footer"></footer>
+
+    <script src="../script.js"></script>
+</body>
+</html>

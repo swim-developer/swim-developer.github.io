@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Part 2: Provider Service | Create Provider Tutorial | SWIM Developer</title>
+    <meta name="description" content="Generate and customise the swim-ffice-provider Quarkus service using the swim-provider-archetype.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@400;500;600;700;900&family=Red+Hat+Text:wght@400;500;600&family=Red+Hat+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="../../styles.css">
+</head>
+<body>
+    <nav class="navbar"></nav>
+
+    <header class="page-header">
+        <div class="container">
+            <div class="page-header-content">
+                <h1><i class="fas fa-graduation-cap"></i> Tutorials</h1>
+                <p class="page-subtitle">Step-by-step guides for deploying, configuring, and validating SWIM services</p>
+            </div>
+        </div>
+    </header>
+
+    <div class="wiki-layout">
+        <aside class="wiki-sidebar">
+            <nav class="wiki-nav">
+                <div class="wiki-nav-group">
+                    <h4 class="wiki-nav-title"><i class="fas fa-rocket"></i> Getting Started</h4>
+                    <ul>
+                        <li><a href="../deploy-gitops.html">GitOps (Argo CD)</a></li>
+                        <li><a href="../deploy-openshift.html">OpenShift</a></li>
+                        <li><a href="../deploy-kubernetes.html">Kubernetes</a></li>
+                        <li><a href="../deploy-openshift-local.html">OpenShift Local</a></li>
+                        <li><a href="../deploy-minikube.html">Minikube</a></li>
+                        <li><a href="../deploy-podman.html">Container Local (Podman)</a></li>
+                        <li><a href="../deploy-java.html">Java / Binary</a></li>
+                    </ul>
+                </div>
+                <div class="wiki-nav-group">
+                    <h4 class="wiki-nav-title"><i class="fas fa-bell"></i> Digital NOTAM</h4>
+                    <ul>
+                        <li><a href="../dnotam-consumer-deploy.html">Deploy Consumer</a></li>
+                        <li><a href="../dnotam-consumer-explore.html">Explore Consumer</a></li>
+                        <li><a href="../dnotam-provider-deploy.html">Deploy Provider</a></li>
+                        <li><a href="../dnotam-provider-explore.html">Explore Provider</a></li>
+                        <li><a href="../consumer-validator-deploy.html">Deploy Consumer Validator</a></li>
+                        <li><a href="../consumer-validator-explore.html">Explore Consumer Validator</a></li>
+                        <li><a href="../provider-validator-deploy.html">Deploy Provider Validator</a></li>
+                        <li><a href="../e2e-test.html">End-to-End Test</a></li>
+                    </ul>
+                </div>
+                <div class="wiki-nav-group">
+                    <h4 class="wiki-nav-title"><i class="fas fa-plane-arrival"></i> ED-254 (AMAN)</h4>
+                    <ul>
+                        <li><a href="../ed254-consumer-deploy.html">Deploy Consumer</a></li>
+                        <li><a href="../ed254-provider-deploy.html">Deploy Provider</a></li>
+                    </ul>
+                </div>
+                <div class="wiki-nav-group">
+                    <h4 class="wiki-nav-title"><i class="fas fa-wand-magic-sparkles"></i> Build Your Own</h4>
+                    <h4 class="wiki-nav-title" style="margin-top: 8px;"><i class="fas fa-upload"></i> Create Provider</h4>
+                    <ul class="chapter-list">
+                        <li><a href="index.html">Introduction &amp; Setup</a></li>
+                        <li><a href="data-model.html">Part 1: Data Model</a></li>
+                        <li><a href="provider.html" class="chapter-active">Part 2: Provider Service</a></li>
+                        <li><a href="validator.html">Part 3: Provider Validator</a></li>
+                        <li><a href="infrastructure.html">Part 4: Infrastructure</a></li>
+                        <li><a href="run.html">Part 5: Run &amp; Verify</a></li>
+                        <li><a href="tests.html">Part 6: Tests</a></li>
+                    </ul>
+                    <h4 class="wiki-nav-title" style="margin-top: 16px;"><i class="fas fa-book"></i> Create Consumer</h4>
+                    <ul>
+                        <li><a href="../create-consumer/index.html">Introduction &amp; Setup</a></li>
+                    </ul>
+                </div>
+            </nav>
+        </aside>
+
+        <main class="wiki-content">
+            <div class="tutorial-progress">
+                <span>Step 3 of 7</span>
+                <div class="progress-bar"><div class="progress-fill" style="width: 42.9%"></div></div>
+            </div>
+
+            <section class="wiki-section">
+                <h2>Part 2: Provider Service (swim-ffice-provider)</h2>
+
+                <p>The provider is a Quarkus service that:</p>
+                <ul>
+                    <li><strong>Ingests</strong> FF-ICE messages from a Kafka topic (<code>ffice-events-all-topic</code>)</li>
+                    <li><strong>Validates</strong> each message against the FIXM/FF-ICE XSD schemas via JAXB</li>
+                    <li><strong>Persists</strong> valid events in PostgreSQL with <code>RECEIVED</code> status</li>
+                    <li><strong>Delivers</strong> events asynchronously to subscribed consumers via AMQP (ActiveMQ Artemis)</li>
+                    <li><strong>Exposes</strong> the SWIM Subscription Manager REST API (<code>/swim/v1/subscriptions</code>, <code>/swim/v1/topics</code>)</li>
+                </ul>
+
+                <h3>2.1 Generate the provider project</h3>
+                <p>Run the archetype from your working directory:</p>
+                <pre class="wiki-code"><code>mvn archetype:generate \
+  -DarchetypeGroupId=com.github.swim-developer \
+  -DarchetypeArtifactId=swim-provider-archetype \
+  -DarchetypeVersion=1.0.0-SNAPSHOT \
+  -DgroupId=com.github.swim-developer \
+  -DartifactId=swim-ffice-provider \
+  -Dversion=1.0.0-SNAPSHOT \
+  -Dpackage=com.github.swim_developer.ffice.provider \
+  -DserviceName=ffice \
+  -DserviceDisplayName="FF-ICE" \
+  -DservicePrefix=Ffice \
+  -DdataModel=FIXM \
+  -DtablePrefix=ffice \
+  -DqueuePrefix=FFICE \
+  -DtopicName=FficeService \
+  -DmodelArtifactId=swim-fixm-ffice-model \
+  -DinteractiveMode=false</code></pre>
+                <pre class="wiki-code"><code>cd swim-ffice-provider
+chmod +x mvnw                            # Linux / macOS only</code></pre>
+
+                <h3>2.2 Add the data model dependency</h3>
+                <p>In <code>pom.xml</code>, add the <code>swim-fixm-ffice-model</code> dependency after the <code>swim-framework-provider</code> dependency:</p>
+                <pre class="wiki-code"><code>&lt;dependency&gt;
+    &lt;groupId&gt;com.github.swim-developer&lt;/groupId&gt;
+    &lt;artifactId&gt;swim-fixm-ffice-model&lt;/artifactId&gt;
+    &lt;version&gt;1.0.0-SNAPSHOT&lt;/version&gt;
+&lt;/dependency&gt;</code></pre>
+
+                <h3>2.3 Define the filterable event model</h3>
+                <p>The <code>FilterableEvent</code> record carries the metadata used by the delivery engine to match events against subscription filters. Replace the generated placeholder in <code>src/main/java/.../domain/model/FilterableEvent.java</code>:</p>
+                <pre class="wiki-code"><code>@RegisterForReflection
+public record FilterableEvent(
+        String messageId,
+        String gufi,
+        String messageType,
+        String payload
+) {
+}</code></pre>
+
+                <h3>2.3.1 Customize the stored event domain model</h3>
+                <p>The archetype generates <code>StoredEvent.java</code> and <code>EventJpaEntity.java</code> without FF-ICE-specific fields. You must add <code>gufi</code> and <code>messageType</code> to both before proceeding — these fields are required by <code>IngressMessageHandler</code> and <code>EventDeliveryUseCase</code>.</p>
+
+                <p>In <code>domain/model/StoredEvent.java</code>, add two fields to the existing class:</p>
+                <pre class="wiki-code"><code>@Data @Builder @NoArgsConstructor @AllArgsConstructor
+public class StoredEvent implements SwimProviderEvent {
+
+    private String eventId;
+    private String gufi;           // &lt;-- add
+    private String messageType;    // &lt;-- add
+
+    @Builder.Default
+    private EventStatus status = EventStatus.RECEIVED;
+
+    // ... remaining fields unchanged ...
+}</code></pre>
+
+                <p>In <code>infrastructure/out/persistence/entity/EventJpaEntity.java</code>, add the matching columns:</p>
+                <pre class="wiki-code"><code>@Entity
+@Table(name = "ffice_events", indexes = {
+        @Index(name = "idx_received_at", columnList = "receivedAt"),
+        @Index(name = "idx_status", columnList = "status")
+})
+@Data @Builder @NoArgsConstructor @AllArgsConstructor
+public class EventJpaEntity {
+
+    @Id @Column(length = 100)
+    private String eventId;
+
+    @Column(length = 255)
+    private String gufi;           // &lt;-- add
+
+    @Column(length = 50)
+    private String messageType;    // &lt;-- add
+
+    // ... remaining fields unchanged ...
+}</code></pre>
+
+                <div class="wiki-note">
+                    <p>The persistence mapper (generated by the archetype) must also copy these fields. Verify that <code>ProviderPersistenceMapper</code> maps <code>gufi</code> and <code>messageType</code> in both <code>toJpa()</code> and <code>toDomain()</code>.</p>
+                </div>
+
+                <h3>2.4 Implement the JAXB unmarshaller pool</h3>
+                <p>Create <code>src/main/java/.../infrastructure/out/xml/JaxbUnmarshallerPool.java</code> as a thin adapter that delegates to the model's <code>FficeUnmarshallerPool</code>:</p>
+                <pre class="wiki-code"><code>@Slf4j
+@ApplicationScoped
+public class JaxbUnmarshallerPool implements SwimXmlUnmarshallerPort&lt;FficeMessageType&gt; {
+
+    private FficeUnmarshallerPool pool;
+
+    @PostConstruct
+    void initialize() {
+        this.pool = new FficeUnmarshallerPool();
+        log.info("FF-ICE JAXB unmarshaller pool initialized from swim-fixm-ffice-model");
+    }
+
+    @Override
+    public FficeMessageType unmarshalAndValidate(String xml) throws XmlValidationException {
+        try {
+            Object result = pool.unmarshalAndValidate(xml);
+            if (result instanceof FficeMessageType message) {
+                return message;
+            }
+            throw new XmlValidationException("Unexpected root type: "
+                    + (result != null ? result.getClass().getName() : "null"));
+        } catch (FficeUnmarshallerPool.FficeUnmarshalException e) {
+            throw new XmlValidationException(e.getMessage(), e);
+        }
+    }
+}</code></pre>
+
+                <h3>2.5 Implement the event extractor</h3>
+                <p>Create <code>src/main/java/.../infrastructure/out/xml/EventExtractor.java</code>. This class reads a fully-parsed <code>FficeMessageType</code> and returns a <code>FilterableEvent</code> with the identifiers needed for routing and deduplication:</p>
+                <pre class="wiki-code"><code>@Slf4j
+@ApplicationScoped
+public class EventExtractor implements SwimEventExtractor&lt;FilterableEvent, FficeMessageType&gt; {
+
+    private static final String UNKNOWN = "unknown";
+
+    @Override
+    public List&lt;Optional&lt;FilterableEvent&gt;&gt; extract(FficeMessageType message) {
+        if (message == null) {
+            return List.of(Optional.empty());
+        }
+        try {
+            String messageId = extractMessageId(message);
+            String gufi = extractGufi(message);
+            String messageType = extractMessageType(message);
+            return List.of(Optional.of(new FilterableEvent(messageId, gufi, messageType, null)));
+        } catch (RuntimeException e) {
+            log.error("Failed to extract FF-ICE event metadata", e);
+            return List.of(Optional.empty());
+        }
+    }
+
+    private String extractMessageId(FficeMessageType message) {
+        UniversallyUniqueIdentifierType uid = message.getUniqueMessageIdentifier();
+        return (uid != null &amp;&amp; uid.getValue() != null) ? uid.getValue() : UNKNOWN;
+    }
+
+    private String extractGufi(FficeMessageType message) {
+        FlightType flight = message.getFlight();
+        if (flight == null) return UNKNOWN;
+        var flightIdElement = flight.getFlightIdentification();
+        if (flightIdElement == null || flightIdElement.getValue() == null) return UNKNOWN;
+        var gufiElement = flightIdElement.getValue().getGufi();
+        if (gufiElement == null || gufiElement.getValue() == null) return UNKNOWN;
+        String v = gufiElement.getValue().getValue();
+        return (v != null &amp;&amp; !v.isBlank()) ? v : UNKNOWN;
+    }
+
+    private String extractMessageType(FficeMessageType message) {
+        MessageTypeType type = message.getType();
+        return (type != null) ? type.value() : UNKNOWN;
+    }
+}</code></pre>
+
+                <h3>2.6 Implement the ingress message handler</h3>
+                <p>The ingress handler is called by the Kafka consumer for each incoming message. It orchestrates validation, extraction, persistence, and async delivery dispatch. Replace the generated placeholder in <code>src/main/java/.../infrastructure/in/amqp/IngressMessageHandler.java</code>.</p>
+                <p>The handler must implement the <code>SwimIngressHandler</code> interface and its <code>processEvent(String xmlMessage)</code> method. The full implementation follows this sequence:</p>
+                <ol>
+                    <li>Call <code>jaxbPool.unmarshalAndValidate(xmlMessage)</code> — rejects invalid XML</li>
+                    <li>Call <code>eventExtractor.extract(parsed)</code> — extracts <code>messageId</code>, <code>gufi</code>, <code>messageType</code></li>
+                    <li>Persist the event with <code>EventStatus.RECEIVED</code> via <code>ProviderEventStore</code></li>
+                    <li>Register an <code>AfterCommitEventDispatcher</code> to dispatch the event to the outbox after the transaction commits</li>
+                </ol>
+                <p>Apply the following Fault Tolerance annotations to <code>processEvent</code>:</p>
+                <pre class="wiki-code"><code>@Transactional
+@Retry(maxRetries = 2, delay = 500)
+@Timeout(value = 10, unit = ChronoUnit.SECONDS)
+@CircuitBreaker(requestVolumeThreshold = 10, failureRatio = 0.5, delay = 30000)
+@Bulkhead(value = 100)
+@WithSpan("ffice.provider.process")</code></pre>
+
+                <h3>2.7 Implement the subscription store query methods</h3>
+                <p>Open <code>src/main/java/.../infrastructure/out/persistence/JpaSubscriptionStore.java</code> and implement the three abstract methods inherited from <code>SwimSubscriptionRepository</code>:</p>
+                <pre class="wiki-code"><code>@Override
+public List&lt;Subscription&gt; findByUserId(String userId) {
+    return list("userId", userId).stream().map(mapper::toDomain).toList();
+}
+
+@Override
+public boolean existsActiveOrPausedByQueue(String queue) {
+    return count("queue = ?1 and (status = ?2 or status = ?3)", queue,
+            SubscriptionStatus.ACTIVE, SubscriptionStatus.PAUSED) &gt; 0;
+}
+
+@Override
+public Optional&lt;Subscription&gt; findActiveOrPausedByQueueAndUser(String queue, String userId) {
+    return find("queue = ?1 and userId = ?2 and (status = ?3 or status = ?4)",
+            queue, userId, SubscriptionStatus.ACTIVE, SubscriptionStatus.PAUSED)
+            .firstResultOptional().map(mapper::toDomain);
+}</code></pre>
+
+                <p>Also implement the <code>toFilterableModel</code> method in <code>EventDeliveryUseCase.java</code>:</p>
+                <pre class="wiki-code"><code>@Override
+protected FilterableEvent toFilterableModel(StoredEvent entity) {
+    return new FilterableEvent(entity.getEventId(), entity.getGufi(),
+            entity.getMessageType(), entity.getXmlMessage());
+}</code></pre>
+
+                <h3>2.7.1 Customize the subscription domain model</h3>
+                <p>The generated <code>Subscription.java</code> has a placeholder <code>toFilter()</code> that accepts every event. Replace it with a real filter on <code>messageType</code>:</p>
+                <pre class="wiki-code"><code>public class Subscription implements SwimSubscription&lt;FilterableEvent&gt; {
+
+    // ... existing fields ...
+
+    private List&lt;String&gt; messageType = new ArrayList&lt;&gt;();   // &lt;-- add
+
+    @Override
+    public Predicate&lt;FilterableEvent&gt; toFilter() {
+        return event -&gt; {
+            if (event == null) return false;
+            if (messageType == null || messageType.isEmpty()) return true;  // no filter = accept all
+            return messageType.contains(event.messageType());
+        };
+    }
+}</code></pre>
+
+                <p>Add <code>messageType</code> to <code>SubscriptionCommand.java</code> and <code>SubscriptionResult.java</code> as well:</p>
+                <pre class="wiki-code"><code>// SubscriptionCommand.java
+public record SubscriptionCommand(
+    String userId,
+    List&lt;String&gt; messageType   // &lt;-- add
+) {}
+
+// SubscriptionResult.java
+public record SubscriptionResult(
+    String subscriptionId,
+    String queueName,
+    String subscriptionStatus,
+    String heartbeatQueue,
+    List&lt;String&gt; messageType   // &lt;-- add
+) {}</code></pre>
+
+                <h3>2.7.2 Customize the subscription JPA entity and mappers</h3>
+                <p>Add the <code>messageType</code> column to <code>SubscriptionJpaEntity.java</code>:</p>
+                <pre class="wiki-code"><code>@Column(columnDefinition = "TEXT")
+@Convert(converter = StringListConverter.class)
+@Builder.Default
+private List&lt;String&gt; messageType = new ArrayList&lt;&gt;();</code></pre>
+
+                <p>Update <code>SubscriptionRequest.java</code> and <code>SubscriptionResponse.java</code> (REST DTOs):</p>
+                <pre class="wiki-code"><code>// SubscriptionRequest.java — add field
+@JsonProperty("message_type")
+@JsonAlias("messageType")
+private List&lt;String&gt; messageType;
+
+// SubscriptionResponse.java — add field
+@JsonProperty("message_type")
+private List&lt;String&gt; messageType;</code></pre>
+
+                <p>Update <code>ProviderSubscriptionMappingAdapter.java</code> to copy the field in both directions (command → entity, entity → result), and <code>ProviderSubscriptionMapper.java</code> to copy it between REST DTOs and domain commands/results.</p>
+
+                <div class="wiki-note">
+                    <p>After these changes, a subscription created with <code>{"message_type":["FILED_FLIGHT_PLAN"]}</code> will only receive events whose <code>messageType</code> equals <code>FILED_FLIGHT_PLAN</code>. A subscription without <code>message_type</code> receives all events.</p>
+                </div>
+
+                <h3>2.8 Configure the application</h3>
+                <p>Create <code>src/main/resources/application-dev.properties</code> for the local development profile:</p>
+                <pre class="wiki-code"><code># Database
+quarkus.hibernate-orm.schema-management.strategy=drop-and-create
+quarkus.datasource.username=postgres
+quarkus.datasource.password=postgres
+quarkus.datasource.jdbc.url=jdbc:postgresql://localhost:5432/swim-ffice
+
+# Messaging
+amqp-host=localhost
+amqp-port=5671
+amqp-username=admin
+amqp-password=admin
+kafka.bootstrap.servers=localhost:9092
+artemis.broker.name=amq-broker
+
+# AMQP TLS
+mp.messaging.outgoing.ffice-amqp-out.use-ssl=true
+mp.messaging.outgoing.ffice-amqp-out.sni-server-name=${amqp-host}
+mp.messaging.outgoing.ffice-amqp-out.tls-configuration-name=amqp-client
+quarkus.tls.amqp-client.trust-store.pem.certs=certs/ca.crt
+quarkus.tls.amqp-client.key-store.pem.0.cert=certs/client.crt
+quarkus.tls.amqp-client.key-store.pem.0.key=certs/client.key
+
+# HTTPS
+quarkus.http.ssl.certificate.files=certs/tls.crt
+quarkus.http.ssl.certificate.key-files=certs/tls.key
+quarkus.http.ssl.certificate.trust-store-file=certs/ca.crt
+quarkus.http.ssl.certificate.trust-store-file-type=PEM
+quarkus.http.ssl.client-auth=request
+quarkus.http.insecure-requests=enabled
+
+# OIDC
+quarkus.oidc.enabled=true
+quarkus.oidc.auth-server-url=https://keycloak.swim.lab:8543/realms/swim
+quarkus.oidc.credentials.secret=BtYGyfj6R1YvoKhEsDfjg0aMxSc8VyJ5
+quarkus.tls.trust-all=true
+quarkus.security.auth.enabled-in-dev-mode=true
+
+# DevServices (DISABLED - use compose.yml)
+quarkus.devservices.enabled=false
+
+# OpenTelemetry (DISABLED in dev)
+quarkus.otel.enabled=false
+quarkus.otel.sdk.disabled=true
+
+# Heartbeat
+swim.heartbeat.interval=10s
+swim.heartbeat.provider-id=ffice-provider-dev
+
+# Subscription Expiry
+swim.subscription.expiry.check-interval=30s
+swim.subscription.expiry.purge-delay=5m
+swim.subscription.expiry.default-ttl=1h
+
+# OpenAPI
+mp.openapi.servers=${OPENAPI_SERVERS:https://localhost:8443,http://localhost:8080}</code></pre>
+
+                <p>Create <code>src/main/resources/application-test.properties</code> for the automated test profile:</p>
+                <pre class="wiki-code"><code># Database
+quarkus.hibernate-orm.schema-management.strategy=drop-and-create
+
+# OIDC (dummy URL - tests use permit policy)
+quarkus.oidc.auth-server-url=http://localhost:0/realms/test
+
+# SSL/TLS (DISABLED)
+quarkus.http.ssl.certificate.files=
+quarkus.http.ssl.certificate.key-files=
+quarkus.http.ssl.certificate.trust-store-file=
+quarkus.http.ssl.client-auth=none
+quarkus.http.insecure-requests=enabled
+quarkus.http.test-ssl-port=-1
+
+# Security (permit all for tests)
+quarkus.http.auth.permission.swim-api.policy=permit
+
+# Messaging (DISABLED)
+mp.messaging.incoming.ffice-events.enabled=false
+mp.messaging.outgoing.ffice-amqp-out.enabled=false
+
+# OpenTelemetry (DISABLED)
+quarkus.otel.sdk.disabled=true
+
+# Schedulers / Fault Tolerance (DISABLED)
+quarkus.scheduler.enabled=false
+quarkus.fault-tolerance.enabled=false
+
+# SWIM Domain
+swim.topics=FficeService,TestTopic
+swim.heartbeat.enabled=false
+swim.heartbeat.provider-id=test-provider
+swim.heartbeat.interval=999d
+swim.kubernetes.namespace=test
+swim.subscription.expiry.check-interval=999d
+swim.subscription.expiry.purge-interval=999d
+
+# Messaging overrides
+amqp-host=localhost
+artemis.broker.name=test-broker</code></pre>
+
+                <h3>2.9 Build</h3>
+                <pre class="wiki-code"><code>./mvnw clean package -DskipTests        # Linux / macOS
+mvnw.cmd clean package -DskipTests      # Windows</code></pre>
+                <p>The build must succeed with <code>BUILD SUCCESS</code> before proceeding.</p>
+            </section>
+
+            <div class="tutorial-nav-footer">
+                <a href="data-model.html" class="nav-prev">
+                    <span class="nav-label"><i class="fas fa-arrow-left"></i> Previous</span>
+                    <span class="nav-title">Part 1: Data Model</span>
+                </a>
+                <a href="validator.html" class="nav-next">
+                    <span class="nav-label">Next <i class="fas fa-arrow-right"></i></span>
+                    <span class="nav-title">Part 3: Provider Validator</span>
+                </a>
+            </div>
+        </main>
+    </div>
+
+    <footer class="footer"></footer>
+    <script src="../../script.js"></script>
+</body>
+</html>

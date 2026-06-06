@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projects | SWIM Developer</title>
+    <meta name="description" content="Open source SWIM components: providers, consumers, validators, and deployment tools.">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@400;500;600;700;900&family=Red+Hat+Text:wght@400;500;600&family=Red+Hat+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav class="navbar"></nav>
+
+    <header class="page-header">
+        <div class="container">
+            <div class="page-header-content">
+                <h1><i class="fas fa-cubes"></i> Open Source Components</h1>
+                <p class="page-subtitle">Inspect the code, run the services, verify compliance yourself. All Apache 2.0 licensed.</p>
+            </div>
+        </div>
+    </header>
+
+    <section id="projects" class="section section-projects">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Our Projects</span>
+                <h2>Ready-to-Deploy Components</h2>
+            </div>
+            <p class="section-intro">
+                Reference implementations for DNOTAM, ED-254, and FF-ICE services, built on top of the extensible framework.
+                All projects are Apache 2.0 licensed and open for contribution.
+            </p>
+
+            <div class="projects-subsection">
+                <h3 class="subsection-title"><i class="fas fa-satellite-dish"></i> Services</h3>
+                <p class="subsection-description">Production modules for SWIM service integration</p>
+                <div class="projects-grid projects-grid-2">
+                    <article class="project-card project-card-highlight">
+                        <div class="project-header">
+                            <i class="fas fa-upload"></i>
+                            <h3>swim-dnotam-provider</h3>
+                        </div>
+                        <p class="project-description">
+                            AISP module for organizations that publish aeronautical data. Receives events
+                            from internal Kafka topics, manages external subscriptions, and distributes
+                            via AMQP to authorized consumers.
+                        </p>
+                        <ul class="project-features">
+                            <li><i class="fas fa-check"></i> Full Subscription Manager API</li>
+                            <li><i class="fas fa-check"></i> WFS GetFeature endpoint (OGC)</li>
+                            <li><i class="fas fa-check"></i> Dynamic queue provisioning per subscriber</li>
+                            <li><i class="fas fa-check"></i> OIDC/JWT authentication (any OpenID Connect provider)</li>
+                        </ul>
+                        <div class="project-tech">
+                            <span>Quarkus</span>
+                            <span>PostgreSQL</span>
+                            <span>Artemis</span>
+                            <span>Keycloak</span>
+                        </div>
+                        <a href="https://github.com/swim-developer/swim-dnotam-provider" target="_blank" class="project-link">
+                            <i class="fab fa-github"></i> View Repository
+                        </a>
+                    </article>
+
+                    <article class="project-card project-card-highlight">
+                        <div class="project-header">
+                            <i class="fas fa-download"></i>
+                            <h3>swim-dnotam-consumer</h3>
+                        </div>
+                        <p class="project-description">
+                            Production module for organizations that need to receive DNOTAM events.
+                            Connects to any AISP/EAD, manages subscriptions automatically, validates messages,
+                            and distributes to internal systems via Kafka.
+                        </p>
+                        <ul class="project-features">
+                            <li><i class="fas fa-check"></i> Auto-subscription from config</li>
+                            <li><i class="fas fa-check"></i> Inbox/Outbox patterns (zero message loss)</li>
+                            <li><i class="fas fa-check"></i> XSD + business rules (pluggable)</li>
+                            <li><i class="fas fa-check"></i> GraphQL + REST APIs for queries</li>
+                        </ul>
+                        <div class="project-tech">
+                            <span>Quarkus</span>
+                            <span>MongoDB</span>
+                            <span>Kafka</span>
+                            <span>GraphQL</span>
+                        </div>
+                        <a href="https://github.com/swim-developer/swim-dnotam-consumer" target="_blank" class="project-link">
+                            <i class="fab fa-github"></i> View Repository
+                        </a>
+                    </article>
+
+                    <article class="project-card project-card-highlight">
+                        <div class="project-header">
+                            <i class="fas fa-upload"></i>
+                            <h3>swim-ed254-provider</h3>
+                        </div>
+                        <p class="project-description">
+                            ED-254 Arrival Sequence provider implementation. Publishes arrival sequence data
+                            to external consumers via AMQP. Same framework as DNOTAM, different service implementation.
+                        </p>
+                        <ul class="project-features">
+                            <li><i class="fas fa-check"></i> Full Subscription Manager API</li>
+                            <li><i class="fas fa-check"></i> FIXM-based data model</li>
+                            <li><i class="fas fa-check"></i> Dynamic queue provisioning per subscriber</li>
+                            <li><i class="fas fa-check"></i> OIDC/JWT authentication</li>
+                        </ul>
+                        <div class="project-tech">
+                            <span>Quarkus</span>
+                            <span>PostgreSQL</span>
+                            <span>Artemis</span>
+                            <span>FIXM</span>
+                        </div>
+                        <a href="https://github.com/swim-developer/swim-ed254-provider" target="_blank" class="project-link">
+                            <i class="fab fa-github"></i> View Repository
+                        </a>
+                    </article>
+
+                    <article class="project-card project-card-highlight">
+                        <div class="project-header">
+                            <i class="fas fa-download"></i>
+                            <h3>swim-ed254-consumer</h3>
+                        </div>
+                        <p class="project-description">
+                            ED-254 Arrival Sequence consumer implementation. Receives arrival sequence data
+                            from external providers and distributes to internal systems via Kafka.
+                        </p>
+                        <ul class="project-features">
+                            <li><i class="fas fa-check"></i> Auto-subscription from config</li>
+                            <li><i class="fas fa-check"></i> Inbox/Outbox patterns (zero message loss)</li>
+                            <li><i class="fas fa-check"></i> FIXM validation</li>
+                            <li><i class="fas fa-check"></i> GraphQL + REST APIs for queries</li>
+                        </ul>
+                        <div class="project-tech">
+                            <span>Quarkus</span>
+                            <span>MongoDB</span>
+                            <span>Kafka</span>
+                            <span>GraphQL</span>
+                        </div>
+                        <a href="https://github.com/swim-developer/swim-ed254-consumer" target="_blank" class="project-link">
+                            <i class="fab fa-github"></i> View Repository
+                        </a>
+                    </article>
+
+                    <article class="project-card project-card-highlight">
+                        <div class="project-header">
+                            <i class="fas fa-upload"></i>
+                            <h3>swim-ffice-provider</h3>
+                        </div>
+                        <p class="project-description">
+                            FF-ICE provider generated from <code>swim-provider-archetype</code>. Ingests
+                            FF-ICE messages from Kafka, manages external subscriptions, and delivers
+                            to subscribers via AMQP.
+                        </p>
+                        <ul class="project-features">
+                            <li><i class="fas fa-check"></i> Generated from archetype (10 classes customized)</li>
+                            <li><i class="fas fa-check"></i> Full Subscription Manager API</li>
+                            <li><i class="fas fa-check"></i> FIXM 4.3 + FF-ICE 1.1 data model</li>
+                            <li><i class="fas fa-check"></i> Step-by-step tutorial</li>
+                        </ul>
+                        <div class="project-tech">
+                            <span>Quarkus</span>
+                            <span>PostgreSQL</span>
+                            <span>Artemis</span>
+                            <span>FIXM</span>
+                        </div>
+                        <a href="tutorials/create-provider/index.html" class="project-link">
+                            <i class="fas fa-graduation-cap"></i> Tutorial
+                        </a>
+                    </article>
+
+                    <article class="project-card project-card-highlight">
+                        <div class="project-header">
+                            <i class="fas fa-download"></i>
+                            <h3>swim-ffice-consumer</h3>
+                        </div>
+                        <p class="project-description">
+                            FF-ICE consumer generated from <code>swim-consumer-archetype</code>. Receives
+                            FF-ICE messages via AMQP, validates against FIXM 4.3 schemas, persists to
+                            MongoDB, and routes to 7 domain-specific Kafka topics by message type.
+                        </p>
+                        <ul class="project-features">
+                            <li><i class="fas fa-check"></i> Generated from archetype (10 classes customized)</li>
+                            <li><i class="fas fa-check"></i> FIXM 4.3 + FF-ICE 1.1 XSD validation</li>
+                            <li><i class="fas fa-check"></i> 7 Kafka output topics by message type</li>
+                            <li><i class="fas fa-check"></i> Step-by-step tutorial (8 parts)</li>
+                        </ul>
+                        <div class="project-tech">
+                            <span>Quarkus</span>
+                            <span>MongoDB</span>
+                            <span>Kafka</span>
+                            <span>FIXM</span>
+                        </div>
+                        <a href="tutorials/create-consumer/index.html" class="project-link">
+                            <i class="fas fa-graduation-cap"></i> Tutorial
+                        </a>
+                    </article>
+                </div>
+            </div>
+
+            <div class="projects-subsection">
+                <h3 class="subsection-title"><i class="fas fa-wand-magic-sparkles"></i> Project Generators</h3>
+                <p class="subsection-description">Maven archetypes that generate complete, production-ready SWIM service projects with a single command</p>
+                <div class="projects-grid projects-grid-2">
+                    <article class="project-card project-card-highlight">
+                        <div class="project-header">
+                            <i class="fas fa-download"></i>
+                            <h3>swim-consumer-archetype</h3>
+                        </div>
+                        <p class="project-description">
+                            Generate a complete SWIM consumer project. 38 Java classes with hexagonal architecture,
+                            MongoDB, Kafka, subscription lifecycle, and observability.
+                            Only 10 classes require domain-specific implementation.
+                        </p>
+                        <ul class="project-features">
+                            <li><i class="fas fa-check"></i> 28 classes functional out of the box</li>
+                            <li><i class="fas fa-check"></i> Parametrized application.properties (213 lines)</li>
+                            <li><i class="fas fa-check"></i> Maven Wrapper included</li>
+                        </ul>
+                        <div class="project-tech">
+                            <span>Maven</span>
+                            <span>Quarkus</span>
+                            <span>MongoDB</span>
+                            <span>Kafka</span>
+                        </div>
+                        <a href="tutorials/create-consumer.html" class="project-link">
+                            <i class="fas fa-graduation-cap"></i> Tutorial
+                        </a>
+                    </article>
+
+                    <article class="project-card project-card-highlight">
+                        <div class="project-header">
+                            <i class="fas fa-upload"></i>
+                            <h3>swim-provider-archetype</h3>
+                        </div>
+                        <p class="project-description">
+                            Generate a complete SWIM provider project. 53 Java classes with hexagonal architecture,
+                            PostgreSQL, AMQP publishing, Kafka ingress, and Subscription Manager API.
+                            Only 10 classes require domain-specific implementation.
+                        </p>
+                        <ul class="project-features">
+                            <li><i class="fas fa-check"></i> 43 classes functional out of the box</li>
+                            <li><i class="fas fa-check"></i> Full Subscription Manager REST API</li>
+                            <li><i class="fas fa-check"></i> Maven Wrapper included</li>
+                        </ul>
+                        <div class="project-tech">
+                            <span>Maven</span>
+                            <span>Quarkus</span>
+                            <span>PostgreSQL</span>
+                            <span>Artemis</span>
+                        </div>
+                        <a href="tutorials/create-provider.html" class="project-link">
+                            <i class="fas fa-graduation-cap"></i> Tutorial
+                        </a>
+                    </article>
+
+                    <article class="project-card project-card-highlight">
+                        <div class="project-header">
+                            <i class="fas fa-database"></i>
+                            <h3>swim-model-archetype</h3>
+                        </div>
+                        <p class="project-description">
+                            Generate a SWIM data model project with JAXB bindings, XSD validation,
+                            and marshalling/unmarshalling infrastructure. Used to create models for
+                            new SWIM services (e.g., AIXM, FIXM, IWXXM).
+                        </p>
+                        <ul class="project-features">
+                            <li><i class="fas fa-check"></i> JAXB bindings from XSD schemas</li>
+                            <li><i class="fas fa-check"></i> Unmarshaller pool for thread-safe parsing</li>
+                            <li><i class="fas fa-check"></i> Maven Wrapper included</li>
+                        </ul>
+                        <div class="project-tech">
+                            <span>Maven</span>
+                            <span>JAXB</span>
+                            <span>XSD</span>
+                            <span>Java 21</span>
+                        </div>
+                        <a href="https://github.com/swim-developer/swim-model-archetype" target="_blank" class="project-link">
+                            <i class="fab fa-github"></i> View Repository
+                        </a>
+                    </article>
+                </div>
+            </div>
+
+            <div class="projects-subsection">
+                <h3 class="subsection-title"><i class="fas fa-flask"></i> Validation & Testing</h3>
+                <p class="subsection-description">Tools for development, testing, and validation workflows</p>
+                <div class="projects-grid projects-grid-2">
+                    <article class="project-card">
+                        <div class="project-header">
+                            <i class="fas fa-server"></i>
+                            <h3>swim-dnotam-consumer-validator</h3>
+                        </div>
+                        <p class="project-description">
+                            Simulates an AISP (Aeronautical Information Service Provider) for testing and validating
+                            your Consumer implementation. Ultra-lightweight container that requires minimal resources.
+                            Optional component used during development and validation phases.
+                        </p>
+                        <ul class="project-features">
+                            <li><i class="fas fa-check"></i> Full Subscription Manager API (SWIM Registry)</li>
+                            <li><i class="fas fa-check"></i> Integrated Artemis AMQP broker</li>
+                            <li><i class="fas fa-check"></i> 82 sample AIXM events included</li>
+                            <li><i class="fas fa-check"></i> Interactive scenario simulator</li>
+                        </ul>
+                        <div class="project-tech">
+                            <span>Quarkus</span>
+                            <span>Artemis</span>
+                            <span>AIXM 5.1.1</span>
+                            <span>mTLS</span>
+                        </div>
+                        <a href="https://github.com/swim-developer/swim-dnotam-consumer-validator" target="_blank" class="project-link">
+                            <i class="fab fa-github"></i> View Repository
+                        </a>
+                    </article>
+
+                    <article class="project-card">
+                        <div class="project-header">
+                            <i class="fas fa-vial"></i>
+                            <h3>swim-dnotam-provider-validator</h3>
+                        </div>
+                        <p class="project-description">
+                            Conformance testing tool for SWIM providers. Provides a user interface
+                            for subscription management, real-time event visualization, and contract
+                            testing against provider implementations.
+                        </p>
+                        <ul class="project-features">
+                            <li><i class="fas fa-check"></i> Subscription CRUD operations</li>
+                            <li><i class="fas fa-check"></i> Real-time event streaming</li>
+                            <li><i class="fas fa-check"></i> mTLS proxy support</li>
+                            <li><i class="fas fa-check"></i> Load testing capabilities</li>
+                        </ul>
+                        <div class="project-tech">
+                            <span>Quarkus</span>
+                            <span>HTMX</span>
+                            <span>SSE</span>
+                            <span>REST Client</span>
+                        </div>
+                        <a href="https://github.com/swim-developer/swim-dnotam-provider-validator" target="_blank" class="project-link">
+                            <i class="fab fa-github"></i> View Repository
+                        </a>
+                    </article>
+
+                    <article class="project-card">
+                        <div class="project-header">
+                            <i class="fas fa-server"></i>
+                            <h3>swim-ed254-consumer-validator</h3>
+                        </div>
+                        <p class="project-description">
+                            Simulates an ED-254 provider for testing and validating your ED-254 Consumer
+                            implementation. Publishes arrival sequence events over AMQP so the consumer
+                            can be developed and tested without external dependencies.
+                        </p>
+                        <ul class="project-features">
+                            <li><i class="fas fa-check"></i> Full Subscription Manager API</li>
+                            <li><i class="fas fa-check"></i> Integrated Artemis AMQP broker</li>
+                            <li><i class="fas fa-check"></i> Sample FIXM arrival sequence events</li>
+                            <li><i class="fas fa-check"></i> Interactive scenario simulator</li>
+                        </ul>
+                        <div class="project-tech">
+                            <span>Quarkus</span>
+                            <span>Artemis</span>
+                            <span>FIXM</span>
+                            <span>mTLS</span>
+                        </div>
+                        <a href="https://github.com/swim-developer/swim-ed254-consumer-validator" target="_blank" class="project-link">
+                            <i class="fab fa-github"></i> View Repository
+                        </a>
+                    </article>
+
+                    <article class="project-card">
+                        <div class="project-header">
+                            <i class="fas fa-vial"></i>
+                            <h3>swim-ed254-provider-validator</h3>
+                        </div>
+                        <p class="project-description">
+                            Conformance testing tool for ED-254 providers. Subscribes to the provider,
+                            receives arrival sequence events, and validates AMQP implementation, message
+                            format, and delivery guarantees.
+                        </p>
+                        <ul class="project-features">
+                            <li><i class="fas fa-check"></i> Subscription CRUD operations</li>
+                            <li><i class="fas fa-check"></i> Real-time event streaming</li>
+                            <li><i class="fas fa-check"></i> Conformance test suite</li>
+                            <li><i class="fas fa-check"></i> mTLS proxy support</li>
+                        </ul>
+                        <div class="project-tech">
+                            <span>Quarkus</span>
+                            <span>HTMX</span>
+                            <span>SSE</span>
+                            <span>REST Client</span>
+                        </div>
+                        <a href="https://github.com/swim-developer/swim-ed254-provider-validator" target="_blank" class="project-link">
+                            <i class="fab fa-github"></i> View Repository
+                        </a>
+                    </article>
+
+                    <article class="project-card">
+                        <div class="project-header">
+                            <i class="fas fa-server"></i>
+                            <h3>swim-ffice-consumer-validator</h3>
+                        </div>
+                        <p class="project-description">
+                            Simulates an FF-ICE provider for testing and validating your FF-ICE Consumer
+                            implementation. Publishes FF-ICE messages over AMQP so the consumer can be
+                            developed and tested without external dependencies.
+                        </p>
+                        <ul class="project-features">
+                            <li><i class="fas fa-check"></i> Full Subscription Manager API</li>
+                            <li><i class="fas fa-check"></i> Integrated Artemis AMQP broker</li>
+                            <li><i class="fas fa-check"></i> Sample FIXM 4.3 + FF-ICE 1.1 events</li>
+                            <li><i class="fas fa-check"></i> Interactive scenario simulator</li>
+                        </ul>
+                        <div class="project-tech">
+                            <span>Quarkus</span>
+                            <span>Artemis</span>
+                            <span>FIXM</span>
+                            <span>mTLS</span>
+                        </div>
+                        <a href="https://github.com/swim-developer/swim-ffice-consumer-validator" target="_blank" class="project-link">
+                            <i class="fab fa-github"></i> View Repository
+                        </a>
+                    </article>
+
+                    <article class="project-card">
+                        <div class="project-header">
+                            <i class="fas fa-vial"></i>
+                            <h3>swim-ffice-provider-validator</h3>
+                        </div>
+                        <p class="project-description">
+                            Conformance testing tool for FF-ICE providers. Subscribes to the provider,
+                            receives FF-ICE messages, and validates AMQP implementation, message format,
+                            and delivery guarantees.
+                        </p>
+                        <ul class="project-features">
+                            <li><i class="fas fa-check"></i> Subscription CRUD operations</li>
+                            <li><i class="fas fa-check"></i> Real-time event streaming</li>
+                            <li><i class="fas fa-check"></i> Conformance test suite</li>
+                            <li><i class="fas fa-check"></i> mTLS proxy support</li>
+                        </ul>
+                        <div class="project-tech">
+                            <span>Quarkus</span>
+                            <span>HTMX</span>
+                            <span>SSE</span>
+                            <span>REST Client</span>
+                        </div>
+                        <a href="https://github.com/swim-developer/swim-ffice-provider-validator" target="_blank" class="project-link">
+                            <i class="fab fa-github"></i> View Repository
+                        </a>
+                    </article>
+                </div>
+            </div>
+
+            <div class="projects-subsection">
+                <h3 class="subsection-title"><i class="fas fa-desktop"></i> Example Applications</h3>
+                <p class="subsection-description">Demonstration clients showing how end users integrate with the SWIM platform. Source code at <a href="https://github.com/swim-developer/swim-example-apps" target="_blank">github.com/swim-developer/swim-example-apps</a>.</p>
+                <div class="projects-grid projects-grid-2">
+                    <article class="project-card">
+                        <div class="project-header">
+                            <i class="fas fa-chart-line"></i>
+                            <h3>DNOTAM Operations Dashboard</h3>
+                        </div>
+                        <p class="project-description">
+                            Simulates an <strong>ANSP or airport operations centre</strong>. Consumes the six
+                            categorized Kafka topics produced by <code>swim-dnotam-consumer</code> and presents
+                            events in a real-time map view, event timeline, critical alerts panel, and CP1
+                            compliance audit dashboard.
+                        </p>
+                        <ul class="project-features">
+                            <li><i class="fas fa-check"></i> Real-time WebSocket event stream</li>
+                            <li><i class="fas fa-check"></i> Priority-based critical alerts (RWY.CLS, AD.CLS)</li>
+                            <li><i class="fas fa-check"></i> CP1 compliance audit trail</li>
+                            <li><i class="fas fa-check"></i> Quarkus backend + React 19 / PatternFly 6 frontend</li>
+                        </ul>
+                        <div class="project-tech">
+                            <span>Quarkus</span>
+                            <span>React 19</span>
+                            <span>PatternFly 6</span>
+                            <span>MongoDB</span>
+                        </div>
+                        <a href="https://github.com/swim-developer/swim-example-apps" target="_blank" class="project-link">
+                            <i class="fab fa-github"></i> View Repository
+                        </a>
+                    </article>
+
+                    <article class="project-card">
+                        <div class="project-header">
+                            <i class="fas fa-paper-plane"></i>
+                            <h3>DNOTAM Event Publisher</h3>
+                        </div>
+                        <p class="project-description">
+                            Simulates an <strong>AISP or EAD operator workstation</strong>. Browse pre-built
+                            AIXM 5.1.1 event templates by scenario category, preview the raw XML, and inject
+                            events into <code>swim-dnotam-provider</code> via HTTP trigger or directly into
+                            the Kafka ingress topic. The companion injection tool for the dashboard.
+                        </p>
+                        <ul class="project-features">
+                            <li><i class="fas fa-check"></i> AIXM 5.1.1 template catalogue (all mandatory scenarios)</li>
+                            <li><i class="fas fa-check"></i> HTTP trigger + Kafka delivery modes</li>
+                            <li><i class="fas fa-check"></i> Publication history with status tracking</li>
+                            <li><i class="fas fa-check"></i> Quarkus backend + React 19 / PatternFly 6 frontend</li>
+                        </ul>
+                        <div class="project-tech">
+                            <span>Quarkus</span>
+                            <span>React 19</span>
+                            <span>PatternFly 6</span>
+                            <span>Kafka</span>
+                        </div>
+                        <a href="https://github.com/swim-developer/swim-example-apps" target="_blank" class="project-link">
+                            <i class="fab fa-github"></i> View Repository
+                        </a>
+                    </article>
+                </div>
+            </div>
+
+            <div class="projects-subsection">
+                <h3 class="subsection-title"><i class="fas fa-play"></i> Try It</h3>
+                <p class="subsection-description">Deploy the complete platform locally and explore</p>
+                <div class="projects-grid projects-grid-2">
+                    <article class="project-card project-card-highlight">
+                        <div class="project-header">
+                            <i class="fas fa-code-branch"></i>
+                            <h3>swim-gitops</h3>
+                            <span style="background: #5cb85c; color: #fff; font-size: 0.7rem; padding: 2px 8px; border-radius: 4px; font-weight: 600; margin-left: 8px;">RECOMMENDED</span>
+                        </div>
+                        <p class="project-description">
+                            GitOps repository for declarative deployment of the entire SWIM platform using
+                            Argo CD and Tekton CI. Everything is driven by Git: infrastructure, operators,
+                            services, and CI pipelines. Supports OpenShift Local (CRC) and production clusters.
+                        </p>
+                        <ul class="project-features">
+                            <li><i class="fas fa-check"></i> Argo CD + Tekton CI/CD pipeline</li>
+                            <li><i class="fas fa-check"></i> 16 Argo CD Applications (sync waves)</li>
+                            <li><i class="fas fa-check"></i> 12 Tekton pipelines (JAR + native)</li>
+                            <li><i class="fas fa-check"></i> DNOTAM + ED-254 + FF-ICE stacks</li>
+                            <li><i class="fas fa-check"></i> Gitea for fully self-contained local Git</li>
+                            <li><i class="fas fa-check"></i> Production migration guide included</li>
+                        </ul>
+                        <div class="project-tech">
+                            <span>Argo CD</span>
+                            <span>Tekton</span>
+                            <span>Helm</span>
+                            <span>Kustomize</span>
+                            <span>Gitea</span>
+                        </div>
+                        <a href="https://github.com/swim-developer/swim-gitops" target="_blank" class="project-link">
+                            <i class="fab fa-github"></i> GitHub
+                        </a>
+                        <a href="tutorials/deploy-gitops.html" class="project-link" style="margin-left: 8px;">
+                            <i class="fas fa-graduation-cap"></i> Tutorial
+                        </a>
+                    </article>
+
+                    <article class="project-card">
+                        <div class="project-header">
+                            <i class="fas fa-rocket"></i>
+                            <h3>swim-deploy-openshift-local</h3>
+                        </div>
+                        <p class="project-description">
+                            Deploy the complete SWIM ecosystem on OpenShift Local (CRC). 19 components deployed
+                            with a single <code>make all</code> command: DNOTAM and ED-254 services (providers,
+                            consumers, validators), Kafka, Keycloak, ActiveMQ Artemis, MongoDB, PostgreSQL,
+                            observability stack, and example applications. Full E2E validated deployment.
+                        </p>
+                        <ul class="project-features">
+                            <li><i class="fas fa-check"></i> 19 components with <code>make all</code></li>
+                            <li><i class="fas fa-check"></i> Helm charts + operator subscriptions</li>
+                            <li><i class="fas fa-check"></i> mTLS certificates auto-generated</li>
+                            <li><i class="fas fa-check"></i> DNOTAM + ED-254 + Validators + Example Apps</li>
+                            <li><i class="fas fa-check"></i> Full observability (OpenTelemetry, Grafana, Loki, Tempo)</li>
+                        </ul>
+                        <div class="project-tech">
+                            <span>OpenShift Local</span>
+                            <span>Helm</span>
+                            <span>Make</span>
+                            <span>cert-manager</span>
+                        </div>
+                        <a href="tutorials/deploy-openshift-local.html" class="project-link">
+                            <i class="fas fa-graduation-cap"></i> Tutorial
+                        </a>
+                    </article>
+
+                    <article class="project-card">
+                        <div class="project-header">
+                            <i class="fas fa-dharmachakra"></i>
+                            <h3>swim-deploy-minikube</h3>
+                        </div>
+                        <p class="project-description">
+                            Helm charts and Ansible playbook for deploying the SWIM DNOTAM platform
+                            on Minikube. One command deploys Consumer Validator, Consumer, Provider, Provider Validator,
+                            Keycloak, Kafka, and all dependencies. Good starting point for Kubernetes environments.
+                        </p>
+                        <ul class="project-features">
+                            <li><i class="fas fa-check"></i> Single ansible-playbook command</li>
+                            <li><i class="fas fa-check"></i> All components pre-configured</li>
+                            <li><i class="fas fa-check"></i> mTLS certificates auto-generated</li>
+                            <li><i class="fas fa-check"></i> Works on Linux, macOS, Windows (PowerShell)</li>
+                        </ul>
+                        <div class="project-tech">
+                            <span>Minikube</span>
+                            <span>Helm</span>
+                            <span>Ansible</span>
+                            <span>cert-manager</span>
+                        </div>
+                        <a href="tutorials/deploy-minikube.html" class="project-link">
+                            <i class="fas fa-graduation-cap"></i> Tutorial
+                        </a>
+                    </article>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer"></footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

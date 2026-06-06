@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deploy on OpenShift | Tutorials | SWIM Developer</title>
+    <meta name="description" content="Deploy SWIM services on a production OpenShift cluster.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@400;500;600;700;900&family=Red+Hat+Text:wght@400;500;600&family=Red+Hat+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+    <nav class="navbar"></nav>
+
+    <header class="page-header">
+        <div class="container">
+            <div class="page-header-content">
+                <h1><i class="fas fa-graduation-cap"></i> Tutorials</h1>
+                <p class="page-subtitle">Step-by-step guides for deploying, configuring, and validating SWIM services</p>
+            </div>
+        </div>
+    </header>
+
+    <div class="wiki-layout">
+        <aside class="wiki-sidebar">
+            <nav class="wiki-nav">
+                <div class="wiki-nav-group">
+                    <h4 class="wiki-nav-title"><i class="fas fa-rocket"></i> Getting Started</h4>
+                    <ul>
+                        <li><a href="deploy-gitops.html">GitOps (Argo CD)</a></li>
+                        <li><a href="deploy-openshift.html" class="active">OpenShift</a></li>
+                        <li><a href="deploy-kubernetes.html">Kubernetes</a></li>
+                        <li><a href="deploy-openshift-local.html">OpenShift Local</a></li>
+                        <li><a href="deploy-minikube.html">Minikube</a></li>
+                        <li><a href="deploy-podman.html">Container Local (Podman)</a></li>
+                        <li><a href="deploy-java.html">Java / Binary</a></li>
+                    </ul>
+                </div>
+                <div class="wiki-nav-group">
+                    <h4 class="wiki-nav-title"><i class="fas fa-bell"></i> Digital NOTAM</h4>
+                    <ul>
+                        <li><a href="dnotam-consumer-deploy.html">Deploy Consumer</a></li>
+                        <li><a href="dnotam-consumer-explore.html">Explore Consumer</a></li>
+                        <li><a href="dnotam-provider-deploy.html">Deploy Provider</a></li>
+                        <li><a href="dnotam-provider-explore.html">Explore Provider</a></li>
+                        <li><a href="consumer-validator-deploy.html">Deploy Consumer Validator</a></li>
+                        <li><a href="consumer-validator-explore.html">Explore Consumer Validator</a></li>
+                        <li><a href="provider-validator-deploy.html">Deploy Provider Validator</a></li>
+                        <li><a href="e2e-test.html">End-to-End Test</a></li>
+                    </ul>
+                </div>
+                <div class="wiki-nav-group">
+                    <h4 class="wiki-nav-title"><i class="fas fa-plane-arrival"></i> ED-254 (AMAN)</h4>
+                    <ul>
+                        <li><a href="ed254-consumer-deploy.html">Deploy Consumer</a></li>
+                        <li><a href="ed254-provider-deploy.html">Deploy Provider</a></li>
+                    </ul>
+                </div>
+                <div class="wiki-nav-group">
+                    <h4 class="wiki-nav-title"><i class="fas fa-wand-magic-sparkles"></i> Build Your Own</h4>
+                    <ul>
+                        <li><a href="create-consumer.html">Create Consumer</a></li>
+                        <li><a href="create-provider.html">Create Provider</a></li>
+                    </ul>
+                </div>
+            </nav>
+        </aside>
+
+        <main class="wiki-content">
+            <section class="wiki-section">
+                <h2>Deploy on OpenShift</h2>
+                <p>
+                    Deployment on production OpenShift clusters is managed by the
+                    <a href="https://github.com/swim-developer/swim-operator" target="_blank">SWIM Operator</a>.
+                    The operator handles the full lifecycle of SWIM services, including databases,
+                    messaging, certificates, networking, and observability.
+                </p>
+
+                <h3>Prerequisites</h3>
+                <div class="wiki-requirements">
+                    <div class="wiki-req-item">
+                        <i class="fab fa-redhat"></i>
+                        <div>
+                            <strong>OpenShift 4.12+</strong>
+                            <span>with cluster-admin access</span>
+                        </div>
+                    </div>
+                    <div class="wiki-req-item">
+                        <i class="fas fa-terminal"></i>
+                        <div>
+                            <strong>oc CLI</strong>
+                            <span>logged in to your cluster</span>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>1. Install Required Operators</h3>
+                <p>
+                    Install the following operators from OperatorHub before installing the SWIM Operator:
+                </p>
+                <ul class="wiki-list">
+                    <li><strong>cert-manager Operator for Red Hat OpenShift</strong> - automated certificate lifecycle for mTLS</li>
+                    <li><strong>Red Hat AMQ Broker Operator</strong> - ActiveMQ Artemis for AMQP 1.0 messaging</li>
+                    <li><strong>Streams for Apache Kafka (AMQ Streams)</strong> - Kafka for internal event streaming</li>
+                </ul>
+                <p>Verify installation:</p>
+<pre class="wiki-code"><code>oc get pods -n cert-manager
+oc get csv -n openshift-operators | grep amq-broker
+oc get csv -A | grep amqstreams</code></pre>
+
+                <h3>2. Install the SWIM Operator</h3>
+                <p>
+                    Apply the CatalogSource to register the SWIM Operator in OperatorHub:
+                </p>
+<pre class="wiki-code"><code>oc apply -f - &lt;&lt;'EOF'
+apiVersion: operators.coreos.com/v1alpha1
+kind: CatalogSource
+metadata:
+  name: swim-operator-catalog
+  namespace: openshift-marketplace
+spec:
+  sourceType: grpc
+  image: quay.io/masales/swim-operator-catalog:v0.0.1
+  grpcPodConfig:
+    imagePullPolicy: Always
+  displayName: SWIM Operator Catalog
+  publisher: SWIM Developer Team
+  updateStrategy:
+    registryPoll:
+      interval: 15m
+EOF</code></pre>
+                <p>
+                    Then install the operator from the OpenShift console:
+                </p>
+                <ol class="wiki-steps">
+                    <li>Go to <strong>OperatorHub</strong> and search for <strong>SWIM Operator</strong></li>
+                    <li>Click <strong>Install</strong> and select <strong>All namespaces on the cluster</strong></li>
+                    <li>Choose update approval (<strong>Manual</strong> or <strong>Automatic</strong>) and click <strong>Install</strong></li>
+                </ol>
+                <p>Verify installation:</p>
+<pre class="wiki-code"><code>oc get csv -n openshift-operators | grep swim
+oc get crd | grep swim</code></pre>
+                <p>Expected CRDs:</p>
+                <ul class="wiki-list">
+                    <li><code>swimdigitalnotamconsumers.apps.swim-developer.github.io</code></li>
+                    <li><code>swimdigitalnotamproviders.apps.swim-developer.github.io</code></li>
+                    <li><code>swimdnotamconsumervalidators.apps.swim-developer.github.io</code></li>
+                    <li><code>swimdnotamprovidervalidators.apps.swim-developer.github.io</code></li>
+                    <li><code>swimed254consumers.apps.swim-developer.github.io</code></li>
+                    <li><code>swimed254providers.apps.swim-developer.github.io</code></li>
+                    <li><code>swimed254consumervalidators.apps.swim-developer.github.io</code></li>
+                </ul>
+
+                <h3>3. Configure External Services</h3>
+                <p>
+                    The following services must be available before deploying SWIM Custom Resources:
+                </p>
+                <ul class="wiki-list">
+                    <li><strong>Keycloak</strong> - Deploy via Red Hat Build of Keycloak Operator. Requires realm <code>swim</code> for Provider OIDC/JAAS authentication</li>
+                    <li><strong>ClusterIssuer <code>swim-ca-issuer</code></strong> - cert-manager ClusterIssuer for mTLS certificate issuance</li>
+                </ul>
+<pre class="wiki-code"><code>oc apply -f - &lt;&lt;'EOF'
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: swim-ca-issuer
+spec:
+  ca:
+    secretName: swim-ca-secret
+EOF</code></pre>
+
+                <h3>4. Deploy SWIM Services</h3>
+                <p>
+                    Create Custom Resources in your target namespace. The operator provisions
+                    all required infrastructure (databases, brokers, certificates, networking)
+                    automatically.
+                </p>
+<pre class="wiki-code"><code># Digital NOTAM
+oc apply -f config/samples/apps_v1alpha1_swimdigitalnotamprovider_minimal.yaml -n &lt;namespace&gt;
+oc apply -f config/samples/apps_v1alpha1_swimdigitalnotamconsumer_minimal.yaml -n &lt;namespace&gt;
+oc apply -f config/samples/apps_v1alpha1_swimdnotamconsumervalidator_minimal.yaml -n &lt;namespace&gt;
+oc apply -f config/samples/apps_v1alpha1_swimdnotamprovidervalidator_minimal.yaml -n &lt;namespace&gt;
+
+# ED-254 Arrival Sequence
+oc apply -f config/samples/apps_v1alpha1_swimed254provider_minimal.yaml -n &lt;namespace&gt;
+oc apply -f config/samples/apps_v1alpha1_swimed254consumer_minimal.yaml -n &lt;namespace&gt;
+oc apply -f config/samples/apps_v1alpha1_swimed254consumervalidator.yaml -n &lt;namespace&gt;</code></pre>
+
+                <div class="wiki-note">
+                    <i class="fas fa-info-circle"></i>
+                    <p>
+                        Sample CR manifests are available in the
+                        <a href="https://github.com/swim-developer/swim-operator/tree/main/swim-openshift-operator/config/samples" target="_blank">swim-operator repository</a>
+                        under <code>config/samples/</code>.
+                    </p>
+                </div>
+
+                <h4>What the operator provisions per Custom Resource</h4>
+                <table style="width: 100%; border-collapse: collapse; margin: 16px 0;">
+                    <thead>
+                        <tr style="border-bottom: 1px solid var(--color-border); text-align: left;">
+                            <th style="padding: 8px; color: var(--color-text-primary);">Custom Resource</th>
+                            <th style="padding: 8px; color: var(--color-text-primary);">Infrastructure Provisioned</th>
+                        </tr>
+                    </thead>
+                    <tbody style="color: var(--color-text-secondary);">
+                        <tr style="border-bottom: 1px solid var(--color-border);">
+                            <td style="padding: 8px;"><code>SwimDigitalNotamProvider</code></td>
+                            <td style="padding: 8px;">PostgreSQL, Artemis, Kafka, mTLS, OIDC, RBAC, Routes</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid var(--color-border);">
+                            <td style="padding: 8px;"><code>SwimDigitalNotamConsumer</code></td>
+                            <td style="padding: 8px;">MongoDB, Kafka (AMQ Streams), mTLS, HPA, ServiceMonitor</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid var(--color-border);">
+                            <td style="padding: 8px;"><code>SwimDnotamConsumerValidator</code></td>
+                            <td style="padding: 8px;">MariaDB, Artemis, mTLS, Routes, HPA</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid var(--color-border);">
+                            <td style="padding: 8px;"><code>SwimDnotamProviderValidator</code></td>
+                            <td style="padding: 8px;">MariaDB, Routes, HPA, mTLS (optional)</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid var(--color-border);">
+                            <td style="padding: 8px;"><code>SwimEd254Provider</code></td>
+                            <td style="padding: 8px;">PostgreSQL, Artemis, Kafka, mTLS, OIDC, RBAC, Routes</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid var(--color-border);">
+                            <td style="padding: 8px;"><code>SwimEd254Consumer</code></td>
+                            <td style="padding: 8px;">MongoDB, Kafka (AMQ Streams), mTLS, HPA, ServiceMonitor</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 8px;"><code>SwimEd254ConsumerValidator</code></td>
+                            <td style="padding: 8px;">MariaDB, Artemis, mTLS, Routes, HPA</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>5. Verify Deployment</h3>
+<pre class="wiki-code"><code># Digital NOTAM
+oc get swimdigitalnotamprovider,swimdigitalnotamconsumer -n &lt;namespace&gt;
+oc get swimdnotamconsumervalidator,swimdnotamprovidervalidator -n &lt;namespace&gt;
+
+# ED-254
+oc get swimed254provider,swimed254consumer -n &lt;namespace&gt;
+oc get swimed254consumervalidator -n &lt;namespace&gt;
+
+# All resources
+oc get all -n &lt;namespace&gt;
+oc get routes -n &lt;namespace&gt;</code></pre>
+
+                <div class="wiki-note">
+                    <i class="fas fa-play-circle"></i>
+                    <p>
+                        The <a href="dnotam-consumer-deploy.html">Digital NOTAM tutorials</a> include
+                        video walkthroughs showing the complete deployment flow using the SWIM Operator
+                        on a production OpenShift cluster.
+                    </p>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <button class="wiki-sidebar-toggle" aria-label="Toggle tutorial navigation">
+        <i class="fas fa-list"></i>
+    </button>
+
+    <footer class="footer"></footer>
+
+    <script src="../script.js"></script>
+</body>
+</html>

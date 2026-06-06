@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 1200 675" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+        <style>
+            @import url('https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@400;700&amp;family=Red+Hat+Text:wght@400;500;600&amp;display=swap');
+        </style>
+        <linearGradient id="grad-base" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#37474f;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#607d8b;stop-opacity:1" />
+        </linearGradient>
+        <linearGradient id="grad-ext" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#7b1fa2;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#ab47bc;stop-opacity:1" />
+        </linearGradient>
+        <linearGradient id="grad-dnotam-s" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#1565c0;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#42a5f5;stop-opacity:1" />
+        </linearGradient>
+        <linearGradient id="grad-aman-s" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#2e7d32;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#66bb6a;stop-opacity:1" />
+        </linearGradient>
+        <linearGradient id="grad-met-s" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#ef6c00;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#ffa726;stop-opacity:1" />
+        </linearGradient>
+        <linearGradient id="grad-new-s" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#c62828;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#ef5350;stop-opacity:1" />
+        </linearGradient>
+        <filter id="slide-shadow" x="-10%" y="-10%" width="120%" height="120%">
+            <feDropShadow dx="0" dy="4" stdDeviation="6" flood-opacity="0.2"/>
+        </filter>
+        <marker id="slide-arrow" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+            <polygon points="0 0, 10 4, 0 8" fill="#7b1fa2"/>
+        </marker>
+    </defs>
+
+    <!-- Title - cores claras para fundo escuro -->
+    <text x="600" y="50" text-anchor="middle" fill="#ffffff" font-weight="700" font-size="28" font-family="'Red Hat Display', Arial, sans-serif">SWIM Framework — Extensible Architecture</text>
+    <text x="600" y="82" text-anchor="middle" fill="#b0bec5" font-weight="400" font-size="16" font-family="'Red Hat Text', Arial, sans-serif">Build once. Extend for any CP1 service. Deploy anywhere.</text>
+
+    <!-- ==================== COMMON FRAMEWORK (BASE) ==================== -->
+    <g>
+        <rect x="100" y="120" width="1000" height="180" rx="16" fill="#eceff1" stroke="#90a4ae" stroke-width="3"/>
+        <rect x="100" y="120" width="1000" height="50" rx="16" fill="url(#grad-base)"/>
+        <rect x="100" y="155" width="1000" height="15" fill="url(#grad-base)"/>
+        <text x="600" y="155" text-anchor="middle" fill="#ffffff" font-weight="700" font-size="20" font-family="'Red Hat Display', Arial, sans-serif">COMMON FRAMEWORK</text>
+        <text x="600" y="200" text-anchor="middle" fill="#546e7a" font-weight="500" font-size="14" font-family="'Red Hat Text', Arial, sans-serif">Designed for SWIM-TI Yellow Profile — Reusable across services</text>
+
+        <!-- Capabilities -->
+        <rect x="130" y="225" width="140" height="50" rx="8" fill="#ffffff" stroke="#b0bec5" stroke-width="1.5"/>
+        <text x="200" y="250" text-anchor="middle" fill="#37474f" font-weight="600" font-size="13" font-family="'Red Hat Text', Arial, sans-serif">mTLS Security</text>
+        <text x="200" y="267" text-anchor="middle" fill="#78909c" font-size="10" font-family="'Red Hat Text', Arial, sans-serif">EACP / JWT Auth</text>
+
+        <rect x="290" y="225" width="140" height="50" rx="8" fill="#ffffff" stroke="#b0bec5" stroke-width="1.5"/>
+        <text x="360" y="250" text-anchor="middle" fill="#37474f" font-weight="600" font-size="13" font-family="'Red Hat Text', Arial, sans-serif">AMQP 1.0</text>
+        <text x="360" y="267" text-anchor="middle" fill="#78909c" font-size="10" font-family="'Red Hat Text', Arial, sans-serif">Pub/Sub Messaging</text>
+
+        <rect x="450" y="225" width="140" height="50" rx="8" fill="#ffffff" stroke="#b0bec5" stroke-width="1.5"/>
+        <text x="520" y="250" text-anchor="middle" fill="#37474f" font-weight="600" font-size="13" font-family="'Red Hat Text', Arial, sans-serif">Subscription</text>
+        <text x="520" y="267" text-anchor="middle" fill="#78909c" font-size="10" font-family="'Red Hat Text', Arial, sans-serif">Lifecycle Mgmt</text>
+
+        <rect x="610" y="225" width="140" height="50" rx="8" fill="#ffffff" stroke="#b0bec5" stroke-width="1.5"/>
+        <text x="680" y="250" text-anchor="middle" fill="#37474f" font-weight="600" font-size="13" font-family="'Red Hat Text', Arial, sans-serif">Resilience</text>
+        <text x="680" y="267" text-anchor="middle" fill="#78909c" font-size="10" font-family="'Red Hat Text', Arial, sans-serif">Retry / DLQ</text>
+
+        <rect x="770" y="225" width="140" height="50" rx="8" fill="#ffffff" stroke="#b0bec5" stroke-width="1.5"/>
+        <text x="840" y="250" text-anchor="middle" fill="#37474f" font-weight="600" font-size="13" font-family="'Red Hat Text', Arial, sans-serif">Observability</text>
+        <text x="840" y="267" text-anchor="middle" fill="#78909c" font-size="10" font-family="'Red Hat Text', Arial, sans-serif">Metrics / Traces</text>
+
+        <rect x="930" y="225" width="140" height="50" rx="8" fill="#ffffff" stroke="#b0bec5" stroke-width="1.5"/>
+        <text x="1000" y="250" text-anchor="middle" fill="#37474f" font-weight="600" font-size="13" font-family="'Red Hat Text', Arial, sans-serif">Cloud-Native</text>
+        <text x="1000" y="267" text-anchor="middle" fill="#78909c" font-size="10" font-family="'Red Hat Text', Arial, sans-serif">12-Factor App</text>
+    </g>
+
+    <!-- ==================== EXTENSION POINTS ==================== -->
+    <g>
+        <rect x="200" y="320" width="800" height="70" rx="12" fill="#f3e5f5" stroke="#9c27b0" stroke-width="3"/>
+        <rect x="200" y="320" width="800" height="35" rx="12" fill="url(#grad-ext)"/>
+        <rect x="200" y="345" width="800" height="10" fill="url(#grad-ext)"/>
+        <text x="600" y="348" text-anchor="middle" fill="#ffffff" font-weight="700" font-size="16" font-family="'Red Hat Display', Arial, sans-serif">EXTENSION POINTS (Interfaces)</text>
+        
+        <text x="280" y="378" text-anchor="middle" fill="#6a1b9a" font-weight="500" font-size="12" font-family="'Red Hat Text', Arial, sans-serif">Subscription</text>
+        <text x="430" y="378" text-anchor="middle" fill="#6a1b9a" font-weight="500" font-size="12" font-family="'Red Hat Text', Arial, sans-serif">Validation</text>
+        <text x="580" y="378" text-anchor="middle" fill="#6a1b9a" font-weight="500" font-size="12" font-family="'Red Hat Text', Arial, sans-serif">Enrichment</text>
+        <text x="730" y="378" text-anchor="middle" fill="#6a1b9a" font-weight="500" font-size="12" font-family="'Red Hat Text', Arial, sans-serif">Routing</text>
+        <text x="880" y="378" text-anchor="middle" fill="#6a1b9a" font-weight="500" font-size="12" font-family="'Red Hat Text', Arial, sans-serif">Business Rules (pluggable)</text>
+    </g>
+
+    <!-- Arrows from Extension Points to Modules -->
+    <line x1="230" y1="395" x2="230" y2="445" stroke="#9c27b0" stroke-width="3" marker-end="url(#slide-arrow)"/>
+    <line x1="480" y1="395" x2="480" y2="445" stroke="#9c27b0" stroke-width="3" marker-end="url(#slide-arrow)"/>
+    <line x1="730" y1="395" x2="730" y2="445" stroke="#9c27b0" stroke-width="3" marker-end="url(#slide-arrow)"/>
+    <line x1="980" y1="395" x2="980" y2="445" stroke="#9c27b0" stroke-width="3" marker-end="url(#slide-arrow)"/>
+
+    <!-- ==================== SERVICE MODULES ==================== -->
+    <g>
+        <!-- DNOTAM -->
+        <rect x="130" y="455" width="200" height="90" rx="12" fill="#e3f2fd" stroke="#1565c0" stroke-width="2"/>
+        <rect x="130" y="455" width="200" height="35" rx="12" fill="#1565c0"/>
+        <text x="230" y="478" text-anchor="middle" fill="#ffffff" font-weight="700" font-size="14" font-family="'Red Hat Display', Arial, sans-serif">DNOTAM</text>
+        <text x="230" y="510" text-anchor="middle" fill="#1565c0" font-size="11" font-family="'Red Hat Text', Arial, sans-serif">AIXM 5.1.1</text>
+        <text x="230" y="528" text-anchor="middle" fill="#1565c0" font-size="11" font-family="'Red Hat Text', Arial, sans-serif">Scenario-based routing</text>
+
+        <!-- AMAN -->
+        <rect x="380" y="455" width="200" height="90" rx="12" fill="#e8f5e9" stroke="#2e7d32" stroke-width="2"/>
+        <rect x="380" y="455" width="200" height="35" rx="12" fill="#2e7d32"/>
+        <text x="480" y="478" text-anchor="middle" fill="#ffffff" font-weight="700" font-size="14" font-family="'Red Hat Display', Arial, sans-serif">ARRIVAL SEQUENCE</text>
+        <text x="480" y="510" text-anchor="middle" fill="#2e7d32" font-size="11" font-family="'Red Hat Text', Arial, sans-serif">FIXM</text>
+        <text x="480" y="528" text-anchor="middle" fill="#2e7d32" font-size="11" font-family="'Red Hat Text', Arial, sans-serif">Airport-based routing</text>
+
+        <!-- MET -->
+        <rect x="630" y="455" width="200" height="90" rx="12" fill="#fff3e0" stroke="#ef6c00" stroke-width="2"/>
+        <rect x="630" y="455" width="200" height="35" rx="12" fill="#ef6c00"/>
+        <text x="730" y="478" text-anchor="middle" fill="#ffffff" font-weight="700" font-size="14" font-family="'Red Hat Display', Arial, sans-serif">MET SERVICES</text>
+        <text x="730" y="510" text-anchor="middle" fill="#ef6c00" font-size="11" font-family="'Red Hat Text', Arial, sans-serif">IWXXM</text>
+        <text x="730" y="528" text-anchor="middle" fill="#ef6c00" font-size="11" font-family="'Red Hat Text', Arial, sans-serif">Weather-based routing</text>
+
+        <!-- Future Service -->
+        <rect x="880" y="455" width="200" height="90" rx="12" fill="#ffebee" stroke="#c62828" stroke-width="2" stroke-dasharray="8,4"/>
+        <rect x="880" y="455" width="200" height="35" rx="12" fill="#c62828"/>
+        <text x="980" y="478" text-anchor="middle" fill="#ffffff" font-weight="700" font-size="14" font-family="'Red Hat Display', Arial, sans-serif">YOUR SERVICE</text>
+        <text x="980" y="510" text-anchor="middle" fill="#c62828" font-size="11" font-family="'Red Hat Text', Arial, sans-serif">Your schemas</text>
+        <text x="980" y="528" text-anchor="middle" fill="#c62828" font-size="11" font-family="'Red Hat Text', Arial, sans-serif">Your routing rules</text>
+    </g>
+
+    <!-- ==================== KEY MESSAGE ==================== -->
+    <g>
+        <rect x="100" y="575" width="1000" height="75" rx="12" fill="#e8f5e9" stroke="#43a047" stroke-width="2"/>
+        
+        <text x="200" y="610" text-anchor="middle" fill="#2e7d32" font-weight="700" font-size="14" font-family="'Red Hat Text', Arial, sans-serif">✓ Write once</text>
+        <text x="200" y="630" text-anchor="middle" fill="#558b2f" font-size="11" font-family="'Red Hat Text', Arial, sans-serif">Framework handles complexity</text>
+
+        <text x="400" y="610" text-anchor="middle" fill="#2e7d32" font-weight="700" font-size="14" font-family="'Red Hat Text', Arial, sans-serif">✓ Extend per service</text>
+        <text x="400" y="630" text-anchor="middle" fill="#558b2f" font-size="11" font-family="'Red Hat Text', Arial, sans-serif">Implement only interfaces</text>
+
+        <text x="600" y="610" text-anchor="middle" fill="#2e7d32" font-weight="700" font-size="14" font-family="'Red Hat Text', Arial, sans-serif">✓ Deploy via config</text>
+        <text x="600" y="630" text-anchor="middle" fill="#558b2f" font-size="11" font-family="'Red Hat Text', Arial, sans-serif">Same image, env vars</text>
+
+        <text x="800" y="610" text-anchor="middle" fill="#2e7d32" font-weight="700" font-size="14" font-family="'Red Hat Text', Arial, sans-serif">✓ Community modules</text>
+        <text x="800" y="630" text-anchor="middle" fill="#558b2f" font-size="11" font-family="'Red Hat Text', Arial, sans-serif">Shared contributions</text>
+
+        <text x="1000" y="610" text-anchor="middle" fill="#2e7d32" font-weight="700" font-size="13" font-family="'Red Hat Text', Arial, sans-serif">✓ Domain-First Focus</text>
+        <text x="1000" y="630" text-anchor="middle" fill="#558b2f" font-size="10" font-family="'Red Hat Text', Arial, sans-serif">Framework handles infra specs</text>
+    </g>
+</svg>

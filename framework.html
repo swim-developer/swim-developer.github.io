@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Framework | SWIM Developer</title>
+    <meta name="description" content="Extensible SWIM framework with 16 Service Provider Interfaces (SPIs) and 3 consumer extension points for building compliant aviation services.">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@400;500;600;700;900&family=Red+Hat+Text:wght@400;500;600&family=Red+Hat+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav class="navbar"></nav>
+
+    <header class="page-header">
+        <div class="container">
+            <div class="page-header-content">
+                <h1><i class="fas fa-puzzle-piece"></i> Extensible Framework</h1>
+                <p class="page-subtitle">16 SPIs and 3 extension points. Your service implements only what differs.</p>
+            </div>
+        </div>
+    </header>
+
+    <section id="extensibility" class="section section-extensibility">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Extensible Architecture</span>
+                <h2>Build Once, Extend for Any Service</h2>
+            </div>
+            <p class="section-intro">
+                Service-specific logic is isolated into <strong>three consumer extension points</strong> (EP1, EP2, EP3),
+                each delivered as an independent Maven module. Adding a dependency activates the extension;
+                switching a transport requires only a dependency swap, with zero changes to business logic.
+            </p>
+
+            <div class="ep-table-container" style="overflow-x:auto; margin-bottom:2rem;">
+                <table class="ep-table" style="width:100%;border-collapse:collapse;font-size:0.9rem;">
+                    <thead>
+                        <tr style="background:#263238;color:#fff;">
+                            <th style="padding:10px 14px;text-align:left;">EP</th>
+                            <th style="padding:10px 14px;text-align:left;">SPI</th>
+                            <th style="padding:10px 14px;text-align:left;">Purpose</th>
+                            <th style="padding:10px 14px;text-align:left;">Default Module</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="background:#1a1a1a;">
+                            <td style="padding:10px 14px;font-weight:600;color:#ce93d8;">EP1</td>
+                            <td style="padding:10px 14px;font-family:monospace;color:#e0e0e0;">SwimInboxStore</td>
+                            <td style="padding:10px 14px;color:#b3b3b3;">Persist received AMQP message to a durable inbox store</td>
+                            <td style="padding:10px 14px;font-family:monospace;color:#e0e0e0;">swim-inbox-store-kafka</td>
+                        </tr>
+                        <tr style="background:#111;">
+                            <td style="padding:10px 14px;font-weight:600;color:#ce93d8;">EP2</td>
+                            <td style="padding:10px 14px;font-family:monospace;color:#e0e0e0;">SwimInboxReader</td>
+                            <td style="padding:10px 14px;color:#b3b3b3;">Read from inbox, deserialise envelope, dispatch to pipeline</td>
+                            <td style="padding:10px 14px;font-family:monospace;color:#e0e0e0;">swim-inbox-reader-kafka</td>
+                        </tr>
+                        <tr style="background:#1a1a1a;">
+                            <td style="padding:10px 14px;font-weight:600;color:#ce93d8;">EP3</td>
+                            <td style="padding:10px 14px;font-family:monospace;color:#e0e0e0;">SwimOutboxRouter</td>
+                            <td style="padding:10px 14px;color:#b3b3b3;">Route validated domain event to output destinations. <strong style="color:#ce93d8;">Fan-out:</strong> multiple implementations run in parallel with independent timeouts. Failure in one router does not affect others.</td>
+                            <td style="padding:10px 14px;font-family:monospace;color:#e0e0e0;">swim-outbox-kafka-dnotam / ed254</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="extensibility-svg-container">
+                <svg viewBox="0 0 1100 720" xmlns="http://www.w3.org/2000/svg" class="extensibility-svg">
+                    <defs>
+                        <linearGradient id="grad-framework" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#37474f;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#546e7a;stop-opacity:1" />
+                        </linearGradient>
+                        <linearGradient id="grad-extension" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#7b1fa2;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#9c27b0;stop-opacity:1" />
+                        </linearGradient>
+                        <linearGradient id="grad-dnotam" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#1565c0;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#1976d2;stop-opacity:1" />
+                        </linearGradient>
+                        <linearGradient id="grad-aman" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#2e7d32;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#43a047;stop-opacity:1" />
+                        </linearGradient>
+                        <linearGradient id="grad-met" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#f57c00;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#ff9800;stop-opacity:1" />
+                        </linearGradient>
+                        <filter id="ext-shadow" x="-10%" y="-10%" width="120%" height="120%">
+                            <feDropShadow dx="0" dy="3" stdDeviation="3" flood-opacity="0.15"/>
+                        </filter>
+                        <marker id="ext-arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+                            <polygon points="0 0, 8 3, 0 6" fill="#7b1fa2"/>
+                        </marker>
+                    </defs>
+
+                    <!-- Title -->
+                    <text x="550" y="28" text-anchor="middle" fill="#1a1a1a" font-weight="700" font-size="16" font-family="Red Hat Display, sans-serif">Extensible Architecture: Common Framework + Service-Specific Extensions</text>
+
+                    <!-- ==================== CONSUMER SIDE ==================== -->
+                    <g class="consumer-ext-section">
+                        <text x="280" y="55" text-anchor="middle" fill="#004085" font-weight="700" font-size="14" font-family="Red Hat Display, sans-serif">CONSUMER</text>
+
+                        <!-- Framework Base Box -->
+                        <rect x="30" y="70" width="500" height="200" rx="10" fill="#eceff1" stroke="#607d8b" stroke-width="2" filter="url(#ext-shadow)"/>
+                        <rect x="30" y="70" width="500" height="32" rx="10" fill="url(#grad-framework)"/>
+                        <rect x="30" y="92" width="500" height="10" fill="url(#grad-framework)"/>
+                        <text x="280" y="93" text-anchor="middle" fill="#fff" font-weight="600" font-size="12">Common Framework (Designed for Yellow Profile)</text>
+
+                        <!-- Framework capabilities -->
+                        <text x="55" y="125" fill="#37474f" font-size="10" font-weight="600">Built-in Capabilities:</text>
+
+                        <rect x="55" y="135" width="130" height="22" rx="4" fill="#ffffff" stroke="#90a4ae" stroke-width="1"/>
+                        <text x="120" y="150" text-anchor="middle" fill="#546e7a" font-size="9">Subscription Manager</text>
+
+                        <rect x="195" y="135" width="100" height="22" rx="4" fill="#ffffff" stroke="#90a4ae" stroke-width="1"/>
+                        <text x="245" y="150" text-anchor="middle" fill="#546e7a" font-size="9">AMQP Consumer</text>
+
+                        <rect x="305" y="135" width="90" height="22" rx="4" fill="#ffffff" stroke="#90a4ae" stroke-width="1"/>
+                        <text x="350" y="150" text-anchor="middle" fill="#546e7a" font-size="9">mTLS Security</text>
+
+                        <rect x="405" y="135" width="105" height="22" rx="4" fill="#ffffff" stroke="#90a4ae" stroke-width="1"/>
+                        <text x="457" y="150" text-anchor="middle" fill="#546e7a" font-size="9">Inbox/Outbox</text>
+
+                        <rect x="55" y="165" width="100" height="22" rx="4" fill="#ffffff" stroke="#90a4ae" stroke-width="1"/>
+                        <text x="105" y="180" text-anchor="middle" fill="#546e7a" font-size="9">Fault Tolerance</text>
+
+                        <rect x="165" y="165" width="95" height="22" rx="4" fill="#ffffff" stroke="#90a4ae" stroke-width="1"/>
+                        <text x="212" y="180" text-anchor="middle" fill="#546e7a" font-size="9">Observability</text>
+
+                        <rect x="270" y="165" width="90" height="22" rx="4" fill="#ffffff" stroke="#90a4ae" stroke-width="1"/>
+                        <text x="315" y="180" text-anchor="middle" fill="#546e7a" font-size="9">Health Checks</text>
+
+                        <rect x="370" y="165" width="140" height="22" rx="4" fill="#ffffff" stroke="#90a4ae" stroke-width="1"/>
+                        <text x="440" y="180" text-anchor="middle" fill="#546e7a" font-size="9">12-Factor / Cloud-Native</text>
+
+                        <!-- Extension Points Header -->
+                        <rect x="55" y="200" width="450" height="55" rx="6" fill="#f3e5f5" stroke="#7b1fa2" stroke-width="2"/>
+                        <rect x="55" y="200" width="450" height="22" rx="6" fill="url(#grad-extension)"/>
+                        <rect x="55" y="214" width="450" height="8" fill="url(#grad-extension)"/>
+                        <text x="280" y="217" text-anchor="middle" fill="#fff" font-weight="600" font-size="11">Extension Points (EP1 → EP2 → EP3 + SPIs)</text>
+
+                        <text x="90" y="235" text-anchor="middle" fill="#7b1fa2" font-size="9">• Inbox Store (EP1)</text>
+                        <text x="188" y="235" text-anchor="middle" fill="#7b1fa2" font-size="9">• Inbox Reader (EP2)</text>
+                        <text x="280" y="235" text-anchor="middle" fill="#7b1fa2" font-size="9">• Event Extractor</text>
+                        <text x="372" y="235" text-anchor="middle" fill="#7b1fa2" font-size="9">• Payload Validator</text>
+                        <text x="470" y="235" text-anchor="middle" fill="#7b1fa2" font-size="9">• Outbox Router (EP3)</text>
+
+                        <text x="90" y="247" text-anchor="middle" fill="#7b1fa2" font-size="8" font-style="italic">(SwimInboxStore)</text>
+                        <text x="188" y="247" text-anchor="middle" fill="#7b1fa2" font-size="8" font-style="italic">(AbstractKafkaInboxReader)</text>
+                        <text x="280" y="247" text-anchor="middle" fill="#7b1fa2" font-size="8" font-style="italic">(SwimEventExtractor)</text>
+                        <text x="372" y="247" text-anchor="middle" fill="#7b1fa2" font-size="8" font-style="italic">(SwimPayloadValidator)</text>
+                        <text x="470" y="247" text-anchor="middle" fill="#7b1fa2" font-size="8" font-style="italic">(SwimOutboxRouter)</text>
+
+                        <!-- Arrows to Service Modules -->
+                        <line x1="125" y1="260" x2="125" y2="295" stroke="#7b1fa2" stroke-width="2" marker-end="url(#ext-arrow)"/>
+                        <line x1="280" y1="260" x2="280" y2="295" stroke="#7b1fa2" stroke-width="2" marker-end="url(#ext-arrow)"/>
+                        <line x1="435" y1="260" x2="435" y2="295" stroke="#7b1fa2" stroke-width="2" marker-end="url(#ext-arrow)"/>
+
+                        <!-- Service Modules -->
+                        <rect x="55" y="300" width="140" height="85" rx="8" fill="#e3f2fd" stroke="#1565c0" stroke-width="2" filter="url(#ext-shadow)"/>
+                        <rect x="55" y="300" width="140" height="25" rx="8" fill="url(#grad-dnotam)"/>
+                        <rect x="55" y="317" width="140" height="8" fill="url(#grad-dnotam)"/>
+                        <text x="125" y="318" text-anchor="middle" fill="#fff" font-weight="600" font-size="10">DNOTAM Module</text>
+                        <text x="125" y="345" text-anchor="middle" fill="#1565c0" font-size="8">AIXM 5.1.1 schemas</text>
+                        <text x="125" y="358" text-anchor="middle" fill="#1565c0" font-size="8">Scenario-based routing</text>
+                        <text x="125" y="371" text-anchor="middle" fill="#1565c0" font-size="8">Event enrichment</text>
+
+                        <rect x="210" y="300" width="140" height="85" rx="8" fill="#e8f5e9" stroke="#2e7d32" stroke-width="2" filter="url(#ext-shadow)"/>
+                        <rect x="210" y="300" width="140" height="25" rx="8" fill="url(#grad-aman)"/>
+                        <rect x="210" y="317" width="140" height="8" fill="url(#grad-aman)"/>
+                        <text x="280" y="318" text-anchor="middle" fill="#fff" font-weight="600" font-size="10">ED-254 Module</text>
+                        <text x="280" y="345" text-anchor="middle" fill="#2e7d32" font-size="8">FIXM schemas</text>
+                        <text x="280" y="358" text-anchor="middle" fill="#2e7d32" font-size="8">Airport-based routing</text>
+                        <text x="280" y="371" text-anchor="middle" fill="#2e7d32" font-size="8">Sequence enrichment</text>
+
+                        <rect x="365" y="300" width="140" height="85" rx="8" fill="#fff3e0" stroke="#f57c00" stroke-width="2" filter="url(#ext-shadow)"/>
+                        <rect x="365" y="300" width="140" height="25" rx="8" fill="url(#grad-met)"/>
+                        <rect x="365" y="317" width="140" height="8" fill="url(#grad-met)"/>
+                        <text x="435" y="318" text-anchor="middle" fill="#fff" font-weight="600" font-size="10">MET Module</text>
+                        <text x="435" y="345" text-anchor="middle" fill="#e65100" font-size="8">IWXXM schemas</text>
+                        <text x="435" y="358" text-anchor="middle" fill="#e65100" font-size="8">Weather-based routing</text>
+                        <text x="435" y="371" text-anchor="middle" fill="#e65100" font-size="8">METAR/TAF enrichment</text>
+                    </g>
+
+                    <!-- ==================== PROVIDER SIDE ==================== -->
+                    <g class="provider-ext-section">
+                        <text x="820" y="55" text-anchor="middle" fill="#28a745" font-weight="700" font-size="14" font-family="Red Hat Display, sans-serif">PROVIDER</text>
+
+                        <!-- Framework Base Box -->
+                        <rect x="570" y="70" width="500" height="200" rx="10" fill="#eceff1" stroke="#607d8b" stroke-width="2" filter="url(#ext-shadow)"/>
+                        <rect x="570" y="70" width="500" height="32" rx="10" fill="url(#grad-framework)"/>
+                        <rect x="570" y="92" width="500" height="10" fill="url(#grad-framework)"/>
+                        <text x="820" y="93" text-anchor="middle" fill="#fff" font-weight="600" font-size="12">Common Framework (Designed for Yellow Profile)</text>
+
+                        <!-- Framework capabilities -->
+                        <text x="595" y="125" fill="#37474f" font-size="10" font-weight="600">Built-in Capabilities:</text>
+
+                        <rect x="595" y="135" width="130" height="22" rx="4" fill="#ffffff" stroke="#90a4ae" stroke-width="1"/>
+                        <text x="660" y="150" text-anchor="middle" fill="#546e7a" font-size="9">Subscription CRUD</text>
+
+                        <rect x="735" y="135" width="100" height="22" rx="4" fill="#ffffff" stroke="#90a4ae" stroke-width="1"/>
+                        <text x="785" y="150" text-anchor="middle" fill="#546e7a" font-size="9">Queue Manager</text>
+
+                        <rect x="845" y="135" width="90" height="22" rx="4" fill="#ffffff" stroke="#90a4ae" stroke-width="1"/>
+                        <text x="890" y="150" text-anchor="middle" fill="#546e7a" font-size="9">mTLS + OIDC</text>
+
+                        <rect x="945" y="135" width="105" height="22" rx="4" fill="#ffffff" stroke="#90a4ae" stroke-width="1"/>
+                        <text x="997" y="150" text-anchor="middle" fill="#546e7a" font-size="9">JWT Validation</text>
+
+                        <rect x="595" y="165" width="100" height="22" rx="4" fill="#ffffff" stroke="#90a4ae" stroke-width="1"/>
+                        <text x="645" y="180" text-anchor="middle" fill="#546e7a" font-size="9">AMQP Publisher</text>
+
+                        <rect x="705" y="165" width="110" height="22" rx="4" fill="#ffffff" stroke="#90a4ae" stroke-width="1"/>
+                        <text x="760" y="180" text-anchor="middle" fill="#546e7a" font-size="9">State Machine</text>
+
+                        <rect x="825" y="165" width="90" height="22" rx="4" fill="#ffffff" stroke="#90a4ae" stroke-width="1"/>
+                        <text x="870" y="180" text-anchor="middle" fill="#546e7a" font-size="9">Observability</text>
+
+                        <rect x="925" y="165" width="125" height="22" rx="4" fill="#ffffff" stroke="#90a4ae" stroke-width="1"/>
+                        <text x="987" y="180" text-anchor="middle" fill="#546e7a" font-size="9">12-Factor / Cloud-Native</text>
+
+                        <!-- Extension Points Header -->
+                        <rect x="595" y="200" width="450" height="55" rx="6" fill="#f3e5f5" stroke="#7b1fa2" stroke-width="2"/>
+                        <rect x="595" y="200" width="450" height="22" rx="6" fill="url(#grad-extension)"/>
+                        <rect x="595" y="214" width="450" height="8" fill="url(#grad-extension)"/>
+                        <text x="820" y="217" text-anchor="middle" fill="#fff" font-weight="600" font-size="11">Extension Points (5 Interfaces to Implement)</text>
+
+                        <text x="630" y="235" text-anchor="middle" fill="#7b1fa2" font-size="9">• Event Ingress</text>
+                        <text x="728" y="235" text-anchor="middle" fill="#7b1fa2" font-size="9">• Payload Validator</text>
+                        <text x="820" y="235" text-anchor="middle" fill="#7b1fa2" font-size="9">• Event Extractor</text>
+                        <text x="912" y="235" text-anchor="middle" fill="#7b1fa2" font-size="9">• Queue Provisioning</text>
+                        <text x="1010" y="235" text-anchor="middle" fill="#7b1fa2" font-size="9">• Outbox Router</text>
+
+                        <text x="630" y="247" text-anchor="middle" fill="#7b1fa2" font-size="8" font-style="italic">(SwimIngressHandler)</text>
+                        <text x="728" y="247" text-anchor="middle" fill="#7b1fa2" font-size="8" font-style="italic">(SwimPayloadValidator)</text>
+                        <text x="820" y="247" text-anchor="middle" fill="#7b1fa2" font-size="8" font-style="italic">(SwimEventExtractor)</text>
+                        <text x="912" y="247" text-anchor="middle" fill="#7b1fa2" font-size="8" font-style="italic">(QueueProvisioningStrategy)</text>
+                        <text x="1010" y="247" text-anchor="middle" fill="#7b1fa2" font-size="8" font-style="italic">(SwimOutboxRouter)</text>
+
+                        <!-- Arrows to Service Modules -->
+                        <line x1="665" y1="260" x2="665" y2="295" stroke="#7b1fa2" stroke-width="2" marker-end="url(#ext-arrow)"/>
+                        <line x1="820" y1="260" x2="820" y2="295" stroke="#7b1fa2" stroke-width="2" marker-end="url(#ext-arrow)"/>
+                        <line x1="975" y1="260" x2="975" y2="295" stroke="#7b1fa2" stroke-width="2" marker-end="url(#ext-arrow)"/>
+
+                        <!-- Service Modules -->
+                        <rect x="595" y="300" width="140" height="85" rx="8" fill="#e3f2fd" stroke="#1565c0" stroke-width="2" filter="url(#ext-shadow)"/>
+                        <rect x="595" y="300" width="140" height="25" rx="8" fill="url(#grad-dnotam)"/>
+                        <rect x="595" y="317" width="140" height="8" fill="url(#grad-dnotam)"/>
+                        <text x="665" y="318" text-anchor="middle" fill="#fff" font-weight="600" font-size="10">DNOTAM Module</text>
+                        <text x="665" y="345" text-anchor="middle" fill="#1565c0" font-size="8">AIXM validation</text>
+                        <text x="665" y="358" text-anchor="middle" fill="#1565c0" font-size="8">Scenario-based queues</text>
+                        <text x="665" y="371" text-anchor="middle" fill="#1565c0" font-size="8">Event filtering</text>
+
+                        <rect x="750" y="300" width="140" height="85" rx="8" fill="#e8f5e9" stroke="#2e7d32" stroke-width="2" filter="url(#ext-shadow)"/>
+                        <rect x="750" y="300" width="140" height="25" rx="8" fill="url(#grad-aman)"/>
+                        <rect x="750" y="317" width="140" height="8" fill="url(#grad-aman)"/>
+                        <text x="820" y="318" text-anchor="middle" fill="#fff" font-weight="600" font-size="10">ED-254 Module</text>
+                        <text x="820" y="345" text-anchor="middle" fill="#2e7d32" font-size="8">FIXM validation</text>
+                        <text x="820" y="358" text-anchor="middle" fill="#2e7d32" font-size="8">Airport-based queues</text>
+                        <text x="820" y="371" text-anchor="middle" fill="#2e7d32" font-size="8">Sequence filtering</text>
+
+                        <rect x="905" y="300" width="140" height="85" rx="8" fill="#fff3e0" stroke="#f57c00" stroke-width="2" filter="url(#ext-shadow)"/>
+                        <rect x="905" y="300" width="140" height="25" rx="8" fill="url(#grad-met)"/>
+                        <rect x="905" y="317" width="140" height="8" fill="url(#grad-met)"/>
+                        <text x="975" y="318" text-anchor="middle" fill="#fff" font-weight="600" font-size="10">MET Module</text>
+                        <text x="975" y="345" text-anchor="middle" fill="#e65100" font-size="8">IWXXM validation</text>
+                        <text x="975" y="358" text-anchor="middle" fill="#e65100" font-size="8">Weather-based queues</text>
+                        <text x="975" y="371" text-anchor="middle" fill="#e65100" font-size="8">METAR/TAF filtering</text>
+                    </g>
+
+                    <!-- ==================== CONTAINER IMAGES ==================== -->
+                    <g class="containers-section">
+                        <text x="550" y="420" text-anchor="middle" fill="#37474f" font-weight="700" font-size="14" font-family="Red Hat Display, sans-serif">Resulting Container Images</text>
+
+                        <!-- Consumer Containers -->
+                        <rect x="55" y="440" width="140" height="50" rx="6" fill="#1565c0" filter="url(#ext-shadow)"/>
+                        <text x="125" y="460" text-anchor="middle" fill="#fff" font-size="9" font-weight="500">swim-dnotam-consumer</text>
+                        <text x="125" y="478" text-anchor="middle" fill="#bbdefb" font-size="8">Framework + DNOTAM ext.</text>
+
+                        <rect x="210" y="440" width="140" height="50" rx="6" fill="#2e7d32" filter="url(#ext-shadow)"/>
+                        <text x="280" y="460" text-anchor="middle" fill="#fff" font-size="9" font-weight="500">swim-ed254-consumer</text>
+                        <text x="280" y="478" text-anchor="middle" fill="#c8e6c9" font-size="8">Framework + ED-254 ext.</text>
+
+                        <rect x="365" y="440" width="140" height="50" rx="6" fill="#f57c00" filter="url(#ext-shadow)"/>
+                        <text x="435" y="460" text-anchor="middle" fill="#fff" font-size="9" font-weight="500">swim-met-consumer</text>
+                        <text x="435" y="478" text-anchor="middle" fill="#ffe0b2" font-size="8">Framework + MET ext.</text>
+
+                        <!-- Provider Containers -->
+                        <rect x="595" y="440" width="140" height="50" rx="6" fill="#1565c0" filter="url(#ext-shadow)"/>
+                        <text x="665" y="460" text-anchor="middle" fill="#fff" font-size="9" font-weight="500">swim-dnotam-provider</text>
+                        <text x="665" y="478" text-anchor="middle" fill="#bbdefb" font-size="8">Framework + DNOTAM ext.</text>
+
+                        <rect x="750" y="440" width="140" height="50" rx="6" fill="#2e7d32" filter="url(#ext-shadow)"/>
+                        <text x="820" y="460" text-anchor="middle" fill="#fff" font-size="9" font-weight="500">swim-ed254-provider</text>
+                        <text x="820" y="478" text-anchor="middle" fill="#c8e6c9" font-size="8">Framework + ED-254 ext.</text>
+
+                        <rect x="905" y="440" width="140" height="50" rx="6" fill="#f57c00" filter="url(#ext-shadow)"/>
+                        <text x="975" y="460" text-anchor="middle" fill="#fff" font-size="9" font-weight="500">swim-met-provider</text>
+                        <text x="975" y="478" text-anchor="middle" fill="#ffe0b2" font-size="8">Framework + MET ext.</text>
+                    </g>
+
+                    <!-- ==================== DEPLOYMENT MODEL ==================== -->
+                    <g class="deployment-section">
+                        <rect x="30" y="520" width="1040" height="185" rx="10" fill="#e8f5e9" stroke="#2e7d32" stroke-width="2" filter="url(#ext-shadow)"/>
+                        <rect x="30" y="520" width="1040" height="35" rx="10" fill="#2e7d32"/>
+                        <rect x="30" y="545" width="1040" height="10" fill="#2e7d32"/>
+                        <text x="550" y="545" text-anchor="middle" fill="#fff" font-weight="700" font-size="13" font-family="Red Hat Display, sans-serif">Deployment Model: Same Image, Different Configurations</text>
+
+                        <!-- Environment Examples -->
+                        <rect x="60" y="575" width="230" height="115" rx="8" fill="#ffffff" stroke="#81c784" stroke-width="1.5"/>
+                        <text x="175" y="598" text-anchor="middle" fill="#2e7d32" font-weight="600" font-size="11">Development</text>
+                        <text x="175" y="618" text-anchor="middle" fill="#37474f" font-size="9">Pulls: swim-dnotam-consumer</text>
+                        <rect x="80" y="630" width="190" height="50" rx="4" fill="#f5f5f5" stroke="#e0e0e0" stroke-width="1"/>
+                        <text x="175" y="648" text-anchor="middle" fill="#546e7a" font-size="8" font-family="Red Hat Mono, monospace">AISP_URL=https://aisp.dev.local</text>
+                        <text x="175" y="662" text-anchor="middle" fill="#546e7a" font-size="8" font-family="Red Hat Mono, monospace">KAFKA_BROKERS=kafka.dev.local</text>
+                        <text x="175" y="676" text-anchor="middle" fill="#546e7a" font-size="8" font-family="Red Hat Mono, monospace">MONGO_URI=mongodb://db.dev.local</text>
+
+                        <rect x="310" y="575" width="230" height="115" rx="8" fill="#ffffff" stroke="#81c784" stroke-width="1.5"/>
+                        <text x="425" y="598" text-anchor="middle" fill="#2e7d32" font-weight="600" font-size="11">UAT</text>
+                        <text x="425" y="618" text-anchor="middle" fill="#37474f" font-size="9">Pulls: swim-dnotam-consumer</text>
+                        <rect x="330" y="630" width="190" height="50" rx="4" fill="#f5f5f5" stroke="#e0e0e0" stroke-width="1"/>
+                        <text x="425" y="648" text-anchor="middle" fill="#546e7a" font-size="8" font-family="Red Hat Mono, monospace">AISP_URL=https://aisp.uat.local</text>
+                        <text x="425" y="662" text-anchor="middle" fill="#546e7a" font-size="8" font-family="Red Hat Mono, monospace">KAFKA_BROKERS=kafka.uat.local</text>
+                        <text x="425" y="676" text-anchor="middle" fill="#546e7a" font-size="8" font-family="Red Hat Mono, monospace">MONGO_URI=mongodb://db.uat.local</text>
+
+                        <rect x="560" y="575" width="230" height="115" rx="8" fill="#ffffff" stroke="#81c784" stroke-width="1.5"/>
+                        <text x="675" y="598" text-anchor="middle" fill="#2e7d32" font-weight="600" font-size="11">Pre-Production</text>
+                        <text x="675" y="618" text-anchor="middle" fill="#37474f" font-size="9">Pulls: swim-dnotam-consumer</text>
+                        <rect x="580" y="630" width="190" height="50" rx="4" fill="#f5f5f5" stroke="#e0e0e0" stroke-width="1"/>
+                        <text x="675" y="648" text-anchor="middle" fill="#546e7a" font-size="8" font-family="Red Hat Mono, monospace">AISP_URL=https://aisp.preprod.local</text>
+                        <text x="675" y="662" text-anchor="middle" fill="#546e7a" font-size="8" font-family="Red Hat Mono, monospace">KAFKA_BROKERS=kafka.preprod.local</text>
+                        <text x="675" y="676" text-anchor="middle" fill="#546e7a" font-size="8" font-family="Red Hat Mono, monospace">MONGO_URI=mongodb://db.preprod.local</text>
+
+                        <rect x="810" y="575" width="230" height="115" rx="8" fill="#ffffff" stroke="#81c784" stroke-width="1.5"/>
+                        <text x="925" y="598" text-anchor="middle" fill="#2e7d32" font-weight="600" font-size="11">Production</text>
+                        <text x="925" y="618" text-anchor="middle" fill="#37474f" font-size="9">Pulls: swim-dnotam-consumer</text>
+                        <rect x="830" y="630" width="190" height="50" rx="4" fill="#f5f5f5" stroke="#e0e0e0" stroke-width="1"/>
+                        <text x="925" y="648" text-anchor="middle" fill="#546e7a" font-size="8" font-family="Red Hat Mono, monospace">AISP_URL=https://ead.eurocontrol.int</text>
+                        <text x="925" y="662" text-anchor="middle" fill="#546e7a" font-size="8" font-family="Red Hat Mono, monospace">KAFKA_BROKERS=kafka.prod.local</text>
+                        <text x="925" y="676" text-anchor="middle" fill="#546e7a" font-size="8" font-family="Red Hat Mono, monospace">MONGO_URI=mongodb://db.prod.local</text>
+                    </g>
+                </svg>
+            </div>
+
+            <div class="extensibility-benefits">
+                <div class="ext-benefit">
+                    <i class="fas fa-layer-group"></i>
+                    <h4>Implement Once</h4>
+                    <p>Yellow Profile complexity (mTLS, AMQP, subscriptions, resilience) is implemented once in the framework. Services inherit it.</p>
+                </div>
+                <div class="ext-benefit">
+                    <i class="fas fa-puzzle-piece"></i>
+                    <h4>Fan-out Delivery (EP3)</h4>
+                    <p>Add any number of SwimOutboxRouter implementations. The framework delivers to all of them in parallel with independent timeouts.</p>
+                </div>
+                <div class="ext-benefit">
+                    <i class="fas fa-server"></i>
+                    <h4>Environment-Aware Provisioning</h4>
+                    <p>Dev uses Jolokia JMX for local Artemis. Prod uses Kubernetes Secrets + AMQ Operator. Same security model, different infrastructure.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer"></footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

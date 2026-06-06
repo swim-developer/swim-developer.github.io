@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Part 4: Infrastructure | Create Provider Tutorial | SWIM Developer</title>
+    <meta name="description" content="Create certs/generate.sh and compose.yml for the swim-ffice-provider local development environment.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@400;500;600;700;900&family=Red+Hat+Text:wght@400;500;600&family=Red+Hat+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="../../styles.css">
+</head>
+<body>
+    <nav class="navbar"></nav>
+
+    <header class="page-header">
+        <div class="container">
+            <div class="page-header-content">
+                <h1><i class="fas fa-graduation-cap"></i> Tutorials</h1>
+                <p class="page-subtitle">Step-by-step guides for deploying, configuring, and validating SWIM services</p>
+            </div>
+        </div>
+    </header>
+
+    <div class="wiki-layout">
+        <aside class="wiki-sidebar">
+            <nav class="wiki-nav">
+                <div class="wiki-nav-group">
+                    <h4 class="wiki-nav-title"><i class="fas fa-rocket"></i> Getting Started</h4>
+                    <ul>
+                        <li><a href="../deploy-gitops.html">GitOps (Argo CD)</a></li>
+                        <li><a href="../deploy-openshift.html">OpenShift</a></li>
+                        <li><a href="../deploy-kubernetes.html">Kubernetes</a></li>
+                        <li><a href="../deploy-openshift-local.html">OpenShift Local</a></li>
+                        <li><a href="../deploy-minikube.html">Minikube</a></li>
+                        <li><a href="../deploy-podman.html">Container Local (Podman)</a></li>
+                        <li><a href="../deploy-java.html">Java / Binary</a></li>
+                    </ul>
+                </div>
+                <div class="wiki-nav-group">
+                    <h4 class="wiki-nav-title"><i class="fas fa-bell"></i> Digital NOTAM</h4>
+                    <ul>
+                        <li><a href="../dnotam-consumer-deploy.html">Deploy Consumer</a></li>
+                        <li><a href="../dnotam-consumer-explore.html">Explore Consumer</a></li>
+                        <li><a href="../dnotam-provider-deploy.html">Deploy Provider</a></li>
+                        <li><a href="../dnotam-provider-explore.html">Explore Provider</a></li>
+                        <li><a href="../consumer-validator-deploy.html">Deploy Consumer Validator</a></li>
+                        <li><a href="../consumer-validator-explore.html">Explore Consumer Validator</a></li>
+                        <li><a href="../provider-validator-deploy.html">Deploy Provider Validator</a></li>
+                        <li><a href="../e2e-test.html">End-to-End Test</a></li>
+                    </ul>
+                </div>
+                <div class="wiki-nav-group">
+                    <h4 class="wiki-nav-title"><i class="fas fa-plane-arrival"></i> ED-254 (AMAN)</h4>
+                    <ul>
+                        <li><a href="../ed254-consumer-deploy.html">Deploy Consumer</a></li>
+                        <li><a href="../ed254-provider-deploy.html">Deploy Provider</a></li>
+                    </ul>
+                </div>
+                <div class="wiki-nav-group">
+                    <h4 class="wiki-nav-title"><i class="fas fa-wand-magic-sparkles"></i> Build Your Own</h4>
+                    <h4 class="wiki-nav-title" style="margin-top: 8px;"><i class="fas fa-upload"></i> Create Provider</h4>
+                    <ul class="chapter-list">
+                        <li><a href="index.html">Introduction &amp; Setup</a></li>
+                        <li><a href="data-model.html">Part 1: Data Model</a></li>
+                        <li><a href="provider.html">Part 2: Provider Service</a></li>
+                        <li><a href="validator.html">Part 3: Provider Validator</a></li>
+                        <li><a href="infrastructure.html" class="chapter-active">Part 4: Infrastructure</a></li>
+                        <li><a href="run.html">Part 5: Run &amp; Verify</a></li>
+                        <li><a href="tests.html">Part 6: Tests</a></li>
+                    </ul>
+                    <h4 class="wiki-nav-title" style="margin-top: 16px;"><i class="fas fa-book"></i> Create Consumer</h4>
+                    <ul>
+                        <li><a href="../create-consumer/index.html">Introduction &amp; Setup</a></li>
+                    </ul>
+                </div>
+            </nav>
+        </aside>
+
+        <main class="wiki-content">
+            <div class="tutorial-progress">
+                <span>Step 5 of 7</span>
+                <div class="progress-bar"><div class="progress-fill" style="width: 71.4%"></div></div>
+            </div>
+
+            <section class="wiki-section">
+                <h2>Part 4: Local Infrastructure</h2>
+
+                <h3>4.1 Create the certificate generation script</h3>
+                <p>Create <code>certs/generate.sh</code> at the project root. This script uses <code>mkcert</code> to generate all certificates needed for local mTLS development in a single run. Make it executable:</p>
+                <pre class="wiki-code"><code>mkdir -p certs
+chmod +x certs/generate.sh</code></pre>
+
+                <p>The script creates the following files in <code>certs/</code>:</p>
+                <table>
+                    <thead>
+                        <tr><th>File</th><th>Purpose</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><code>ca.crt</code></td><td>mkcert root CA certificate (PEM)</td></tr>
+                        <tr><td><code>tls.crt</code> / <code>tls.key</code></td><td>Provider HTTPS server certificate (PEM)</td></tr>
+                        <tr><td><code>client.crt</code> / <code>client.key</code></td><td>Provider AMQP client certificate for mTLS to Artemis (PEM)</td></tr>
+                        <tr><td><code>broker.p12</code></td><td>Artemis broker keystore (PKCS12)</td></tr>
+                        <tr><td><code>ca-truststore.p12</code></td><td>Artemis CA truststore — verifies consumer client certificates (PKCS12)</td></tr>
+                        <tr><td><code>keycloak-keystore.p12</code></td><td>Keycloak HTTPS keystore (PKCS12)</td></tr>
+                        <tr><td><code>validator-keystore.p12</code></td><td>Validator AMQP client keystore (PKCS12)</td></tr>
+                        <tr><td><code>validator-truststore.p12</code></td><td>Validator CA truststore (PKCS12)</td></tr>
+                    </tbody>
+                </table>
+
+                <p>The key SANs configured for each certificate are:</p>
+                <table>
+                    <thead>
+                        <tr><th>Certificate</th><th>SANs include</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Broker</td><td><code>localhost</code>, <code>ffice-provider-artemis</code>, <code>provider-artemis</code>, <code>*.swim.lab</code></td></tr>
+                        <tr><td>Keycloak</td><td><code>keycloak.swim.lab</code>, <code>keycloak</code>, <code>localhost</code></td></tr>
+                        <tr><td>Provider HTTPS</td><td><code>localhost</code>, <code>ffice-provider</code>, <code>ffice-provider.swim.lab</code></td></tr>
+                        <tr><td>Provider client (AMQP)</td><td><code>ffice-provider</code>, <code>localhost</code></td></tr>
+                        <tr><td>Validator client (AMQP)</td><td><code>ffice-provider-validator</code>, <code>localhost</code></td></tr>
+                    </tbody>
+                </table>
+
+                <div class="wiki-note">
+                    <p>Add <code>certs/</code> to <code>.gitignore</code> to avoid committing certificates. Only the script itself should be in source control.</p>
+                </div>
+
+                <h3>4.2 Infrastructure overview</h3>
+                <p><code>compose.yml</code> starts the following services:</p>
+
+                <table>
+                    <thead>
+                        <tr><th>Service</th><th>Port</th><th>Purpose</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><code>provider-artemis</code></td><td>5671 (AMQPS), 8161 (console)</td><td>AMQP broker for event delivery to subscribers</td></tr>
+                        <tr><td><code>provider-postgres</code></td><td>5432</td><td>PostgreSQL for events and subscriptions</td></tr>
+                        <tr><td><code>kafka</code></td><td>9092</td><td>Kafka broker for FF-ICE event ingress</td></tr>
+                        <tr><td><code>kafka-init</code></td><td>—</td><td>Creates <code>ffice-events-all-topic</code> and <code>ffice-events-dlq-topic</code></td></tr>
+                        <tr><td><code>akhq</code></td><td>9090</td><td>Kafka web UI</td></tr>
+                        <tr><td><code>keycloak</code></td><td>8543 (HTTPS)</td><td>OIDC identity provider</td></tr>
+                        <tr><td><code>keycloak-postgres</code></td><td>5433</td><td>Keycloak database</td></tr>
+                        <tr><td><code>ffice-provider-validator</code></td><td>8085</td><td>Provider validator UI and AMQP consumer</td></tr>
+                        <tr><td><code>ffice-provider-validator-db</code></td><td>3308</td><td>MariaDB for validator message persistence</td></tr>
+                    </tbody>
+                </table>
+
+                <div class="wiki-note">
+                    <p>To run without the validator (e.g. provider-only development), scale the validator services to zero:</p>
+                    <pre class="wiki-code"><code>podman compose up -d --scale ffice-provider-validator=0 --scale ffice-provider-validator-db=0</code></pre>
+                </div>
+
+                <h3>4.3 Optional: add keycloak.swim.lab to /etc/hosts</h3>
+                <p>The provider and Keycloak communicate using the hostname <code>keycloak.swim.lab</code>. If you access Keycloak's admin console from a browser, add the following line to your <code>/etc/hosts</code>:</p>
+                <pre class="wiki-code"><code>127.0.0.1  keycloak.swim.lab</code></pre>
+                <p>On Linux with Podman (not macOS), also add:</p>
+                <pre class="wiki-code"><code>127.0.0.1  host.containers.internal</code></pre>
+            </section>
+
+            <div class="tutorial-nav-footer">
+                <a href="validator.html" class="nav-prev">
+                    <span class="nav-label"><i class="fas fa-arrow-left"></i> Previous</span>
+                    <span class="nav-title">Part 3: Provider Validator</span>
+                </a>
+                <a href="run.html" class="nav-next">
+                    <span class="nav-label">Next <i class="fas fa-arrow-right"></i></span>
+                    <span class="nav-title">Part 5: Run &amp; Verify</span>
+                </a>
+            </div>
+        </main>
+    </div>
+
+    <footer class="footer"></footer>
+    <script src="../../script.js"></script>
+</body>
+</html>

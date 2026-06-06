@@ -1,0 +1,134 @@
+<svg viewBox="0 0 1200 700" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bgGradCap" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1a1a2e"/>
+      <stop offset="100%" style="stop-color:#16213e"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- Background transparent for PNG export -->
+  
+  <!-- Title -->
+  <text x="600" y="55" text-anchor="middle" fill="#fff" font-family="Red Hat Display, sans-serif" font-size="42" font-weight="700">Built-in Capabilities</text>
+  <text x="600" y="95" text-anchor="middle" fill="#8892b0" font-family="Red Hat Text, sans-serif" font-size="24">Zero configuration beyond the Custom Resource</text>
+  
+  <!-- Grid 2x4 -->
+  
+  <!-- Row 1 -->
+  <!-- Card 1: WFS GetFeature -->
+  <g transform="translate(70, 130)">
+    <rect x="0" y="0" width="250" height="130" rx="12" fill="#0f1624" stroke="#64ffda" stroke-width="2"/>
+    <circle cx="35" cy="35" r="22" fill="#64ffda" opacity="0.2"/>
+    <text x="35" y="43" text-anchor="middle" fill="#64ffda" font-family="Red Hat Display, sans-serif" font-size="22">🔍</text>
+    <text x="70" y="38" fill="#fff" font-family="Red Hat Display, sans-serif" font-size="18" font-weight="600">WFS GetFeature</text>
+    <text x="15" y="70" fill="#8892b0" font-family="Red Hat Text, sans-serif" font-size="16">On-demand queries</text>
+    <text x="15" y="92" fill="#8892b0" font-family="Red Hat Text, sans-serif" font-size="16">for historical data</text>
+    <text x="15" y="118" fill="#64ffda" font-family="Red Hat Mono, monospace" font-size="16">Request/Reply</text>
+  </g>
+  
+  <!-- Card 2: Inbox/Outbox -->
+  <g transform="translate(340, 130)">
+    <rect x="0" y="0" width="250" height="130" rx="12" fill="#0f1624" stroke="#64ffda" stroke-width="2"/>
+    <circle cx="35" cy="35" r="22" fill="#64ffda" opacity="0.2"/>
+    <text x="35" y="43" text-anchor="middle" fill="#64ffda" font-family="Red Hat Display, sans-serif" font-size="22">✅</text>
+    <text x="70" y="38" fill="#fff" font-family="Red Hat Display, sans-serif" font-size="18" font-weight="600">Inbox/Outbox</text>
+    <text x="15" y="70" fill="#8892b0" font-family="Red Hat Text, sans-serif" font-size="16">No message loss</text>
+    <text x="15" y="92" fill="#8892b0" font-family="Red Hat Text, sans-serif" font-size="16">even on pod crash</text>
+    <text x="15" y="118" fill="#64ffda" font-family="Red Hat Mono, monospace" font-size="16">Exactly-once</text>
+  </g>
+  
+  <!-- Card 3: Automatic Retry -->
+  <g transform="translate(610, 130)">
+    <rect x="0" y="0" width="250" height="130" rx="12" fill="#0f1624" stroke="#64ffda" stroke-width="2"/>
+    <circle cx="35" cy="35" r="22" fill="#64ffda" opacity="0.2"/>
+    <text x="35" y="43" text-anchor="middle" fill="#64ffda" font-family="Red Hat Display, sans-serif" font-size="22">🔄</text>
+    <text x="70" y="38" fill="#fff" font-family="Red Hat Display, sans-serif" font-size="18" font-weight="600">Automatic Retry</text>
+    <text x="15" y="70" fill="#8892b0" font-family="Red Hat Text, sans-serif" font-size="16">Configurable policies</text>
+    <text x="15" y="92" fill="#8892b0" font-family="Red Hat Text, sans-serif" font-size="16">with dead letter queue</text>
+    <text x="15" y="118" fill="#64ffda" font-family="Red Hat Mono, monospace" font-size="16">Exponential backoff</text>
+  </g>
+  
+  <!-- Card 4: Audit Trail -->
+  <g transform="translate(880, 130)">
+    <rect x="0" y="0" width="250" height="130" rx="12" fill="#0f1624" stroke="#64ffda" stroke-width="2"/>
+    <circle cx="35" cy="35" r="22" fill="#64ffda" opacity="0.2"/>
+    <text x="35" y="43" text-anchor="middle" fill="#64ffda" font-family="Red Hat Display, sans-serif" font-size="22">📋</text>
+    <text x="70" y="38" fill="#fff" font-family="Red Hat Display, sans-serif" font-size="18" font-weight="600">Audit Trail</text>
+    <text x="15" y="70" fill="#8892b0" font-family="Red Hat Text, sans-serif" font-size="16">Every message</text>
+    <text x="15" y="92" fill="#8892b0" font-family="Red Hat Text, sans-serif" font-size="16">persisted for audit</text>
+    <text x="15" y="118" fill="#64ffda" font-family="Red Hat Mono, monospace" font-size="16">CP1 compliance</text>
+  </g>
+  
+  <!-- Row 2 -->
+  <!-- Card 5: Certificate Rotation -->
+  <g transform="translate(170, 290)">
+    <rect x="0" y="0" width="250" height="130" rx="12" fill="#0f1624" stroke="#64ffda" stroke-width="2"/>
+    <circle cx="35" cy="35" r="22" fill="#64ffda" opacity="0.2"/>
+    <text x="35" y="43" text-anchor="middle" fill="#64ffda" font-family="Red Hat Display, sans-serif" font-size="22">🔐</text>
+    <text x="70" y="38" fill="#fff" font-family="Red Hat Display, sans-serif" font-size="18" font-weight="600">Certificate Rotation</text>
+    <text x="15" y="70" fill="#8892b0" font-family="Red Hat Text, sans-serif" font-size="16">Automatic mTLS</text>
+    <text x="15" y="92" fill="#8892b0" font-family="Red Hat Text, sans-serif" font-size="16">renewal before expiry</text>
+    <text x="15" y="118" fill="#64ffda" font-family="Red Hat Mono, monospace" font-size="16">cert-manager</text>
+  </g>
+  
+  <!-- Card 6: RBAC Integration -->
+  <g transform="translate(475, 290)">
+    <rect x="0" y="0" width="250" height="130" rx="12" fill="#0f1624" stroke="#64ffda" stroke-width="2"/>
+    <circle cx="35" cy="35" r="22" fill="#64ffda" opacity="0.2"/>
+    <text x="35" y="43" text-anchor="middle" fill="#64ffda" font-family="Red Hat Display, sans-serif" font-size="22">👤</text>
+    <text x="70" y="38" fill="#fff" font-family="Red Hat Display, sans-serif" font-size="18" font-weight="600">RBAC Integration</text>
+    <text x="15" y="70" fill="#8892b0" font-family="Red Hat Text, sans-serif" font-size="16">Queue access control</text>
+    <text x="15" y="92" fill="#8892b0" font-family="Red Hat Text, sans-serif" font-size="16">per user roles</text>
+    <text x="15" y="118" fill="#64ffda" font-family="Red Hat Mono, monospace" font-size="16">Keycloak</text>
+  </g>
+  
+  <!-- Card 7: Horizontal Scaling -->
+  <g transform="translate(780, 290)">
+    <rect x="0" y="0" width="250" height="130" rx="12" fill="#0f1624" stroke="#64ffda" stroke-width="2"/>
+    <circle cx="35" cy="35" r="22" fill="#64ffda" opacity="0.2"/>
+    <text x="35" y="43" text-anchor="middle" fill="#64ffda" font-family="Red Hat Display, sans-serif" font-size="22">📈</text>
+    <text x="70" y="38" fill="#fff" font-family="Red Hat Display, sans-serif" font-size="18" font-weight="600">Horizontal Scaling</text>
+    <text x="15" y="70" fill="#8892b0" font-family="Red Hat Text, sans-serif" font-size="16">Scale pods based</text>
+    <text x="15" y="92" fill="#8892b0" font-family="Red Hat Text, sans-serif" font-size="16">on queue depth</text>
+    <text x="15" y="118" fill="#64ffda" font-family="Red Hat Mono, monospace" font-size="16">Auto-scale</text>
+  </g>
+  
+  <!-- Reuse highlight cards -->
+
+  <!-- Card: ~70% Reuse -->
+  <g transform="translate(70, 460)">
+    <rect x="0" y="0" width="520" height="160" rx="14" fill="#0f1624" stroke="#28a745" stroke-width="2"/>
+    <!-- Left: big number in its own zone -->
+    <rect x="12" y="12" width="136" height="136" rx="10" fill="#28a745" opacity="0.1"/>
+    <text x="80" y="75" text-anchor="middle" fill="#28a745" font-family="Red Hat Display, sans-serif" font-size="48" font-weight="700">~70%</text>
+    <text x="80" y="100" text-anchor="middle" fill="#28a745" font-family="Red Hat Text, sans-serif" font-size="14">reuse</text>
+    <!-- Right: description -->
+    <text x="168" y="35" fill="#fff" font-family="Red Hat Display, sans-serif" font-size="19" font-weight="600">Code Reuse Out of the Box</text>
+    <text x="168" y="62" fill="#8892b0" font-family="Red Hat Text, sans-serif" font-size="15">The framework provides ~70% of the</text>
+    <text x="168" y="82" fill="#8892b0" font-family="Red Hat Text, sans-serif" font-size="15">implementation for any new Provider</text>
+    <text x="168" y="102" fill="#8892b0" font-family="Red Hat Text, sans-serif" font-size="15">or Consumer SWIM module.</text>
+    <text x="168" y="130" fill="#28a745" font-family="Red Hat Text, sans-serif" font-size="14">mTLS, AMQP, Subscriptions, Inbox/Outbox,</text>
+    <text x="168" y="148" fill="#28a745" font-family="Red Hat Text, sans-serif" font-size="14">Retry, Audit, Kafka &#8212; already done.</text>
+  </g>
+
+  <!-- Card: 5 SPIs -->
+  <g transform="translate(610, 460)">
+    <rect x="0" y="0" width="520" height="160" rx="14" fill="#0f1624" stroke="#d4a106" stroke-width="2"/>
+    <!-- Left: big number in its own zone -->
+    <rect x="12" y="12" width="100" height="136" rx="10" fill="#d4a106" opacity="0.1"/>
+    <text x="62" y="82" text-anchor="middle" fill="#d4a106" font-family="Red Hat Display, sans-serif" font-size="64" font-weight="700">5</text>
+    <text x="62" y="108" text-anchor="middle" fill="#d4a106" font-family="Red Hat Text, sans-serif" font-size="14">SPIs</text>
+    <!-- Right: description -->
+    <text x="132" y="35" fill="#fff" font-family="Red Hat Display, sans-serif" font-size="19" font-weight="600">SPIs to a New Module</text>
+    <text x="132" y="62" fill="#8892b0" font-family="Red Hat Text, sans-serif" font-size="15">Implement 5 Service Provider Interfaces</text>
+    <text x="132" y="82" fill="#8892b0" font-family="Red Hat Text, sans-serif" font-size="15">and you have a fully functional</text>
+    <text x="132" y="102" fill="#8892b0" font-family="Red Hat Text, sans-serif" font-size="15">SWIM service ready for production.</text>
+    <text x="132" y="130" fill="#d4a106" font-family="Red Hat Mono, monospace" font-size="13">Extractor &#183; Validator &#183; Categorizer</text>
+    <text x="132" y="148" fill="#d4a106" font-family="Red Hat Mono, monospace" font-size="13">Transformer &#183; Publisher</text>
+  </g>
+
+  <!-- Footer -->
+  <text x="600" y="660" text-anchor="middle" fill="#64ffda" font-family="Red Hat Display, sans-serif" font-size="22" font-weight="600">Build a new SWIM module in days, not months</text>
+  <text x="600" y="690" text-anchor="middle" fill="#8892b0" font-family="Red Hat Text, sans-serif" font-size="18">Focus on your domain logic &#8212; the framework handles infrastructure</text>
+</svg>
+

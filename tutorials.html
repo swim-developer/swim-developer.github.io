@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tutorials | SWIM Developer</title>
+    <meta name="description" content="Step-by-step guides and video walkthroughs for deploying and configuring SWIM services.">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@400;500;600;700;900&family=Red+Hat+Text:wght@400;500;600&family=Red+Hat+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav class="navbar"></nav>
+
+    <header class="page-header">
+        <div class="container">
+            <div class="page-header-content">
+                <h1><i class="fas fa-graduation-cap"></i> Tutorials</h1>
+                <p class="page-subtitle">Step-by-step guides for deploying, configuring, and validating SWIM services</p>
+            </div>
+        </div>
+    </header>
+
+    <div class="wiki-layout">
+        <aside class="wiki-sidebar">
+            <nav class="wiki-nav">
+                <div class="wiki-nav-group">
+                    <h4 class="wiki-nav-title"><i class="fas fa-rocket"></i> Getting Started</h4>
+                    <ul>
+                        <li><a href="tutorials/deploy-gitops.html">GitOps (Argo CD)</a></li>
+                        <li><a href="tutorials/deploy-openshift.html">OpenShift</a></li>
+                        <li><a href="tutorials/deploy-kubernetes.html">Kubernetes</a></li>
+                        <li><a href="tutorials/deploy-openshift-local.html">OpenShift Local</a></li>
+                        <li><a href="tutorials/deploy-minikube.html">Minikube</a></li>
+                        <li><a href="tutorials/deploy-podman.html">Container Local (Podman)</a></li>
+                        <li><a href="tutorials/deploy-java.html">Java / Binary</a></li>
+                    </ul>
+                </div>
+                <div class="wiki-nav-group">
+                    <h4 class="wiki-nav-title"><i class="fas fa-bell"></i> Digital NOTAM</h4>
+                    <ul>
+                        <li><a href="tutorials/dnotam-consumer-deploy.html">Deploy Consumer</a></li>
+                        <li><a href="tutorials/dnotam-consumer-explore.html">Explore Consumer</a></li>
+                        <li><a href="tutorials/dnotam-provider-deploy.html">Deploy Provider</a></li>
+                        <li><a href="tutorials/dnotam-provider-explore.html">Explore Provider</a></li>
+                        <li><a href="tutorials/consumer-validator-deploy.html">Deploy Consumer Validator</a></li>
+                        <li><a href="tutorials/consumer-validator-explore.html">Explore Consumer Validator</a></li>
+                        <li><a href="tutorials/provider-validator-deploy.html">Deploy Provider Validator</a></li>
+                        <li><a href="tutorials/e2e-test.html">End-to-End Test</a></li>
+                    </ul>
+                </div>
+                <div class="wiki-nav-group">
+                    <h4 class="wiki-nav-title"><i class="fas fa-plane-arrival"></i> ED-254 (AMAN)</h4>
+                    <ul>
+                        <li><a href="tutorials/ed254-consumer-deploy.html">Deploy Consumer</a></li>
+                        <li><a href="tutorials/ed254-provider-deploy.html">Deploy Provider</a></li>
+                    </ul>
+                </div>
+                <div class="wiki-nav-group">
+                    <h4 class="wiki-nav-title"><i class="fas fa-wand-magic-sparkles"></i> Build Your Own</h4>
+                    <ul>
+                        <li><a href="tutorials/create-consumer.html">Create Consumer (8 parts)</a></li>
+                        <li><a href="tutorials/create-provider.html">Create Provider</a></li>
+                    </ul>
+                </div>
+            </nav>
+        </aside>
+
+        <main class="wiki-content">
+            <div class="wiki-landing">
+                <h2>Welcome to the Tutorials</h2>
+                <p>
+                    Choose a topic from the sidebar to get started. Each tutorial is self-contained
+                    with written instructions and, where available, a companion video walkthrough.
+                </p>
+
+                <div class="wiki-landing-grid">
+                    <div class="wiki-landing-group">
+                        <h3><i class="fas fa-rocket"></i> Getting Started</h3>
+                        <ul>
+                            <li><a href="tutorials/deploy-gitops.html"><strong>GitOps (Argo CD)</strong></a> <span>Declarative deployment with Argo CD + Tekton CI (recommended)</span></li>
+                            <li><a href="tutorials/deploy-openshift.html">OpenShift</a> <span>Deploy on a production OpenShift cluster</span></li>
+                            <li><a href="tutorials/deploy-kubernetes.html">Kubernetes</a> <span>Deploy on a vanilla Kubernetes cluster</span></li>
+                            <li><a href="tutorials/deploy-openshift-local.html">OpenShift Local</a> <span>Deploy 19 components with <code>make all</code></span></li>
+                            <li><a href="tutorials/deploy-minikube.html">Minikube</a> <span>Run locally with Minikube and Ansible</span></li>
+                            <li><a href="tutorials/deploy-podman.html">Container Local (Podman)</a> <span>Run services as containers with Podman Compose</span></li>
+                            <li><a href="tutorials/deploy-java.html">Java / Binary</a> <span>Build from source and run with Quarkus dev mode</span></li>
+                        </ul>
+                    </div>
+                    <div class="wiki-landing-group">
+                        <h3><i class="fas fa-bell"></i> Digital NOTAM</h3>
+                        <ul>
+                            <li><a href="tutorials/dnotam-consumer-deploy.html">Deploy Consumer</a> <span>Receive DNOTAM events from an AISP</span></li>
+                            <li><a href="tutorials/dnotam-consumer-explore.html">Explore Consumer</a> <span>Internals: AMQP, inbox, Kafka</span></li>
+                            <li><a href="tutorials/dnotam-provider-deploy.html">Deploy Provider</a> <span>Publish DNOTAM events to consumers</span></li>
+                            <li><a href="tutorials/dnotam-provider-explore.html">Explore Provider</a> <span>Internals: outbox, subscriptions</span></li>
+                            <li><a href="tutorials/consumer-validator-deploy.html">Deploy Consumer Validator</a> <span>Simulate an AISP provider</span></li>
+                            <li><a href="tutorials/consumer-validator-explore.html">Explore Consumer Validator</a> <span>Internals and compliance checks</span></li>
+                            <li><a href="tutorials/provider-validator-deploy.html">Deploy Provider Validator</a> <span>Simulate an ANSP consumer</span></li>
+                            <li><a href="tutorials/e2e-test.html">End-to-End Test</a> <span>Full chain validation</span></li>
+                        </ul>
+                    </div>
+                    <div class="wiki-landing-group">
+                        <h3><i class="fas fa-plane-arrival"></i> ED-254 (AMAN)</h3>
+                        <ul>
+                            <li><a href="tutorials/ed254-consumer-deploy.html">Deploy Consumer</a> <span>Receive arrival sequence data</span></li>
+                            <li><a href="tutorials/ed254-provider-deploy.html">Deploy Provider</a> <span>Publish arrival sequence data</span></li>
+                        </ul>
+                    </div>
+                    <div class="wiki-landing-group">
+                        <h3><i class="fas fa-wand-magic-sparkles"></i> Build Your Own Service</h3>
+                        <ul>
+                            <li><a href="tutorials/create-consumer.html">Create Consumer</a> <span>Build a complete consumer from scratch using FF-ICE as the example (8-part tutorial)</span></li>
+                            <li><a href="tutorials/create-provider.html">Create Provider</a> <span>Build a complete provider from scratch using FF-ICE as the example</span></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <button class="wiki-sidebar-toggle" aria-label="Toggle tutorial navigation">
+        <i class="fas fa-list"></i>
+    </button>
+
+    <footer class="footer"></footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

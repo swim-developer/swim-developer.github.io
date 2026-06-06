@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" font-family="Red Hat Display, sans-serif">
+  <rect width="1280" height="720" fill="#0d1117"/>
+
+  <text x="640" y="45" text-anchor="middle" fill="#f0f6fc" font-size="28" font-weight="bold">Open Source Conformance Tools</text>
+  <text x="640" y="70" text-anchor="middle" fill="#8b949e" font-size="15">Community tools for validation — not proprietary</text>
+
+  <!-- Provider Validator -->
+  <rect x="40" y="95" width="580" height="410" rx="12" fill="#1c2333" stroke="#58a6ff" stroke-width="2"/>
+  <rect x="40" y="95" width="580" height="50" rx="12" fill="#0d419d"/>
+  <rect x="40" y="130" width="580" height="15" fill="#0d419d"/>
+  <text x="330" y="127" text-anchor="middle" fill="#f0f6fc" font-size="18" font-weight="bold">Provider Validator</text>
+
+  <text x="70" y="175" fill="#58a6ff" font-size="15" font-weight="bold">EUR SWIM Registry Compliance</text>
+  <text x="70" y="197" fill="#8b949e" font-size="13">Digital NOTAM v1.0.0 specification</text>
+
+  <text x="70" y="232" fill="#f0f6fc" font-size="14" font-weight="bold">8 Scenarios Implemented:</text>
+  <rect x="70" y="245" width="520" height="30" rx="4" fill="#21262d"/>
+  <text x="80" y="265" fill="#3fb950" font-size="12">API-01</text><text x="140" y="265" fill="#8b949e" font-size="12">Create subscription → 201 PAUSED</text>
+  <rect x="70" y="280" width="520" height="30" rx="4" fill="#161b22"/>
+  <text x="80" y="300" fill="#3fb950" font-size="12">API-02</text><text x="140" y="300" fill="#8b949e" font-size="12">Activate → ACTIVE status</text>
+  <rect x="70" y="315" width="520" height="30" rx="4" fill="#21262d"/>
+  <text x="80" y="335" fill="#3fb950" font-size="12">API-06</text><text x="140" y="335" fill="#8b949e" font-size="12">Query features (WFS GetFeature)</text>
+  <rect x="70" y="350" width="520" height="30" rx="4" fill="#161b22"/>
+  <text x="80" y="370" fill="#3fb950" font-size="12">DM-01</text><text x="140" y="370" fill="#8b949e" font-size="12">Queue name pattern validation</text>
+  <rect x="70" y="385" width="520" height="30" rx="4" fill="#21262d"/>
+  <text x="80" y="405" fill="#3fb950" font-size="12">DM-04/05/06</text><text x="180" y="405" fill="#8b949e" font-size="12">Data model validation</text>
+
+  <rect x="70" y="430" width="250" height="30" rx="15" fill="#0d419d"/>
+  <text x="195" y="450" text-anchor="middle" fill="#f0f6fc" font-size="12" font-weight="bold">117 scenarios planned</text>
+  <text x="340" y="450" fill="#484f58" font-size="12">Web UI · mTLS · AMQP capture</text>
+
+  <!-- Consumer Validator -->
+  <rect x="660" y="95" width="580" height="410" rx="12" fill="#1c2333" stroke="#3fb950" stroke-width="2"/>
+  <rect x="660" y="95" width="580" height="50" rx="12" fill="#0a2e0a"/>
+  <rect x="660" y="130" width="580" height="15" fill="#0a2e0a"/>
+  <text x="950" y="127" text-anchor="middle" fill="#f0f6fc" font-size="18" font-weight="bold">Consumer Validator (Mock AISP)</text>
+
+  <text x="690" y="175" fill="#3fb950" font-size="15" font-weight="bold">Simulates EUROCONTROL/AISP</text>
+  <text x="690" y="197" fill="#8b949e" font-size="13">Full Subscription Manager API + AMQP</text>
+
+  <rect x="690" y="218" width="520" height="50" rx="6" fill="#21262d"/>
+  <text x="700" y="240" fill="#f0f6fc" font-size="13">Subscription Manager REST API</text>
+  <text x="700" y="258" fill="#484f58" font-size="11">/swim/v1/subscriptions · /swim/v1/topics · /swim/v1/features</text>
+
+  <rect x="690" y="275" width="520" height="50" rx="6" fill="#161b22"/>
+  <text x="700" y="297" fill="#f0f6fc" font-size="13">AMQP Event Injection</text>
+  <text x="700" y="315" fill="#484f58" font-size="11">82 AIXM samples (closures, obstacles, navaids, airspace)</text>
+
+  <rect x="690" y="332" width="520" height="50" rx="6" fill="#21262d"/>
+  <text x="700" y="354" fill="#f85149" font-size="13" font-weight="bold">Fault Injection</text>
+  <text x="700" y="372" fill="#484f58" font-size="11">503 errors · configurable delays · drop rates · timeout simulation</text>
+
+  <rect x="690" y="389" width="520" height="50" rx="6" fill="#161b22"/>
+  <text x="700" y="411" fill="#f0f6fc" font-size="13">Heartbeat Simulation</text>
+  <text x="700" y="429" fill="#484f58" font-size="11">Start / stop / timeout detection · renewal support (30 days)</text>
+
+  <text x="950" y="470" text-anchor="middle" fill="#484f58" font-size="12">Web UI for scenario control</text>
+
+  <!-- Beneficiaries -->
+  <rect x="40" y="530" width="380" height="70" rx="10" fill="#21262d"/>
+  <text x="230" y="558" text-anchor="middle" fill="#d29922" font-size="15" font-weight="bold">For Vendors</text>
+  <text x="230" y="580" text-anchor="middle" fill="#8b949e" font-size="13">Validate during development</text>
+
+  <rect x="450" y="530" width="380" height="70" rx="10" fill="#21262d"/>
+  <text x="640" y="558" text-anchor="middle" fill="#58a6ff" font-size="15" font-weight="bold">For ANSPs</text>
+  <text x="640" y="580" text-anchor="middle" fill="#8b949e" font-size="13">Verify before deployment</text>
+
+  <rect x="860" y="530" width="380" height="70" rx="10" fill="#21262d"/>
+  <text x="1050" y="558" text-anchor="middle" fill="#3fb950" font-size="15" font-weight="bold">For EUROCONTROL</text>
+  <text x="1050" y="580" text-anchor="middle" fill="#8b949e" font-size="13">Specification compliance tool</text>
+</svg>
+

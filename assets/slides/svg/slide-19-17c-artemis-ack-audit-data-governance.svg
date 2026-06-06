@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" font-family="Red Hat Display, sans-serif">
+  <rect width="1280" height="720" fill="#0d1117"/>
+
+  <text x="640" y="45" text-anchor="middle" fill="#f0f6fc" font-size="28" font-weight="bold">Audit &amp; Data Governance</text>
+  <text x="640" y="72" text-anchor="middle" fill="#8b949e" font-size="14">CP1 Compliance (EU 2021/116) · GDPR</text>
+
+  <!-- TOP PANEL: Artemis ACK Audit -->
+  <rect x="40" y="95" width="1200" height="270" rx="14" fill="#1c2333" stroke="#f85149" stroke-width="1.5"/>
+  <text x="70" y="130" fill="#f85149" font-size="20" font-weight="bold">Custom Artemis ACK Audit Plugin</text>
+  <text x="450" y="130" fill="#484f58" font-size="13">add-ons/activemq-log-plugins/</text>
+
+  <!-- Problem/Solution -->
+  <text x="70" y="165" fill="#8b949e" font-size="14">CP1 requires: audit trail for every message acknowledgment.</text>
+  <text x="70" y="185" fill="#8b949e" font-size="14">Standard Artemis logging: does NOT capture per-message ACK events.</text>
+
+  <!-- Flow -->
+  <rect x="70" y="210" width="220" height="50" rx="8" fill="#161b22" stroke="#f85149" stroke-width="1"/>
+  <text x="180" y="240" text-anchor="middle" fill="#f0f6fc" font-size="13">Consumer ACKs msg</text>
+
+  <line x1="290" y1="235" x2="340" y2="235" stroke="#f85149" stroke-width="1.5"/>
+  <polygon points="337,230 337,240 347,235" fill="#f85149"/>
+
+  <rect x="350" y="210" width="250" height="50" rx="8" fill="#161b22" stroke="#f85149" stroke-width="1.5"/>
+  <text x="475" y="232" text-anchor="middle" fill="#f85149" font-size="13" font-weight="bold">ACK Plugin intercepts</text>
+  <text x="475" y="250" text-anchor="middle" fill="#8b949e" font-size="11">(ActiveMQServerMessagePlugin)</text>
+
+  <line x1="600" y1="235" x2="650" y2="235" stroke="#f85149" stroke-width="1.5"/>
+  <polygon points="647,230 647,240 657,235" fill="#f85149"/>
+
+  <rect x="660" y="210" width="280" height="50" rx="8" fill="#161b22" stroke="#3fb950" stroke-width="1"/>
+  <text x="800" y="232" text-anchor="middle" fill="#3fb950" font-size="13" font-weight="bold">Structured audit log</text>
+  <text x="800" y="250" text-anchor="middle" fill="#8b949e" font-size="11">msgId · queue · timestamp · consumer</text>
+
+  <line x1="940" y1="235" x2="990" y2="235" stroke="#3fb950" stroke-width="1.5"/>
+  <polygon points="987,230 987,240 997,235" fill="#3fb950"/>
+
+  <rect x="1000" y="210" width="200" height="50" rx="8" fill="#0d419d" fill-opacity="0.3"/>
+  <text x="1100" y="240" text-anchor="middle" fill="#58a6ff" font-size="13" font-weight="bold">CP1 Compliance ✓</text>
+
+  <!-- Audit sample -->
+  <rect x="70" y="275" width="1130" height="30" rx="4" fill="#0d1117"/>
+  <text x="80" y="295" fill="#484f58" font-size="11" font-family="JetBrains Mono, monospace">{"event":"ACK","msgId":"ID:abc-123","queue":"DNOTAM.v1.nav-pt.sub-001","consumer":"nav-portugal","ts":"2026-04-13T10:30:00Z"}</text>
+
+  <!-- SEPARATOR -->
+  <line x1="40" y1="400" x2="1240" y2="400" stroke="#30363d" stroke-width="1" stroke-dasharray="4,4"/>
+
+  <!-- BOTTOM PANEL: Data Governance -->
+  <rect x="40" y="420" width="1200" height="260" rx="14" fill="#1c2333" stroke="#58a6ff" stroke-width="1.5"/>
+  <text x="70" y="460" fill="#58a6ff" font-size="20" font-weight="bold">Data Governance &amp; GDPR</text>
+
+  <!-- Data retention cards -->
+  <rect x="70" y="480" width="350" height="80" rx="8" fill="#161b22"/>
+  <text x="245" y="510" text-anchor="middle" fill="#d29922" font-size="16" font-weight="bold">AMAN (ED-254)</text>
+  <text x="245" y="535" text-anchor="middle" fill="#f0f6fc" font-size="24" font-weight="bold">14 days TTL</text>
+  <text x="245" y="550" text-anchor="middle" fill="#8b949e" font-size="12">MongoDB TTL index — auto-delete</text>
+
+  <rect x="465" y="480" width="350" height="80" rx="8" fill="#161b22"/>
+  <text x="640" y="510" text-anchor="middle" fill="#f85149" font-size="16" font-weight="bold">DNOTAM</text>
+  <text x="640" y="535" text-anchor="middle" fill="#f0f6fc" font-size="24" font-weight="bold">90 days TTL</text>
+  <text x="640" y="550" text-anchor="middle" fill="#8b949e" font-size="12">MongoDB TTL index — auto-delete</text>
+
+  <rect x="860" y="480" width="350" height="80" rx="8" fill="#161b22"/>
+  <text x="1035" y="510" text-anchor="middle" fill="#3fb950" font-size="16" font-weight="bold">Configurable</text>
+  <text x="1035" y="535" text-anchor="middle" fill="#f0f6fc" font-size="24" font-weight="bold">Per-service TTL</text>
+  <text x="1035" y="550" text-anchor="middle" fill="#8b949e" font-size="12">ANSP controls retention policy</text>
+
+  <!-- Bottom principles -->
+  <rect x="70" y="585" width="1130" height="40" rx="6" fill="#0d419d" fill-opacity="0.2"/>
+  <text x="640" y="610" text-anchor="middle" fill="#58a6ff" font-size="14">Data sovereignty: on-premises or national cloud — no data leaves the ANSP's infrastructure</text>
+</svg>
+
